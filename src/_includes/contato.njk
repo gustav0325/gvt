@@ -1,0 +1,47 @@
+{# ==========================================================================
+   Seção Contato — Figma node 45:544 (frame 1440x1024)
+
+   A divisão diagonal vem da máscara 51:670, cujo path é um trapézio simples
+   (M0 1014 L271.7 0 H546 V1014 Z) posicionado em x 894: a diagonal liga
+   (894, 1024) a (1165.7, 10) no frame. Reproduzida com clip-path — conteúdo e
+   fotografia seguem elementos independentes.
+   ========================================================================== #}
+<section class="contato" id="contato" data-nav-tema="escuro">
+
+  {# Textura do fundo — Figma 52:680 (1440x1014, a partir de y 10) #}
+  <picture>
+    <source media="(max-width: 1023px)" srcset="/assets/img/home/contato/fundo-contato-mobile.webp">
+    <img class="contato__textura" src="/assets/img/home/contato/fundo-contato.webp" alt="" aria-hidden="true">
+  </picture>
+
+  {# Fotografia com o recorte diagonal — Figma 51:676 / 51:674 #}
+  <div class="contato__foto">
+    <img src="/assets/img/home/contato/foto-equipamento.webp" width="1122" height="1402" alt="Disco diamantado da GVT em operação de corte" loading="lazy">
+  </div>
+
+  {# Risco diagonal decorativo — Figma 51:672 (Line 14) #}
+  <span class="contato__risco-diagonal" aria-hidden="true"></span>
+
+  {# Conteúdo — Figma 52:678 (x 80, centrado verticalmente, w 745) #}
+  <div class="contato__conteudo">
+    <span class="contato__risco" aria-hidden="true"></span>
+
+    <h2 class="contato__titulo">SUA OBRA MERECE UMA SOLUÇÃO À ALTURA<span class="contato__ponto">.</span></h2>
+
+    <p class="contato__descricao">Conte com a GVT para cortes, furos e demolições técnicas. Fale com nossa equipe e encontre a solução para seu projeto.</p>
+
+    <div class="contato__acoes">
+      <a class="contato__botao contato__botao--wpp" href="https://wa.me/" rel="noopener">
+        <img class="contato__botao-wpp-icone" src="/assets/img/global/icons/icon_whatsapp.svg" width="20" height="20" alt="" aria-hidden="true">
+        <span class="contato__botao-texto">FALAR NO WHATSAPP</span>
+        <img class="contato__botao-seta contato__botao-seta--diagonal" src="/assets/img/global/icons/icon_seta_wpp.svg" width="12" height="9" alt="" aria-hidden="true">
+      </a>
+
+      <a class="contato__botao contato__botao--vazado" href="/contato/">
+        <span class="contato__botao-texto">ENVIE A SUA SOLICITAÇÃO</span>
+        <img class="contato__botao-seta" src="/assets/img/global/icons/icon_seta_clara.svg" width="12" height="9" alt="" aria-hidden="true">
+      </a>
+    </div>
+  </div>
+
+</section>

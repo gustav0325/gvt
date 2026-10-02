@@ -1,0 +1,49 @@
+/* ==========================================================================
+   Transição entre páginas (assets/js/transicao.js)
+
+   Só o conteúdo participa — o <main> e o rodapé. A navbar não: fica fixa,
+   nítida e estável o tempo todo.
+     saída    o conteúdo some (opacity) subindo poucos pixels
+     entrada  a página nova nasce invisível, um pouco abaixo, e assenta
+
+   Enquanto o conteúdo está invisível, o que aparece atrás dele é o fundo da
+   página no tom do topo da página de destino (--tom-topo, front matter
+   tomTopo): escuro para Home, Sobre e Serviços, branco para Obras e
+   Contato. Assim a navbar, que é de vidro, fica sobre o mesmo tom que terá
+   na página nova — sem passar por um cinza.
+
+   Estados (classes no <html>):
+     pagina-chegada   a página nova nasce invisível (posta pelo <head>)
+     chegada-ancora   ela abre numa #âncora: entrada só de opacidade
+     via-transicao    marca a página que chegou por uma transição
+   ========================================================================== */
+
+html.pagina-chegada .site-main,
+html.pagina-chegada .rodape {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+html.pagina-chegada body {
+  background-color: var(--tom-topo, var(--fundo-principal));
+}
+
+@media (max-width: 1023px) {
+  html.pagina-chegada .site-main,
+  html.pagina-chegada .rodape {
+    transform: translateY(6px);
+  }
+}
+
+/* numa #âncora a entrada é só de opacidade (o salto à seção é medido com o
+   conteúdo no lugar) */
+html.chegada-ancora .site-main,
+html.chegada-ancora .rodape {
+  transform: none;
+}
+
+/* A navbar é persistente: na Home, chegando por uma transição, ela não
+   refaz a entrada da abertura (hero-intro.js também a deixa de fora) */
+html.hero-intro.via-transicao .navbar {
+  opacity: 1;
+}

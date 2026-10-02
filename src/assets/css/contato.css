@@ -1,0 +1,357 @@
+/* ==========================================================================
+   Seção Contato — Figma node 45:544 (frame 1440 x 1024)
+
+   ESTRATÉGIA DE ESCALA
+   A mesma do Hero, Sobre e Obras: POSIÇÕES horizontais em porcentagem da
+   grade de 1440 e TAMANHOS escalados por --c, que encolhe pelo que faltar
+   primeiro — altura ou largura:
+
+       --c = min(100vh / 1024, 100vw / 1440)
+
+   A seção ocupa 100vh com a navbar sobreposta, como o frame mostra.
+   ========================================================================== */
+
+.contato {
+  --c: clamp(0.5px, min(0.09766vh, 0.06944vw), 1.25px);
+
+  position: relative;
+  height: 100vh;
+  background: var(--cards-escuro); /* #272a29 */
+  overflow: hidden;
+  /* 100cqw = a largura real da seção (sem a barra de rolagem), usada para a
+     linha amarela acompanhar o ângulo da diagonal da foto */
+  container-type: inline-size;
+}
+
+/* Textura do fundo — Figma 52:680 */
+.contato__textura {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* --------------------------------------------------------------------------
+   Fotografia + divisão diagonal — Figma 51:676
+
+   A máscara do Figma (51:670) é o trapézio M0 1014 L271.7 0 H546 V1014 Z,
+   ancorado em x 894: a diagonal liga (894, 1024) a (1165.7, 10).
+   Em porcentagem do frame: 62.083% na base e 80.951% no topo.
+   -------------------------------------------------------------------------- */
+
+.contato__foto {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(62.083% 100%, 80.951% 0, 100% 0, 100% 100%);
+}
+
+.contato__foto img {
+  position: absolute;
+  left: 57.292%;  /* x 825 */
+  top: 0.391%;    /* y 4 */
+  width: 57.569%; /* 829 */
+  height: 101.172%; /* 1036 */
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.65;
+}
+
+/* Risco diagonal — Figma 51:672 (Line 14).
+   O node declara 328.16 de comprimento, mas no render do frame o traço sai
+   clipado: vai de (1098, 132) a (1045, 315), ou seja 190.7 de comprimento,
+   com a ponta de cima encostando na base da navbar. Valores medidos no PNG
+   exportado do frame, que é o que a referência mostra. */
+.contato__risco-diagonal {
+  position: absolute;
+  left: 74.427%; /* centro em x 1071.75 */
+  top: 21.826%;  /* centro em y 223.5 */
+  width: calc(190.7 * var(--c));
+  height: 1px;
+  background: var(--dourado);
+  /* Paralela à diagonal da foto, derivada do mesmo polígono (62.083% 100% →
+     80.951% 0 em .contato__foto, que ocupa a seção inteira): a diagonal sobe
+     a altura da seção (100vh) enquanto anda 18.868% da largura (18.868cqw).
+     O ângulo depende da proporção da tela — 75.1° no frame, 71.6° em 16:9 —,
+     então sai do atan2 dessas duas medidas, nunca de um valor fixo. O centro
+     (74.427%) já fica a uma distância horizontal constante da diagonal (2.406%
+     da largura), então com o mesmo ângulo a linha corre paralela a ela.
+     A primeira declaração é só para navegadores sem atan2(). */
+  transform: translate(-50%, -50%) rotate(-73.72deg);
+  transform: translate(-50%, -50%) rotate(atan2(-100vh, 18.868cqw));
+  transform-origin: center;
+}
+
+/* --------------------------------------------------------------------------
+   Conteúdo — Figma 52:678 (x 80, centro vertical em y 559.5, w 745)
+   -------------------------------------------------------------------------- */
+
+.contato__conteudo {
+  position: absolute;
+  left: 5.5556%; /* x 80 de 1440 */
+  top: 54.639%;  /* centro em 559.5 de 1024 */
+  transform: translateY(-50%);
+  /* a largura acompanha a fonte do título (razão 745/68 = 10.96 do frame, com
+     os limites do clamp dele), mantendo as 3 linhas da referência */
+  width: clamp(526px, calc(756 * var(--c)), 833px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Figma 51:659 — risco dourado 69 x 2 */
+.contato__risco {
+  display: block;
+  width: calc(69 * var(--c));
+  height: calc(2 * var(--c));
+  margin-bottom: calc(37 * var(--c)); /* gap 39 menos os 2 do próprio risco */
+  background: var(--dourado);
+}
+
+/* Figma 49:647 — Archivo Black 68, caixa de 222 em 3 linhas */
+.contato__titulo {
+  width: 100%;
+  margin: 0 0 calc(39 * var(--c));
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: clamp(48px, calc(69 * var(--c)), 76px);
+  line-height: calc(75 * var(--c));
+  color: #fff;
+}
+
+.contato__ponto {
+  color: var(--dourado);
+}
+
+/* Figma 49:649 — Manrope 20, caixa de 54 em 2 linhas, largura 683 */
+.contato__descricao {
+  width: calc(683 * var(--c));
+  margin: 0 0 calc(39 * var(--c));
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: clamp(16px, calc(23.5 * var(--c)), 26px);
+  line-height: calc(31 * var(--c));
+  color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   Botões — Figma 49:658 e 51:661
+   Largura automática: o padding de 15 do frame fica preservado mesmo quando o
+   texto renderiza mais largo que no Figma (mesmo cuidado do CTA do Hero).
+   -------------------------------------------------------------------------- */
+
+.contato__acoes {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(83 * var(--c));
+}
+
+.contato__botao {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  padding: calc(10 * var(--c)) calc(15 * var(--c));
+}
+
+.contato__botao-texto {
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: clamp(13px, calc(17 * var(--c)), 19px);
+  line-height: calc(22 * var(--c));
+  letter-spacing: calc(3 * var(--c));
+  white-space: nowrap;
+}
+
+.contato__botao-seta {
+  flex-shrink: 0;
+  width: calc(11.88 * var(--c));
+  height: calc(8.62 * var(--c));
+  margin-left: calc(13 * var(--c));
+}
+
+/* a seta do WhatsApp aponta na diagonal (−45° no frame) */
+.contato__botao-seta--diagonal {
+  transform: rotate(-45deg);
+}
+
+/* Botão amarelo */
+.contato__botao--wpp {
+  /* respiro interno próprio: o padding herdado encolhia para ~11px em 1366 */
+  padding: clamp(9px, calc(11 * var(--c)), 12px) clamp(16px, calc(20 * var(--c)), 22px);
+  gap: clamp(10px, calc(12 * var(--c)), 14px);
+  border-radius: calc(10 * var(--c));
+  background: var(--amarelo-destaque);
+}
+
+/* vão entre o texto e a seta, só neste botão */
+.contato__botao--wpp .contato__botao-seta {
+  margin-left: clamp(12px, calc(15 * var(--c)), 17px);
+}
+
+.contato__botao--wpp .contato__botao-texto {
+  color: var(--titulo);
+}
+
+.contato__botao-wpp-icone {
+  flex-shrink: 0;
+  width: calc(20 * var(--c));
+  height: calc(20.035 * var(--c));
+}
+
+/* Botão vazado — Figma 51:661: borda clara, sem raio */
+.contato__botao--vazado {
+  border: 1px solid var(--fundo-principal);
+}
+
+.contato__botao--vazado .contato__botao-texto {
+  color: var(--fundo-principal);
+}
+
+/* ==========================================================================
+   Animação de entrada (assets/js/contato.js) — estados temporários
+
+   .contato--animando só existe enquanto a entrada roda. Os recortes abaixo
+   usam variáveis que valem 1 por padrão, o que reproduz exatamente as regras
+   estáticas acima; no fim o JS remove a classe e o layout volta a ser só o
+   delas.
+   ========================================================================== */
+
+/* Fotografia: a diagonal parte da borda direita (fechada) e desliza até o
+   ângulo final. 37.917% é o que a base da diagonal percorre até x 100%: com
+   --abertura 0 a foto está toda escondida, com 1 é o polígono do layout. */
+.contato--animando .contato__foto {
+  --fechado: calc(1 - var(--abertura, 1));
+  clip-path: polygon(
+    calc(62.083% + var(--fechado) * 37.917%) 100%,
+    calc(80.951% + var(--fechado) * 37.917%) 0,
+    100% 0,
+    100% 100%
+  );
+}
+
+/* Linha amarela: o recorte age antes da rotação, no eixo da própria linha.
+   A ponta direita dela é a de cima, então revelar da direita para a esquerda
+   a desenha de cima para baixo, sem mexer em ângulo, posição ou espessura. */
+.contato--animando .contato__risco-diagonal {
+  clip-path: inset(-2px 0 -2px calc((1 - var(--traco, 1)) * 100%));
+}
+
+/* Máscaras das linhas do título (criadas pelo SplitText): a entrelinha é
+   justa (75 para 69) e o til e o cedilha passam da caixa da linha. A folga
+   aumenta a área visível da máscara sem deslocar nada — padding e margem
+   negativa iguais. O título vira coluna flex só durante a animação porque em
+   flex as margens não colapsam: empilhadas em bloco, as negativas de linhas
+   vizinhas se fundiriam e afastariam as linhas. A classe entra só DEPOIS da
+   divisão em linhas; antes, o flex separaria o ponto amarelo do texto. */
+.contato__titulo--mascarado {
+  display: flex;
+  flex-direction: column;
+}
+
+.contato__titulo--mascarado .contato__titulo-linha-mask {
+  padding: 0.22em 0.1em;
+  margin: -0.22em -0.1em;
+}
+
+/* ==========================================================================
+   Mobile (até 1023px) — Figma "Contato Mobile" 181:2 (390 x 680)
+
+   Sem a fotografia e sem a diagonal: fundo grafite com a textura a 50%, e o
+   conteúdo numa coluna — traço · título · texto · dois CTAs de largura
+   total —, separados por 36, com 80 de respiro em cima e embaixo.
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .contato {
+    height: auto;
+    padding: calc(80 * var(--m)) var(--margem-mobile);
+  }
+
+  .contato__foto,
+  .contato__risco-diagonal {
+    display: none;
+  }
+
+  /* Figma 181:3 — a textura ocupa 125% da largura e a altura toda, sem
+     manter a proporção, com 50% de opacidade */
+  .contato__textura {
+    inset: 0 auto auto 0;
+    width: 125.14%;
+    max-width: none;
+    height: 100%;
+    object-fit: fill;
+    opacity: 0.5;
+  }
+
+  .contato__conteudo {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    transform: none;
+  }
+
+  /* Figma 181:5 — traço de 50 x 2 que desenha acima da coordenada */
+  .contato__risco {
+    width: calc(50 * var(--m));
+    height: 2px;
+    margin: -2px 0 calc(36 * var(--m));
+    background: var(--amarelo-destaque);
+  }
+
+  /* Figma 181:6 — Archivo Black 44, quatro linhas de 51 */
+  .contato__titulo {
+    margin: 0 0 calc(36 * var(--m));
+    font-size: calc(44 * var(--m));
+    line-height: calc(51 * var(--m));
+  }
+
+  /* Figma 181:7 — Manrope 16, linhas de 24 */
+  .contato__descricao {
+    width: 100%;
+    margin: 0 0 calc(36 * var(--m));
+    font-size: calc(16 * var(--m));
+    line-height: calc(24 * var(--m));
+  }
+
+  .contato__acoes {
+    width: 100%;
+    flex-direction: column;
+    gap: calc(36 * var(--m));
+  }
+
+  /* Figma 181:8 / 181:14 — 342 x 50, conteúdo centrado, gap 12 */
+  .contato__botao,
+  .contato__botao--wpp {
+    width: 100%;
+    height: calc(50 * var(--m));
+    justify-content: center;
+    gap: calc(12 * var(--m));
+    padding: 0 calc(22 * var(--m));
+  }
+
+  .contato__botao--wpp {
+    border-radius: calc(10 * var(--m));
+  }
+
+  .contato__botao-texto {
+    font-size: calc(15 * var(--m));
+    line-height: calc(20 * var(--m));
+    letter-spacing: calc(2 * var(--m));
+  }
+
+  .contato__botao-wpp-icone {
+    width: calc(20 * var(--m));
+    height: calc(20.035 * var(--m));
+  }
+
+  /* setas de 10.88 x 7.62 no frame; o SVG inclui a espessura do traço */
+  .contato__botao-seta,
+  .contato__botao--wpp .contato__botao-seta {
+    width: calc(11.88 * var(--m));
+    height: calc(8.62 * var(--m));
+    margin: calc(-0.5 * var(--m));
+  }
+}
+

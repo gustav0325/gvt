@@ -1,0 +1,18 @@
+{% if heroPage %}
+  {#- Abertura animada da Home. Roda antes do primeiro paint: marca o <html>
+      com .hero-intro para o CSS já nascer com a tela branca, sem flash do
+      Hero pronto. Fica de fora com reduced-motion ou com #âncora na URL.
+      A trava de segurança libera a página se hero-intro.js não chegar. #}
+  <script>
+    (function () {
+      var raiz = document.documentElement;
+      if (location.hash) return;
+      if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      raiz.classList.add("hero-intro");
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+      setTimeout(function () {
+        if (!window.__gvtIntro) raiz.classList.remove("hero-intro");
+      }, 4000);
+    })();
+  </script>
+{% endif %}

@@ -1,0 +1,55 @@
+{# Seção Sobre — Figma node 17:54 (frame 1440 x 1024)
+
+   As colunas laterais ficam dentro de .sobre__entrada, um bloco sem estilo
+   que recebe a animação de entrada. Assim ela não disputa o transform com o
+   afastamento lateral do CSS (translateX em .sobre__esquerda/.sobre__direita).
+   Ver assets/js/sobre.js. #}
+<section class="sobre" id="sobre" data-nav-tema="claro">
+  <div class="sobre__container">
+
+    {# Coluna esquerda — Figma 22:168 + 22:160 (x 80, w 373) #}
+    <div class="sobre__entrada sobre__entrada--esquerda">
+    <div class="sobre__esquerda">
+      <p class="sobre__label">SOBRE A GVT</p>
+      <h2 class="sobre__titulo">Quem somos?</h2>
+      <p class="sobre__texto">A GVT Cortes e Furos possui mais de 20 anos de experiência em cortes e furos diamantados e demolição controlada, atuando em obras de alta complexidade com investimento contínuo em tecnologia, equipamentos e capacitação para garantir soluções seguras, modernas e eficientes.</p>
+
+      <a class="sobre__link" href="/sobre-nos/">
+        <span class="sobre__link-texto">CONHEÇA NOSSA HISTÓRIA</span>
+        <picture>
+          <source media="(max-width: 1023px)" srcset="/assets/img/global/icons/icon_seta_link_mobile.svg">
+          <img class="sobre__link-seta" src="/assets/img/global/icons/icon_seta_link.svg" width="21" height="16" alt="" aria-hidden="true">
+        </picture>
+      </a>
+    </div>
+    </div>
+
+    {# Coluna central — Figma 20:144 (x 522, 396 x 749, raio 45) #}
+    <figure class="sobre__foto">
+      <picture>
+        <source media="(max-width: 1023px)" srcset="/assets/img/home/sobre/foto-sobre-mobile.webp">
+        <img src="/assets/img/home/sobre/foto-sobre.webp" width="396" height="749" alt="Operador da GVT realizando furo diamantado em parede de concreto" loading="lazy">
+      </picture>
+    </figure>
+
+    {# Coluna direita — Figma 22:171 + 22:170 (x 987, w 373) #}
+    <div class="sobre__entrada sobre__entrada--direita">
+    <div class="sobre__direita">
+      <span class="sobre__traco" aria-hidden="true"></span>
+
+      <div class="sobre__bloco">
+        <h2 class="sobre__subtitulo">Nossa missão</h2>
+        <p class="sobre__texto">Entregar soluções em cortes, furos e demolição controlada com segurança, qualidade e precisão, contribuindo para o sucesso dos nossos clientes e para o desenvolvimento de obras mais eficientes e sustentáveis.</p>
+      </div>
+
+      <span class="sobre__divisor" aria-hidden="true"></span>
+
+      <div class="sobre__bloco">
+        <h2 class="sobre__subtitulo">Nossa visão</h2>
+        <p class="sobre__texto">Ser referência no Brasil em soluções diamantadas para a construção civil, reconhecida pela excelência técnica, inovação e pela confiança dos nossos clientes, contribuindo para obras mais seguras, produtivas e sustentáveis.</p>
+      </div>
+    </div>
+    </div>
+
+  </div>
+</section>

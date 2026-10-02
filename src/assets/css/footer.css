@@ -1,0 +1,287 @@
+/* ==========================================================================
+   Footer — Figma "Frame 51" 151:2 (1440 x 330)
+
+   Diferente das seções da Home, o rodapé não ocupa 100vh: a altura é a do
+   frame (330), proporcional à largura. A unidade --f é 1/1440 da largura,
+   com teto para não inflar em telas muito largas.
+
+   Grade do frame: margem lateral 80 (5.5556%) · bloco de colunas em x 623
+   (43.2639%) com gap 148 · rodapé inferior em y 280.
+   ========================================================================== */
+
+.rodape {
+  --f: clamp(0.72px, 0.06944vw, 1.15px);
+
+  background: var(--titulo); /* #181a19 */
+  color: #fff;
+}
+
+.rodape__stage {
+  position: relative;
+  height: calc(330 * var(--f));
+}
+
+/* --------------------------------------------------------------------------
+   Coluna 1 — marca
+   -------------------------------------------------------------------------- */
+
+.rodape__marca {
+  position: absolute;
+  left: 5.5556%; /* x 80 */
+  top: calc(34 * var(--f));
+  width: calc(355 * var(--f));
+}
+
+.rodape__logo {
+  display: block;
+  width: calc(84 * var(--f));
+  height: calc(35 * var(--f));
+}
+
+/* Figma 151:29 — y 95, largura 355 */
+.rodape__sobre {
+  margin: calc(26 * var(--f)) 0 0; /* 95 − (34 + 35) */
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(15 * var(--f));
+  line-height: calc(20 * var(--f));
+  color: #fff;
+}
+
+/* Figma 151:59 — y 173, dois ícones de 25 com vão de 34 */
+.rodape__sociais {
+  display: flex;
+  width: fit-content;
+  gap: calc(34 * var(--f));
+  margin-top: calc(38 * var(--f)); /* 173 − (95 + 40) */
+}
+
+.rodape__social img {
+  display: block;
+  width: calc(25 * var(--f));
+  height: calc(25 * var(--f));
+}
+
+/* --------------------------------------------------------------------------
+   Colunas 2, 3 e 4 — Figma 151:30 (x 623, y 48, gap 148)
+   -------------------------------------------------------------------------- */
+
+.rodape__colunas {
+  position: absolute;
+  left: 43.2639%; /* x 623 */
+  top: calc(48 * var(--f));
+  display: flex;
+  align-items: flex-start;
+  gap: calc(148 * var(--f));
+}
+
+.rodape__coluna--navegacao { width: calc(92 * var(--f)); }
+.rodape__coluna--servicos  { width: calc(186 * var(--f)); }
+.rodape__coluna--contato   { width: calc(212 * var(--f)); }
+
+/* Figma 151:32 / 151:40 / 151:47 */
+.rodape__titulo {
+  margin: 0 0 calc(15 * var(--f));
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  font-size: calc(15 * var(--f));
+  line-height: calc(20 * var(--f));
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* Listas de links — Figma 151:33 / 151:41 (gap 6, texto 14) */
+.rodape__lista {
+  display: flex;
+  flex-direction: column;
+  gap: calc(6 * var(--f));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rodape__lista li {
+  line-height: calc(19 * var(--f));
+}
+
+.rodape__lista a,
+.rodape__contatos a {
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(14 * var(--f));
+  line-height: calc(19 * var(--f));
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* Contatos — Figma 151:48 (ícone + texto, gap 12, linhas a cada 25) */
+.rodape__contatos {
+  display: flex;
+  flex-direction: column;
+  gap: calc(6 * var(--f));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rodape__contatos li {
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--f));
+}
+
+.rodape__contatos img {
+  display: block;
+  flex-shrink: 0;
+}
+
+.rodape__contatos li:nth-child(1) img { width: calc(11 * var(--f)); height: calc(11 * var(--f)); }
+.rodape__contatos li:nth-child(2) img { width: calc(14 * var(--f)); height: calc(11 * var(--f)); }
+.rodape__contatos li:nth-child(3) img { width: calc(8 * var(--f));  height: calc(11 * var(--f)); }
+
+/* o item de localização é recuado em 3 no frame */
+.rodape__contato--local {
+  margin-left: calc(3 * var(--f));
+}
+
+.rodape__contato--local span {
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(14 * var(--f));
+  line-height: calc(19 * var(--f));
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Rodapé inferior — Figma 151:58 (y 280) e 151:64 (Line 21, x 453, y 290)
+   -------------------------------------------------------------------------- */
+
+.rodape__copyright {
+  position: absolute;
+  left: 5.5556%; /* x 80 */
+  top: calc(280 * var(--f));
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(12 * var(--f));
+  line-height: calc(16 * var(--f));
+  color: #fff;
+  white-space: nowrap;
+}
+
+.rodape__risco {
+  position: absolute;
+  left: 31.4583%; /* x 453 */
+  top: calc(290 * var(--f));
+  width: calc(38 * var(--f));
+  height: 1px;
+  background: var(--dourado);
+}
+
+/* --------------------------------------------------------------------------
+   Animação de entrada (assets/js/rodape.js)
+   O próprio rodapé vira a máscara: o conteúdo sobe por dentro dele, recortado
+   na borda com o Contato. O recorte também impede que o conteúdo deslocado
+   para baixo aumente a altura rolável da página. Em repouso não muda nada.
+   -------------------------------------------------------------------------- */
+
+.rodape--animado {
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Mobile (até 1023px) — Figma "Footer Mobile" 182:2 (390 x 520)
+
+   Compacto e com altura natural: logo · descrição · sociais · Serviços e
+   Fale conosco lado a lado · divisória · copyright. A coluna Navegação fica
+   só no desktop (no mobile a navegação é o menu hambúrguer), assim como o
+   traço dourado. --f passa a seguir a unidade do mobile.
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .rodape {
+    --f: var(--m);
+  }
+
+  .rodape__stage {
+    height: auto;
+    padding: calc(48 * var(--m)) var(--margem-mobile) calc(32 * var(--m));
+  }
+
+  .rodape__marca,
+  .rodape__colunas,
+  .rodape__copyright {
+    position: static;
+  }
+
+  .rodape__marca {
+    width: 100%;
+  }
+
+  /* Figma 182:4 — 100 x 41.67 */
+  .rodape__logo {
+    width: calc(100 * var(--m));
+    height: calc(41.67 * var(--m));
+  }
+
+  /* Figma 182:30 — 14, linhas de 21 (y 117.67) */
+  .rodape__sobre {
+    margin-top: calc(28 * var(--m));
+    font-size: calc(14 * var(--m));
+    line-height: calc(21 * var(--m));
+  }
+
+  /* Figma 182:31 — dois ícones de 25, vão de 34 (y 187.67) */
+  .rodape__sociais {
+    margin-top: calc(28 * var(--m));
+  }
+
+  /* Serviços (x 24, w 157) e Fale conosco (x 207, w 159), y 241 */
+  .rodape__colunas {
+    margin-top: calc(28 * var(--m));
+    gap: calc(26 * var(--m));
+  }
+
+  .rodape__coluna--navegacao {
+    display: none;
+  }
+
+  .rodape__coluna--servicos { width: calc(157 * var(--m)); }
+  .rodape__coluna--contato  { width: calc(159 * var(--m)); }
+
+  .rodape__titulo {
+    margin-bottom: calc(10 * var(--m));
+  }
+
+  .rodape__lista,
+  .rodape__contatos {
+    gap: calc(10 * var(--m));
+  }
+
+  /* os serviços quebram em duas linhas na coluna de 157 */
+  .rodape__lista a {
+    white-space: normal;
+  }
+
+  .rodape__contatos li {
+    gap: calc(10 * var(--m));
+  }
+
+  .rodape__contato--local {
+    margin-left: 0;
+  }
+
+  /* Figma 182:61 / 182:62 — divisória branca a 12% (y 443) e o copyright 28
+     abaixo dela (y 472) */
+  .rodape__copyright {
+    margin-top: calc(28 * var(--m));
+    padding-top: calc(28 * var(--m));
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    white-space: normal;
+  }
+
+  .rodape__risco {
+    display: none;
+  }
+}

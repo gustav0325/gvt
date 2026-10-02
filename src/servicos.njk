@@ -1,0 +1,139 @@
+---
+layout: base.njk
+tomTopo: "#060606"
+title: Serviços
+activeNav: servicos
+navSobreposta: true
+estilosPagina: [servicos-pagina]
+fontesPagina: "family=Oswald:wght@700&family=Manrope:wght@800"
+animacoesPagina: servicos-pagina
+aberturaAnimada: true
+---
+{#- Página Serviços — Figma node 77:428 (frame 1440 x 2160)
+    Navbar e rodapé são os componentes do site (base.njk). Estilos em
+    assets/css/servicos-pagina.css (prefixo sv-, para não se misturar com a
+    seção Serviços da Home); animações em assets/js/servicos-pagina.js. #}
+
+{# 1. Hero — Figma 78:625 (1440 x 538) #}
+<section class="sv-hero" id="inicio-servicos">
+  <img class="sv-hero__foto" src="/assets/img/servicos/hero.webp" width="2051" height="767" alt="Operador da GVT fazendo corte com disco diamantado em parede de concreto" fetchpriority="high">
+
+  <span class="sv-risco sv-hero__risco" aria-hidden="true"></span>
+
+  <div class="sv-hero__conteudo">
+    <h1 class="sv-hero__titulo">SOLUÇÕES TÉCNICAS <br>PARA CADA ETAPA DA <br><span class="sv-destaque">SUA OBRA</span>.</h1>
+    <p class="sv-hero__texto">Cortes, furos e demolição controlada com tecnologia de ponta, equipe especializada e foco em segurança, precisão e resultado.</p>
+    <a class="sv-hero__cta" href="/contato/">
+      <span class="sv-hero__cta-texto">SOLICITAR ORÇAMENTO</span>
+      <img class="sv-seta sv-hero__cta-seta" src="/assets/img/global/icons/icon_seta_dourada_curta.svg" width="13" height="10" alt="" aria-hidden="true">
+    </a>
+  </div>
+</section>
+
+{# 2. Soluções completas — Figma 78:670 (1440 x 730) #}
+<section class="sv-solucoes" id="solucoes" data-nav-tema="claro">
+  <span class="sv-risco sv-solucoes__risco" aria-hidden="true"></span>
+
+  <h2 class="sv-solucoes__titulo">SOLUÇÕES COMPLETAS <br>EM CORTES, FUROS E <br>DEMOLIÇÃO CONTROLADA.</h2>
+  <p class="sv-solucoes__texto">Atuamos com tecnologia, planejamento e uma equipe experiente para entregar resultados precisos, seguros e eficientes em diferentes tipos de obras.</p>
+
+  {# Figma 93:812 — quatro blocos de 627 x 220: foto (217) + painel (410).
+     Cada bloco inteiro é um único link para a página do serviço; o nome
+     acessível é o título, e o SAIBA MAIS fica como indicação visual #}
+  <div class="sv-servicos">
+    <a class="sv-servico sv-servico--fio sv-servico--foto-esquerda" href="/servicos/corte-fio-diamantado/" aria-labelledby="sv-servico-fio">
+      <img class="sv-servico__foto" src="/assets/img/servicos/corte-fio-diamantado.webp" width="1536" height="1024" alt="Corte com fio diamantado em estrutura de concreto" loading="lazy">
+      <div class="sv-servico__conteudo">
+        <h3 class="sv-servico__titulo" id="sv-servico-fio">CORTE COM FIO DIAMANTADO</h3>
+        <p class="sv-servico__texto">Ideal para cortes de grandes estruturas de concreto armado, inclusive peças de alta espessura. Proporciona precisão, baixa vibração e menor impacto na estrutura.</p>
+        <span class="sv-servico__link" aria-hidden="true">
+          <span class="sv-servico__link-texto">SAIBA MAIS </span>
+          <img class="sv-seta sv-servico__link-seta" src="/assets/img/global/icons/icon_seta_dourada_curta.svg" width="13" height="10" alt="">
+        </span>
+      </div>
+    </a>
+
+    <a class="sv-servico sv-servico--disco sv-servico--foto-direita" href="/servicos/corte-disco-diamantado/" aria-labelledby="sv-servico-disco">
+      <img class="sv-servico__foto" src="/assets/img/servicos/corte-disco-diamantado.webp" width="500" height="500" alt="Corte com disco diamantado em piso de concreto" loading="lazy">
+      <div class="sv-servico__conteudo">
+        <h3 class="sv-servico__titulo" id="sv-servico-disco">CORTE COM DISCO DIAMANTADO</h3>
+        <p class="sv-servico__texto">Indicado para cortes retos e precisos em lajes, pisos e paredes de concreto. Oferece rapidez na execução, ótimo acabamento e controle do corte.</p>
+        <span class="sv-servico__link" aria-hidden="true">
+          <span class="sv-servico__link-texto">SAIBA MAIS </span>
+          <img class="sv-seta sv-servico__link-seta" src="/assets/img/global/icons/icon_seta_dourada_curta.svg" width="13" height="10" alt="">
+        </span>
+      </div>
+    </a>
+
+    <a class="sv-servico sv-servico--furos sv-servico--foto-esquerda" href="/servicos/furos-em-concreto/" aria-labelledby="sv-servico-furos">
+      <img class="sv-servico__foto" src="/assets/img/servicos/furos-em-concreto.webp" width="1536" height="1024" alt="Operador da GVT fazendo furo com coroa diamantada em parede de concreto" loading="lazy">
+      <div class="sv-servico__conteudo">
+        <h3 class="sv-servico__titulo" id="sv-servico-furos">FUROS EM CONCRETO</h3>
+        <p class="sv-servico__texto">Perfurações precisas em concreto para tubulações e instalações elétricas e hidráulicas, com excelente acabamento e mínimo impacto na estrutura.</p>
+        <span class="sv-servico__link" aria-hidden="true">
+          <span class="sv-servico__link-texto">SAIBA MAIS </span>
+          <img class="sv-seta sv-servico__link-seta" src="/assets/img/global/icons/icon_seta_dourada_curta.svg" width="13" height="10" alt="">
+        </span>
+      </div>
+    </a>
+
+    <a class="sv-servico sv-servico--demolicao sv-servico--foto-direita" href="/servicos/demolicao-controlada/" aria-labelledby="sv-servico-demolicao">
+      <img class="sv-servico__foto" src="/assets/img/servicos/demolicao-controlada.webp" width="1536" height="1024" alt="Demolição controlada de estrutura de concreto com escavadeira" loading="lazy">
+      <div class="sv-servico__conteudo">
+        <h3 class="sv-servico__titulo" id="sv-servico-demolicao">DEMOLIÇÃO CONTROLADA</h3>
+        <p class="sv-servico__texto">Remoção planejada de estruturas de concreto com segurança e precisão, indicada para reformas, ampliações e locais com acesso ou espaço restrito.</p>
+        <span class="sv-servico__link" aria-hidden="true">
+          <span class="sv-servico__link-texto">SAIBA MAIS </span>
+          <img class="sv-seta sv-servico__link-seta" src="/assets/img/global/icons/icon_seta_dourada_curta.svg" width="13" height="10" alt="">
+        </span>
+      </div>
+    </a>
+  </div>
+</section>
+
+{# 3. Processo — Figma 78:671 (1440 x 354) #}
+<section class="sv-processo" id="processo" data-nav-tema="escuro">
+  <h2 class="sv-processo__titulo">COMO FUNCIONA O <br>NOSSO PROCESSO.</h2>
+  <p class="sv-processo__texto">Cada projeto exige uma solução específica. Conheça as etapas do nosso atendimento.</p>
+
+  <ol class="sv-etapas">
+    <li class="sv-etapa sv-etapa--contato">
+      <p class="sv-etapa__numero">01</p>
+      <h3 class="sv-etapa__titulo">CONTATO</h3>
+      <p class="sv-etapa__texto">Conte para nossa equipe o que seu projeto precisa.</p>
+      <span class="sv-etapa__icone" aria-hidden="true"><img src="/assets/img/servicos/icone-contato.svg" width="35" height="35" alt=""></span>
+    </li>
+    <li class="sv-etapa sv-etapa--avaliacao">
+      <p class="sv-etapa__numero">02</p>
+      <h3 class="sv-etapa__titulo">AVALIAÇÃO</h3>
+      <p class="sv-etapa__texto">Analisamos as necessidades e definimos a solução adequada.</p>
+      <span class="sv-etapa__icone" aria-hidden="true"><img src="/assets/img/servicos/icone-avaliacao.svg" width="32" height="37.625" alt=""></span>
+    </li>
+    <li class="sv-etapa sv-etapa--execucao">
+      <p class="sv-etapa__numero">03</p>
+      <h3 class="sv-etapa__titulo">EXECUÇÃO</h3>
+      <p class="sv-etapa__texto">Realizamos o serviço com planejamento e segurança.</p>
+      <span class="sv-etapa__icone" aria-hidden="true"><img src="/assets/img/servicos/icone-execucao.webp" width="1254" height="1254" alt=""></span>
+    </li>
+    <li class="sv-etapa sv-etapa--entrega">
+      <p class="sv-etapa__numero">04</p>
+      <h3 class="sv-etapa__titulo">ENTREGA</h3>
+      <p class="sv-etapa__texto">Concluímos o trabalho conforme o escopo acordado.</p>
+      <span class="sv-etapa__icone" aria-hidden="true"><img src="/assets/img/servicos/icone-entrega.svg" width="35" height="35" alt=""></span>
+    </li>
+  </ol>
+</section>
+
+{# 4. Orçamento — Figma 78:672 + textura 92:635 (1440 x 208) #}
+<section class="sv-orcamento" id="orcamento" data-nav-tema="claro">
+  <img class="sv-orcamento__textura" src="/assets/img/servicos/textura-orcamento.webp" width="1993" height="789" alt="" aria-hidden="true" loading="lazy">
+
+  <div class="sv-orcamento__conteudo">
+    <h2 class="sv-orcamento__titulo">PRECISA DE UM ORÇAMENTO PARA SEU PROJETO?</h2>
+    <p class="sv-orcamento__texto">Nossa equipe está pronta para entender sua necessidade e apresentar a solução técnica adequada para sua obra.</p>
+    <a class="sv-orcamento__botao" href="/contato/">
+      <span class="sv-orcamento__botao-texto">ENTRAR EM CONTATO</span>
+      <img class="sv-seta sv-orcamento__botao-seta" src="/assets/img/global/icons/icon_seta_clara_curta.svg" width="13" height="10" alt="" aria-hidden="true">
+    </a>
+  </div>
+</section>

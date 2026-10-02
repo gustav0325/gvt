@@ -1,0 +1,1047 @@
+/* ==========================================================================
+   Página Serviços — Figma "Serviços" 77:428 (1440 x 2160)
+
+   Prefixo sv- (a Home já tem uma seção .servicos). Mesmo sistema da página
+   Sobre Nós: a unidade --p é 1/1440 da largura, com teto, e cada grupo fica
+   ancorado numa das margens do frame (x 80 = 5.5556%). Fontes e larguras
+   usam a mesma unidade, então as quebras de linha são as do Figma em
+   qualquer desktop. Alturas das seções: 538 · 730 · 354 · 208.
+
+   Oswald (títulos dos serviços) e Manrope 800 são carregados só nesta
+   página (front matter fontesPagina). Versão estática: sem animações.
+   ========================================================================== */
+
+.sv-hero,
+.sv-solucoes,
+.sv-processo,
+.sv-orcamento {
+  --p: clamp(0.6px, calc(100vw / 1440), 1.15px);
+  --margem: 5.5556%; /* x 80 */
+  position: relative;
+  overflow: hidden;
+}
+
+/* traço amarelo de 85 x 2, pontas arredondadas (Line 15) */
+.sv-risco {
+  position: absolute;
+  left: var(--margem);
+  width: calc(85 * var(--p));
+  height: calc(2 * var(--p));
+  border-radius: calc(1 * var(--p));
+  background: var(--amarelo-destaque);
+}
+
+/* seta curta dos botões e links: caixa de 12 x 9, o SVG passa 0.5 (o traço) */
+.sv-seta {
+  display: block;
+  flex-shrink: 0;
+  width: calc(13 * var(--p));
+  height: calc(10 * var(--p));
+  margin: calc(-0.5 * var(--p));
+}
+
+/* ==========================================================================
+   1. Hero — Figma 78:625 (fundo #060606, 538)
+   ========================================================================== */
+
+/* Abertura em tela cheia: a seção ocupa a primeira tela inteira (a navbar,
+   fixa, fica por cima dela) e nunca fica menor que o frame de 538. */
+.sv-hero {
+  --hero-altura: max(100svh, calc(538 * var(--p)));
+  height: var(--hero-altura);
+  background: #060606;
+  color: var(--branco);
+}
+
+/* Figma 93:677 — a foto cobre a seção inteira, sem deformar (cover). Numa
+   tela cheia ela é escalada pela altura (2051 x 767: 2.674 de largura por
+   altura) e só cabe parte dela. O enquadramento põe a borda do trabalhador
+   (64% da foto) a 54% da tela, logo depois do título, mostrando o máximo
+   do disco à direita; o clamp garante que a foto sempre cubra a seção
+   (e, em telas mais largas que a foto, fica em 0, como no frame). */
+.sv-hero__foto {
+  --foto-largura: max(100vw, calc(var(--hero-altura) * 2.674));
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position:
+    clamp(calc(100vw - var(--foto-largura)), calc(54vw - 0.64 * var(--foto-largura)), 0px)
+    50%;
+}
+
+/* A faixa escura da esquerda, que no frame vem da própria foto (0–42% dela,
+   com a passagem até ~55%), recriada na mesma posição sobre a altura toda:
+   com a foto maior, é ela que mantém o texto sobre o escuro. */
+.sv-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    #060606 0%,
+    rgba(6, 6, 6, 0.92) 30%,
+    rgba(6, 6, 6, 0.7) 42%,
+    rgba(6, 6, 6, 0) 58%
+  );
+  pointer-events: none;
+}
+
+.sv-hero__risco,
+.sv-hero__conteudo {
+  z-index: 2;
+}
+
+/* O traço e o conteúdo formam um bloco de 330.5 (do traço, em y 165, ao
+   fim do botão, em 495.5). Na altura extra ele mantém a posição relativa do
+   frame no espaço sob a navbar: 44% do que sobra acima, 56% abaixo — com
+   538 de altura, exatamente y 165 e 205.5. */
+.sv-hero__risco {
+  top: calc(
+    var(--nav-altura) +
+    (var(--hero-altura) - var(--nav-altura) - 330.5 * var(--p)) * 0.44
+  );
+}
+
+/* Figma 78:681 — x 80, 40.5 abaixo do traço, 699 de largura, blocos a 16 */
+.sv-hero__conteudo {
+  position: absolute;
+  left: var(--margem);
+  top: calc(
+    var(--nav-altura) +
+    (var(--hero-altura) - var(--nav-altura) - 330.5 * var(--p)) * 0.44 +
+    40.5 * var(--p)
+  );
+  width: calc(699 * var(--p));
+}
+
+/* Figma 78:674 — Archivo Black 54, 3 linhas de 59 */
+.sv-hero__titulo {
+  margin: 0 0 calc(16 * var(--p));
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(54 * var(--p));
+  line-height: calc(59 * var(--p));
+  white-space: nowrap;
+}
+
+.sv-destaque {
+  color: var(--amarelo-destaque);
+}
+
+/* Figma 78:676 — Manrope 16, linhas de 22 */
+.sv-hero__texto {
+  margin: 0 0 calc(16 * var(--p));
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(16 * var(--p));
+  line-height: calc(22 * var(--p));
+}
+
+/* Figma 78:680 — contorno dourado de 1, raio 10, 8/12, texto e seta a 18 */
+.sv-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(18 * var(--p));
+  padding: calc(8 * var(--p)) calc(12 * var(--p));
+  border: 1px solid var(--dourado);
+  border-radius: calc(10 * var(--p));
+}
+
+.sv-hero__cta-texto {
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  font-size: calc(14 * var(--p));
+  line-height: calc(19 * var(--p));
+  letter-spacing: calc(1.68 * var(--p));
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   2. Soluções completas — Figma 78:670 (fundo #fafaf8, 730)
+   ========================================================================== */
+
+.sv-solucoes {
+  height: calc(730 * var(--p));
+  background: var(--fundo-principal);
+  color: #000;
+}
+
+.sv-solucoes__risco {
+  top: calc(36 * var(--p)); /* y 38 */
+}
+
+/* Figma 78:685 — Archivo Black 42, 3 linhas de 46 */
+.sv-solucoes__titulo {
+  position: absolute;
+  left: var(--margem);
+  top: calc(63 * var(--p));
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(42 * var(--p));
+  line-height: calc(46 * var(--p));
+  white-space: nowrap;
+}
+
+/* Figma 78:686 — 544 de largura, ancorado à direita, alinhado ao topo */
+.sv-solucoes__texto {
+  position: absolute;
+  right: var(--margem);
+  top: calc(63 * var(--p));
+  width: calc(544 * var(--p));
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(18 * var(--p));
+  line-height: calc(25 * var(--p));
+  color: var(--texto-sec);
+}
+
+/* --------------------------------------------------------------------------
+   Os quatro serviços — Figma 93:812: blocos de 627 x 220, 26 entre as
+   colunas e 22 entre as linhas. Cada bloco é o painel cinza (#d9d9d9) com a
+   foto de 217 num dos lados; só os cantos do lado da foto são arredondados
+   (15). A sombra do bloco foi medida no render do Figma (a exportação não a
+   descreve): uma sombra deslocada para baixo e uma de contato, bem curta.
+   -------------------------------------------------------------------------- */
+
+.sv-servico {
+  --k: var(--p);
+  --hover-tempo: 0.35s; /* o hover do bloco (abaixo, em Interações) */
+  display: block;
+  position: absolute;
+  width: calc(627 * var(--k));
+  height: calc(220 * var(--k));
+  overflow: hidden;
+  background: #d9d9d9;
+  box-shadow:
+    0 calc(14 * var(--k)) calc(24 * var(--k)) calc(-11 * var(--k)) rgba(0, 0, 0, 0.6),
+    0 0 calc(2 * var(--k)) rgba(0, 0, 0, 0.17);
+}
+
+.sv-servico--fio,
+.sv-servico--furos {
+  left: var(--margem);
+}
+
+.sv-servico--disco,
+.sv-servico--demolicao {
+  right: var(--margem);
+}
+
+.sv-servico--fio,
+.sv-servico--disco {
+  top: calc(226 * var(--p));
+}
+
+.sv-servico--furos,
+.sv-servico--demolicao {
+  top: calc(468 * var(--p));
+}
+
+.sv-servico--foto-esquerda {
+  border-radius: calc(15 * var(--k)) 0 0 calc(15 * var(--k));
+}
+
+.sv-servico--foto-direita {
+  border-radius: 0 calc(15 * var(--k)) calc(15 * var(--k)) 0;
+}
+
+.sv-servico__foto {
+  position: absolute;
+  top: 0;
+  width: calc(217 * var(--k));
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+.sv-servico--foto-esquerda .sv-servico__foto { left: 0; }
+.sv-servico--foto-direita .sv-servico__foto  { right: 0; }
+
+/* conteúdo: 29 abaixo do topo; 26 depois da foto ou 68 da borda do painel */
+.sv-servico__conteudo {
+  position: absolute;
+  top: calc(29 * var(--k));
+  left: calc(68 * var(--k));
+  width: calc(317 * var(--k));
+}
+
+.sv-servico--fio .sv-servico__conteudo {
+  left: calc(243 * var(--k));
+  width: calc(289 * var(--k));
+}
+
+.sv-servico--furos .sv-servico__conteudo {
+  left: calc(242 * var(--k));
+}
+
+.sv-servico--demolicao .sv-servico__conteudo {
+  width: calc(274 * var(--k));
+}
+
+/* Figma 93:786 etc. — Oswald Bold 22, 1.1 de espaçamento, linha de 33 */
+.sv-servico__titulo {
+  margin: 0 0 calc(14 * var(--k));
+  font-family: "Oswald", var(--fonte-corpo);
+  font-weight: 700;
+  font-size: calc(22 * var(--k));
+  line-height: calc(33 * var(--k));
+  letter-spacing: calc(1.1 * var(--k));
+  color: var(--cards-escuro); /* #272a29 */
+  white-space: nowrap;
+}
+
+/* Manrope 14, linhas de 19 */
+.sv-servico__texto {
+  margin: 0 0 calc(14 * var(--k));
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(14 * var(--k));
+  line-height: calc(19 * var(--k));
+  color: var(--cards-escuro);
+}
+
+.sv-servico--demolicao .sv-servico__texto {
+  width: calc(280 * var(--k));
+}
+
+/* Figma 108:12 — "SAIBA MAIS " ExtraBold 14 (0.7) e a seta a 6 */
+.sv-servico__link {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  gap: calc(6 * var(--k));
+}
+
+.sv-servico__link-texto {
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  font-size: calc(14 * var(--k));
+  line-height: calc(19 * var(--k));
+  letter-spacing: calc(0.7 * var(--k));
+  color: #000;
+  white-space: pre; /* o espaço final faz parte do texto no Figma */
+}
+
+.sv-servico .sv-seta {
+  width: calc(13 * var(--k));
+  height: calc(10 * var(--k));
+  margin: calc(-0.5 * var(--k));
+}
+
+/* ==========================================================================
+   3. Processo — Figma 78:671 (fundo #181a19, 354)
+   ========================================================================== */
+
+.sv-processo {
+  height: calc(354 * var(--p));
+  background: var(--titulo); /* #181a19 */
+  color: var(--fundo-principal);
+}
+
+/* Figma 78:699 — título 42 (2 linhas de 46), 12, texto 17 (23) */
+.sv-processo__titulo {
+  position: absolute;
+  left: var(--margem);
+  top: calc(32 * var(--p));
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(42 * var(--p));
+  line-height: calc(46 * var(--p));
+  white-space: nowrap;
+}
+
+.sv-processo__texto {
+  position: absolute;
+  left: var(--margem);
+  top: calc(136 * var(--p)); /* 32 + 92 + 12 */
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(17 * var(--p));
+  line-height: calc(23 * var(--p));
+  color: var(--branco);
+  white-space: nowrap;
+}
+
+/* Figma 78:700–703 — quatro caixas de 289 x 146, contorno #737373, raio
+   25, y 175, entre as margens. O vão é o que sobra da largura dividido por
+   3, menos 1 — em 1440, exatamente os 41 do Figma (a última caixa termina
+   em 1359); em telas mais largas as etapas continuam indo de margem a
+   margem. (100cqw: a largura de .sv-etapas, que é o container.) */
+.sv-etapas {
+  position: absolute;
+  left: var(--margem);
+  right: var(--margem);
+  top: calc(175 * var(--p));
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  container-type: inline-size;
+}
+
+/* --ativa (0 → 1) é o quanto a etapa já foi alcançada pela linha do
+   processo, e --traco (0 → 1) o quanto o traço que chega nela já foi
+   desenhado (assets/js/servicos-pagina.js). Sem animação valem 1: a borda,
+   o número, os textos e o ícone ficam exatamente como no layout. */
+.sv-etapa {
+  --vao: calc((100cqw - 1157 * var(--p)) / 3);
+  position: relative;
+  flex-shrink: 0;
+  width: calc(289 * var(--p));
+  height: calc(146 * var(--p));
+  padding: calc(20 * var(--p) - 1px) 0 0 calc(14 * var(--p) - 1px);
+  border: 1px solid rgba(115, 115, 115, calc(0.4 + 0.6 * var(--ativa, 1))); /* #737373 */
+  border-radius: calc(25 * var(--p));
+}
+
+/* Figma 92:671–673 — traço amarelo de 42 x 0.5 ligando as caixas, na altura
+   de 253 (o primeiro) e 254 (os outros dois). Meio pixel de amarelo: como o
+   Figma o rasteriza, 1px com metade da opacidade. */
+.sv-etapa + .sv-etapa {
+  margin-left: var(--vao);
+}
+
+.sv-etapa + .sv-etapa::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--vao) - 1px); /* a borda da caixa anterior fica por cima */
+  top: calc(78 * var(--p) - 1px);
+  width: var(--vao);
+  height: 1px;
+  background: rgba(245, 184, 0, 0.5);
+  transform: scaleX(var(--traco, 1));
+  transform-origin: 0% 50%;
+}
+
+.sv-etapa + .sv-etapa--avaliacao::before {
+  top: calc(77 * var(--p) - 1px);
+}
+
+/* Figma 92:640 etc. — número ExtraBold 30 (41), título Bold 15 a 39 do
+   número e 1 à direita, texto 12 (16) a 10, 198 de largura */
+.sv-etapa__numero,
+.sv-etapa__titulo,
+.sv-etapa__texto {
+  width: calc(198 * var(--p));
+  margin: 0;
+  font-family: var(--fonte-corpo);
+}
+
+.sv-etapa__numero {
+  opacity: calc(0.35 + 0.65 * var(--ativa, 1));
+  font-weight: 800;
+  font-size: calc(30 * var(--p));
+  line-height: calc(41 * var(--p));
+  color: var(--amarelo-destaque);
+}
+
+.sv-etapa__titulo,
+.sv-etapa__texto {
+  opacity: calc(0.55 + 0.45 * var(--ativa, 1));
+}
+
+.sv-etapa__titulo {
+  margin: calc(-2 * var(--p)) 0 0 calc(1 * var(--p));
+  font-weight: 700;
+  font-size: calc(15 * var(--p));
+  line-height: calc(20 * var(--p));
+  color: var(--fundo-principal);
+}
+
+.sv-etapa__texto {
+  margin-top: calc(10 * var(--p));
+  font-weight: 400;
+  font-size: calc(12 * var(--p));
+  line-height: calc(16 * var(--p));
+  color: var(--texto-sec);
+}
+
+/* ícones, no canto de cima à direita de cada caixa (y 199) */
+.sv-etapa__icone {
+  opacity: calc(0.2 + 0.8 * var(--ativa, 1));
+  position: absolute;
+  top: calc(24 * var(--p) - 1px);
+  left: calc(224 * var(--p) - 1px);
+  width: calc(35 * var(--p));
+  height: calc(35 * var(--p));
+}
+
+.sv-etapa__icone img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+/* Figma 92:660 — prancheta de 30 x 35.625 (o SVG passa 1 de cada lado) */
+.sv-etapa--avaliacao .sv-etapa__icone {
+  top: calc(24.375 * var(--p) - 1px);
+  left: calc(229 * var(--p) - 1px);
+  width: calc(30 * var(--p));
+  height: calc(35.625 * var(--p));
+}
+
+.sv-etapa--avaliacao .sv-etapa__icone img {
+  width: calc(32 * var(--p));
+  height: calc(37.625 * var(--p));
+  margin: calc(-1 * var(--p));
+}
+
+/* Figma 92:658 — capacete: recorte de 51 x 35 do PNG quadrado */
+.sv-etapa--execucao .sv-etapa__icone {
+  left: calc(208 * var(--p) - 1px);
+  width: calc(51 * var(--p));
+  overflow: hidden;
+}
+
+.sv-etapa--execucao .sv-etapa__icone img {
+  position: absolute;
+  left: -45%;
+  top: -81.14%;
+  width: 190%;
+  height: 275%;
+}
+
+/* ==========================================================================
+   4. Orçamento — Figma 78:672 + 92:635 (textura, 208)
+   ========================================================================== */
+
+.sv-orcamento {
+  height: calc(208 * var(--p));
+  background: #fdd12a; /* a cor da textura à esquerda, até ela carregar */
+  color: var(--titulo);
+}
+
+/* Figma 92:635 — textura de 1441 de largura a partir de x −1, no tamanho
+   natural (104,58%) e 194 acima do topo */
+.sv-orcamento__textura {
+  position: absolute;
+  left: -1px;
+  top: calc(-194.3 * var(--p));
+  width: calc((100% + 1px) * 1.0458);
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+}
+
+/* Figma 78:710 — x 79, y 29: título, 8, texto, 20, botão */
+.sv-orcamento__conteudo {
+  position: absolute;
+  left: calc(var(--margem) - 1 * var(--p));
+  top: calc(29 * var(--p));
+}
+
+.sv-orcamento__titulo {
+  margin: 0 0 calc(8 * var(--p));
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(34 * var(--p));
+  line-height: calc(37 * var(--p));
+  white-space: nowrap;
+}
+
+.sv-orcamento__texto {
+  width: calc(539 * var(--p));
+  margin: 0 0 calc(20 * var(--p));
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(17 * var(--p));
+  line-height: calc(23 * var(--p));
+}
+
+/* Figma 78:708 — grafite, raio 10, 10/20, texto e seta a 16 */
+.sv-orcamento__botao {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(16 * var(--p));
+  padding: calc(10 * var(--p)) calc(20 * var(--p));
+  border-radius: calc(10 * var(--p));
+}
+
+.sv-orcamento__botao-texto {
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  font-size: calc(14 * var(--p));
+  line-height: calc(19 * var(--p));
+  letter-spacing: calc(1.4 * var(--p));
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Interações — o mesmo sistema de interacoes.css (--ativo no hover de
+   desktop e no foco; toque no celular), aplicado aqui porque este arquivo é
+   o último a carregar. Os botões ganham a camada que se estende da
+   esquerda; os "SAIBA MAIS", a seta que avança.
+   ========================================================================== */
+
+@media (hover: hover) and (pointer: fine) {
+  .sv-hero__cta:hover,
+  .sv-orcamento__botao:hover {
+    --ativo: 1;
+  }
+}
+
+.sv-hero__cta:focus-visible,
+.sv-orcamento__botao:focus-visible {
+  --ativo: 1;
+}
+
+.sv-hero__cta,
+.sv-orcamento__botao {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* camada: dourada no contorno do Hero, amarela no botão grafite */
+.sv-hero__cta::before,
+.sv-orcamento__botao::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--dourado);
+  transform: scaleX(var(--ativo, 0));
+  transform-origin: left center;
+  pointer-events: none;
+  transition: transform var(--hover-tempo) var(--hover-curva);
+}
+
+.sv-orcamento__botao::before {
+  background: var(--amarelo-destaque);
+}
+
+/* o grafite do botão passa a amarelo quando a camada já o cobriu (evita o
+   halo nos cantos, como nos botões da Home) */
+.sv-orcamento__botao {
+  background-color: color-mix(in srgb, var(--amarelo-destaque) calc(var(--ativo, 0) * 100%), var(--titulo));
+  transition: background-color 0.15s linear calc(var(--ativo, 0) * 0.3s);
+}
+
+.sv-hero__cta-texto,
+.sv-orcamento__botao-texto {
+  transition: color var(--hover-tempo) var(--hover-curva);
+}
+
+.sv-hero__cta-texto {
+  color: color-mix(in srgb, var(--titulo) calc(var(--ativo, 0) * 100%), var(--dourado));
+}
+
+.sv-orcamento__botao-texto {
+  color: color-mix(in srgb, var(--titulo) calc(var(--ativo, 0) * 100%), var(--fundo-principal));
+}
+
+/* setas: avançam 6 (a do SAIBA MAIS, 5); nos botões ficam escuras sobre
+   a camada */
+.sv-hero__cta-seta,
+.sv-orcamento__botao-seta,
+.sv-servico__link-seta {
+  translate: calc(var(--ativo, 0) * 6px) 0;
+  transition:
+    translate var(--hover-tempo) var(--hover-curva),
+    filter var(--hover-tempo) var(--hover-curva);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sv-hero__cta:hover .sv-seta,
+  .sv-orcamento__botao:hover .sv-seta {
+    filter: brightness(0);
+  }
+}
+
+.sv-hero__cta:focus-visible .sv-seta,
+.sv-orcamento__botao:focus-visible .sv-seta {
+  filter: brightness(0);
+}
+
+/* toque: o botão cede de leve e escurece um pouco */
+@media (hover: none), (pointer: coarse) {
+  .sv-hero__cta,
+  .sv-orcamento__botao,
+  .sv-servico {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sv-hero__cta,
+  .sv-orcamento__botao {
+    transition:
+      background-color 0.15s linear calc(var(--ativo, 0) * 0.3s),
+      scale 0.25s var(--hover-curva),
+      filter 0.25s var(--hover-curva);
+  }
+
+  .sv-hero__cta:active,
+  .sv-orcamento__botao:active {
+    scale: 0.97;
+    filter: brightness(0.9);
+  }
+
+  .sv-servico__link {
+    transition: opacity 0.25s var(--hover-curva);
+  }
+
+  .sv-servico:active .sv-servico__link {
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sv-hero__cta::before,
+  .sv-orcamento__botao::before {
+    transform: none;
+    opacity: var(--ativo, 0);
+    transition: opacity 0.2s linear;
+  }
+
+  .sv-hero__cta-seta,
+  .sv-orcamento__botao-seta,
+  .sv-servico__link-seta {
+    translate: none;
+  }
+
+  .sv-hero__cta:active,
+  .sv-orcamento__botao:active {
+    scale: none;
+  }
+}
+
+/* ==========================================================================
+   Animações (assets/js/servicos-pagina.js)
+
+   .abertura-animada é posta no <html> antes do primeiro paint (base.njk):
+   o que entra na abertura nasce oculto — a foto, recortada a partir da
+   direita —, sem piscar na posição final.
+   ========================================================================== */
+
+html.abertura-animada .sv-hero__risco,
+html.abertura-animada .sv-hero__titulo,
+html.abertura-animada .sv-hero__texto,
+html.abertura-animada .sv-hero__cta {
+  opacity: 0;
+}
+
+html.abertura-animada .sv-hero__foto {
+  clip-path: inset(0% 0% 0% 100%);
+}
+
+/* títulos divididos em linhas (SplitText): cada linha numa máscara com
+   folga para os acentos, compensada pela margem — o layout não muda */
+.sv-mascarado {
+  display: flex;
+  flex-direction: column;
+}
+
+.sv-mascarado .sv-linha-mask {
+  padding: 0.22em 0.1em;
+  margin: -0.22em -0.1em;
+}
+
+/* "SAIBA MAIS ─→": quando a seta avança, um traço dourado de 5 preenche o
+   espaço que ela deixou, e a seta parece se alongar. O traço nasce na
+   ponta de trás da seta (a caixa da seta tem 12) e o componente não muda
+   de tamanho. */
+.sv-servico__link {
+  position: relative;
+}
+
+.sv-servico__link::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: calc(12 * var(--k) - 5px);
+  width: 5px;
+  height: 1px;
+  background: var(--dourado);
+  transform: translateY(-50%) scaleX(var(--ativo, 0));
+  transform-origin: 0% 50%;
+  transition: transform var(--hover-tempo) var(--hover-curva);
+  pointer-events: none;
+}
+
+/* O bloco inteiro é o link (desktop: hover; teclado: foco). O bloco sobe
+   3px, a foto cresce 3% por dentro do próprio quadro (o bloco corta) e a
+   seta do SAIBA MAIS avança 5px, em 350ms. Só translate/scale: nada muda
+   de tamanho nem empurra o layout */
+.sv-servico {
+  cursor: pointer;
+  transition: translate var(--hover-tempo) var(--hover-curva);
+}
+
+.sv-servico__foto {
+  transition: scale var(--hover-tempo) var(--hover-curva);
+}
+
+.sv-servico__link-seta {
+  translate: calc(var(--ativo, 0) * 5px) 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sv-servico:hover {
+    translate: 0 -3px;
+  }
+
+  .sv-servico:hover .sv-servico__foto {
+    scale: 1.03;
+  }
+
+  .sv-servico:hover .sv-servico__link {
+    --ativo: 1;
+  }
+}
+
+.sv-servico:focus-visible {
+  translate: 0 -3px;
+  outline: 2px solid var(--dourado);
+  outline-offset: 3px;
+}
+
+.sv-servico:focus-visible .sv-servico__foto {
+  scale: 1.03;
+}
+
+.sv-servico:focus-visible .sv-servico__link {
+  --ativo: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sv-servico,
+  .sv-servico__foto,
+  .sv-servico__link::after {
+    transition: none;
+  }
+
+  .sv-servico:hover,
+  .sv-servico:focus-visible {
+    translate: none;
+  }
+
+  .sv-servico:hover .sv-servico__foto,
+  .sv-servico:focus-visible .sv-servico__foto {
+    scale: none;
+  }
+
+  .sv-servico__link-seta {
+    translate: none;
+  }
+}
+
+/* ==========================================================================
+   Mobile e tablet (até 1023px)
+   Não há frame mobile desta página no Figma: adaptação estrutural, na
+   linguagem dos frames mobile da Home — coluna de 342 (--coluna, --m), as
+   mesmas peças em fluxo e na mesma ordem. Cada serviço vira foto em cima e
+   painel embaixo; as etapas ficam uma sob a outra.
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .sv-hero,
+  .sv-solucoes,
+  .sv-processo,
+  .sv-orcamento {
+    --p: var(--m);
+    height: auto;
+    padding: calc(56 * var(--m)) var(--margem-mobile);
+  }
+
+  .sv-hero__conteudo,
+  .sv-solucoes__titulo,
+  .sv-solucoes__texto,
+  .sv-processo__titulo,
+  .sv-processo__texto,
+  .sv-etapas,
+  .sv-orcamento__conteudo {
+    position: relative;
+    inset: auto;
+    width: auto;
+  }
+
+  .sv-risco {
+    position: static;
+    top: auto;
+    display: block;
+    width: calc(50 * var(--m));
+    height: 2px;
+    margin-bottom: calc(24 * var(--m));
+  }
+
+  /* as quebras do desktop saem: na coluna estreita os títulos quebram
+     naturalmente */
+  .sv-hero__titulo br,
+  .sv-solucoes__titulo br,
+  .sv-processo__titulo br {
+    display: none;
+  }
+
+  /* --- 1. Hero ---------------------------------------------------------- */
+
+  /* também em tela cheia: o bloco de texto fica centrado na altura que
+     sobra sob a navbar */
+  .sv-hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100svh;
+    padding-top: calc(var(--nav-altura) + 48 * var(--m));
+  }
+
+  /* o homem e o disco ficam à direita da foto; o escurecimento garante a
+     leitura do texto sobre ela */
+  .sv-hero__foto {
+    object-position: 78% 50%;
+  }
+
+  .sv-hero::after {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .sv-hero__risco {
+    position: relative;
+    top: auto;
+    left: auto;
+  }
+
+  .sv-hero__titulo {
+    font-size: calc(32 * var(--m));
+    line-height: calc(37 * var(--m));
+    white-space: normal;
+  }
+
+  .sv-hero__texto {
+    font-size: calc(15 * var(--m));
+    line-height: calc(23 * var(--m));
+  }
+
+  /* --- 2. Soluções ------------------------------------------------------ */
+
+  .sv-solucoes__titulo,
+  .sv-processo__titulo {
+    font-size: calc(28 * var(--m));
+    line-height: calc(33 * var(--m));
+    white-space: normal;
+  }
+
+  .sv-solucoes__texto,
+  .sv-processo__texto {
+    margin-top: calc(16 * var(--m));
+    font-size: calc(15 * var(--m));
+    line-height: calc(23 * var(--m));
+    white-space: normal;
+  }
+
+  .sv-servicos {
+    display: flex;
+    flex-direction: column;
+    gap: calc(24 * var(--m));
+    margin-top: calc(36 * var(--m));
+  }
+
+  .sv-servico,
+  .sv-servico--fio,
+  .sv-servico--disco,
+  .sv-servico--furos,
+  .sv-servico--demolicao {
+    --k: var(--m);
+    position: relative;
+    inset: auto;
+    width: auto;
+    height: auto;
+    border-radius: calc(15 * var(--k));
+  }
+
+  .sv-servico .sv-servico__foto {
+    position: static;
+    display: block;
+    width: 100%;
+    height: calc(190 * var(--m));
+  }
+
+  .sv-servico .sv-servico__conteudo {
+    position: static;
+    width: auto;
+    padding: calc(24 * var(--k));
+  }
+
+  .sv-servico__titulo {
+    white-space: normal;
+  }
+
+  .sv-servico--demolicao .sv-servico__texto {
+    width: auto;
+  }
+
+  /* --- 3. Processo ------------------------------------------------------ */
+
+  .sv-etapas {
+    flex-direction: column;
+    gap: calc(16 * var(--m));
+    margin-top: calc(32 * var(--m));
+  }
+
+  .sv-etapa {
+    width: auto;
+    height: auto;
+    padding-bottom: calc(20 * var(--p));
+  }
+
+  .sv-etapa + .sv-etapa {
+    margin-left: 0;
+  }
+
+  /* no mobile as etapas se empilham: o traço que as liga desce pelo vão de
+     16 entre elas, alinhado ao número, e é desenhado de cima para baixo */
+  .sv-etapa + .sv-etapa::before,
+  .sv-etapa + .sv-etapa--avaliacao::before {
+    left: calc(28 * var(--m) - 1px);
+    top: calc(-16 * var(--m) - 1px);
+    width: 1px;
+    height: calc(16 * var(--m));
+    background: var(--amarelo-destaque);
+    transform: scaleY(var(--traco, 1));
+    transform-origin: 50% 0%;
+  }
+
+  .sv-etapa .sv-etapa__icone {
+    left: auto;
+    right: calc(28 * var(--p));
+  }
+
+  .sv-etapa__numero,
+  .sv-etapa__titulo,
+  .sv-etapa__texto {
+    width: auto;
+  }
+
+  .sv-etapa__texto {
+    padding-right: calc(24 * var(--m));
+  }
+
+  /* --- 4. Orçamento ----------------------------------------------------- */
+
+  .sv-orcamento__textura {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 15% 50%;
+  }
+
+  .sv-orcamento__titulo {
+    font-size: calc(26 * var(--m));
+    line-height: calc(31 * var(--m));
+    white-space: normal;
+  }
+
+  .sv-orcamento__texto {
+    width: auto;
+    font-size: calc(15 * var(--m));
+    line-height: calc(23 * var(--m));
+  }
+}

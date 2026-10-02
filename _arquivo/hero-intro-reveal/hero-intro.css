@@ -1,0 +1,39 @@
+/* ==========================================================================
+   Abertura animada — estados temporários (ver assets/js/hero-intro.js)
+
+   .hero-intro é posta no <html> por um script inline no <head>, antes do
+   primeiro paint, só na Home. Estas regras existem apenas durante a abertura:
+   no fim a timeline remove a classe e limpa os estilos inline, e o Hero volta
+   a ser exatamente o descrito acima. Nada aqui altera o layout final.
+   ========================================================================== */
+
+/* scroll travado; a calha da barra fica reservada para a largura da página
+   não saltar 15px quando a barra reaparece no fim */
+html.hero-intro {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
+/* a tela branca inicial, e o que aparece em volta da janela durante o reveal.
+   O recorte (clip-path) do Hero e da navbar é aplicado pelo hero-intro.js,
+   porque a janela é calculada a partir do tamanho real da tela. */
+html.hero-intro body {
+  background: #fff;
+}
+
+/* Tudo nasce invisível; a timeline revela. O .hero__scroll já usa
+   translateX(-50%) para centralizar, então quem anima são os seus filhos. */
+html.hero-intro .hero,
+html.hero-intro .navbar,
+html.hero-intro .hero__selo,
+html.hero-intro .hero__titulo,
+html.hero-intro .hero__descricao,
+html.hero-intro .hero__cta,
+html.hero-intro .hero__indicador,
+html.hero-intro .hero__divisor,
+html.hero-intro .hero__atuacao,
+html.hero-intro .hero__scroll-mouse,
+html.hero-intro .hero__scroll-texto,
+html.hero-intro .hero__scroll-seta {
+  opacity: 0;
+}

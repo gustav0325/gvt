@@ -1,0 +1,388 @@
+/* ==========================================================================
+   Navbar — Figma node 22:213 (1440 x 132)
+   Sobreposta ao conteúdo, compartilhada por todas as páginas.
+   Todas as medidas em --base (ver base.css) para escalar com a viewport.
+   ========================================================================== */
+
+/* Vidro fosco em duas partes:
+   · o BLUR fica na própria barra, constante em todos os estados — nunca é
+     trocado nem animado. Se ficasse em camadas filhas, dois efeitos se
+     perderiam: no meio do crossfade cada camada a 50% deixaria passar parte
+     da página ainda nítida, e na abertura da Hero (opacity animada na barra)
+     o ancestral translúcido cortaria o blur delas;
+   · a TINTA fica em duas camadas (::before clara, ::after escura) atrás do
+     logo e dos links, que fazem crossfade de opacidade. O estado base é o do
+     Hero, com o tom do Figma (preto a 20%) no fundo da própria barra.
+   main.js só troca a classe; toda a interpolação é destas transitions. */
+.navbar {
+  /* curva simétrica: uma curva de saída forte (ex.: .22,1,.36,1) faz 60% da
+     troca em 150ms e volta a parecer um salto; esta passa pelo cinza
+     intermediário por volta de meio segundo, e a troca é vista acontecendo */
+  --vidro-tempo: 1s;
+  --vidro-curva: cubic-bezier(0.37, 0, 0.63, 1);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--nav-altura);
+  background-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--preto-borda);
+  -webkit-backdrop-filter: blur(3.5px) saturate(100%);
+          backdrop-filter: blur(3.5px) saturate(100%);
+  transition:
+    background-color var(--vidro-tempo) var(--vidro-curva),
+    border-color var(--vidro-tempo) var(--vidro-curva);
+}
+
+/* camadas de tinta: sobre o vidro borrado, sob o conteúdo (z-index -1 dentro
+   do contexto de empilhamento da própria barra), sem bloquear cliques */
+.navbar::before,
+.navbar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--vidro-tempo) var(--vidro-curva);
+}
+
+/* Camada clara: 40% é a opacidade mais baixa em que os links escuros ficam
+   acima de 4.5:1 de contraste mesmo no pior momento — quando o texto preto
+   do Sobre ou de Obras passa bem atrás deles. Abaixo disso o vidro deixaria
+   passar mais cor, mas os links perderiam legibilidade nessas passagens. */
+.navbar::before {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.navbar::after {
+  background-color: rgba(15, 15, 15, 0.68);
+}
+
+/* Ajuste inicial do tema (página aberta numa #âncora, ou no meio pelo
+   histórico) e troca de tema e item ativo na transição entre páginas: direto,
+   sem a interpolação do vidro — que passaria pelo cinza intermediário. A
+   classe fica só por dois frames (ver base.njk, main.js e transicao.js). */
+.navbar--direta,
+.navbar--direta::before,
+.navbar--direta::after,
+.navbar--direta .navbar__logo-img,
+.navbar--direta .nav__link,
+.navbar--direta .navbar__menu-linha {
+  transition: none !important;
+}
+
+/* No Figma o conteúdo da navbar vai de x 120 a x 1320 — 8.3333% de margem de
+   cada lado. Em % a barra acompanha a largura da tela, mantendo o logo e o
+   menu ancorados nas mesmas bordas do frame. */
+.navbar__inner {
+  padding: calc(41 * var(--base)) var(--margem-lateral) 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar__logo {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  width: calc(159 * var(--base));
+  height: calc(66 * var(--base));
+}
+
+.navbar__logo-img {
+  width: 100%;
+  height: 100%;
+  transition: opacity var(--vidro-tempo) var(--vidro-curva);
+}
+
+/* As duas versões do logo ficam sobrepostas, na mesma caixa: a troca é um
+   crossfade de opacidade, no mesmo tempo da barra */
+.navbar__logo-img--invertido {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: calc(53 * var(--base));
+}
+
+.nav__link {
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  /* +22% sobre o frame (16): o piso evita que encolha demais em telas baixas */
+  font-size: clamp(15px, calc(19.5 * var(--base)), 21px);
+  line-height: calc(26 * var(--base));
+  color: var(--branco);
+  white-space: nowrap;
+  transition:
+    color var(--vidro-tempo) var(--vidro-curva),
+    text-shadow var(--vidro-tempo) var(--vidro-curva);
+}
+
+.nav__link--active {
+  color: var(--amarelo-destaque);
+  text-shadow:
+    0 0 calc(5.76 * var(--base)) var(--amarelo-destaque),
+    0 0 calc(11.52 * var(--base)) var(--amarelo-destaque),
+    0 0 calc(40.32 * var(--base)) var(--amarelo-destaque),
+    0 0 calc(80.64 * var(--base)) var(--amarelo-destaque),
+    0 0 calc(138.24 * var(--base)) var(--amarelo-destaque),
+    0 0 calc(241.92 * var(--base)) var(--amarelo-destaque);
+}
+
+/* --------------------------------------------------------------------------
+   Variante clara — sobre Sobre, Serviços e Obras (data-nav-tema="claro")
+   Vidro branco, borda sutil, logo e links escuros.
+   -------------------------------------------------------------------------- */
+
+.navbar--claro {
+  background-color: transparent;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.navbar--claro::before {
+  opacity: 1;
+}
+
+.navbar--claro .navbar__logo-img--padrao {
+  opacity: 0;
+}
+
+.navbar--claro .navbar__logo-img--invertido {
+  opacity: 1;
+}
+
+.navbar--claro .nav__link {
+  color: var(--titulo);
+}
+
+.navbar--claro .nav__link--active {
+  color: var(--amarelo-destaque);
+  text-shadow:
+    0 0 calc(4.32 * var(--base)) var(--amarelo-destaque),
+    0 0 calc(8.64 * var(--base)) var(--amarelo-destaque),
+    0 0 calc(30.24 * var(--base)) var(--amarelo-destaque),
+    0 0 calc(60.48 * var(--base)) var(--amarelo-destaque),
+    0 0 calc(103.68 * var(--base)) var(--amarelo-destaque),
+    0 0 calc(181.44 * var(--base)) var(--amarelo-destaque);
+}
+
+/* --------------------------------------------------------------------------
+   Variante escura — sobre Contato e o rodapé (data-nav-tema="escuro")
+   Vidro grafite; logo e links seguem os do estado base (claros).
+   -------------------------------------------------------------------------- */
+
+.navbar--escuro {
+  background-color: transparent;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar--escuro::after {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Mobile (até 1023px) — Figma "Hero Mobile" 162:2: barra de 88, logo de
+   110 × 45.66 a 20 da borda, hambúrguer de 28 × 20 a 20 da borda direita.
+   O vidro, os temas claro/escuro e a transição são os mesmos do desktop.
+   ========================================================================== */
+
+.navbar__menu-botao,
+.menu-mobile {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .navbar__inner {
+    height: 100%;
+    padding: 0 calc(20 * var(--m));
+    /* logo (45.66 em 88) e hambúrguer (20 em 88) ficam centrados na barra,
+       exatamente como no frame (y 21.17 e y 34) */
+  }
+
+  .navbar__logo {
+    width: calc(110 * var(--m));
+    height: calc(45.66 * var(--m));
+  }
+
+  .nav {
+    display: none;
+  }
+
+  /* área de toque de 44px; as linhas (28 × 20) ficam onde o frame as põe */
+  .navbar__menu-botao {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: calc(28 * var(--m) + 16px);
+    height: calc(20 * var(--m) + 24px);
+    margin-right: -8px;
+    padding: 12px 8px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .navbar__menu-linha {
+    display: block;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--branco);
+    transform-origin: center;
+    /* fechando: o X primeiro se desfaz (rotate) e só então as linhas se
+       afastam (translate); a do meio volta por último */
+    transition:
+      background-color var(--vidro-tempo) var(--vidro-curva),
+      rotate 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      translate 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.2s,
+      opacity 0.2s ease 0.25s;
+  }
+
+  .navbar--claro .navbar__menu-linha {
+    background: var(--titulo);
+  }
+
+  /* aberto: as três linhas se juntam no centro e depois giram até o X */
+  .menu-aberto .navbar__menu-linha {
+    transition:
+      background-color var(--vidro-tempo) var(--vidro-curva),
+      translate 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      rotate 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.22s,
+      opacity 0.15s ease 0.15s;
+  }
+
+  .menu-aberto .navbar__menu-linha:nth-child(1) {
+    translate: 0 calc(9 * var(--m));
+    rotate: 45deg;
+  }
+
+  .menu-aberto .navbar__menu-linha:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-aberto .navbar__menu-linha:nth-child(3) {
+    translate: 0 calc(-9 * var(--m));
+    rotate: -45deg;
+  }
+
+  /* com o menu aberto a barra assume a versão escura, sobre o grafite dele */
+  .menu-aberto .navbar {
+    background-color: transparent;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .menu-aberto .navbar::before,
+  .menu-aberto .navbar::after {
+    opacity: 0;
+  }
+
+  .menu-aberto .navbar__logo-img--padrao {
+    opacity: 1;
+  }
+
+  .menu-aberto .navbar__logo-img--invertido {
+    opacity: 0;
+  }
+
+  .menu-aberto .navbar__menu-linha {
+    background: var(--branco);
+  }
+
+  /* --- Menu ------------------------------------------------------------- */
+
+  .menu-mobile {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 99; /* sob a barra, que continua visível com o X */
+    padding: calc(var(--nav-altura) + 48px) var(--margem-mobile) 48px;
+    background: rgba(24, 26, 25, 0.94);
+    -webkit-backdrop-filter: blur(9px);
+            backdrop-filter: blur(9px);
+    opacity: 0;
+    visibility: hidden;
+    clip-path: inset(0 0 100% 0);
+    transition:
+      opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      clip-path 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s linear 0.6s;
+  }
+
+  .menu-aberto .menu-mobile {
+    opacity: 1;
+    visibility: visible;
+    clip-path: inset(0 0 0 0);
+    transition:
+      opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      clip-path 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s;
+  }
+
+  .menu-mobile__lista {
+    display: flex;
+    flex-direction: column;
+    gap: calc(8 * var(--m));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .menu-mobile__link {
+    display: block;
+    padding: calc(10 * var(--m)) 0; /* área de toque de ~48px */
+    font-family: var(--fonte-titulo);
+    font-size: calc(32 * var(--m));
+    line-height: 1.18;
+    color: var(--branco);
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.45s ease,
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.3s ease;
+  }
+
+  .menu-aberto .menu-mobile__link {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* os itens sobem um a um, depois de o painel começar a abrir */
+  .menu-aberto .menu-mobile li:nth-child(1) .menu-mobile__link { transition-delay: 0.12s; }
+  .menu-aberto .menu-mobile li:nth-child(2) .menu-mobile__link { transition-delay: 0.17s; }
+  .menu-aberto .menu-mobile li:nth-child(3) .menu-mobile__link { transition-delay: 0.22s; }
+  .menu-aberto .menu-mobile li:nth-child(4) .menu-mobile__link { transition-delay: 0.27s; }
+  .menu-aberto .menu-mobile li:nth-child(5) .menu-mobile__link { transition-delay: 0.32s; }
+
+  .menu-mobile__link:focus-visible,
+  .menu-mobile__link:active {
+    color: var(--amarelo-destaque);
+  }
+
+  /* página travada enquanto o menu está aberto */
+  html.menu-aberto {
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 1023px) and (prefers-reduced-motion: reduce) {
+  .menu-mobile,
+  .menu-aberto .menu-mobile,
+  .menu-mobile__link,
+  .navbar__menu-linha {
+    transition-duration: 0.01s;
+    transition-delay: 0s !important;
+  }
+
+  .menu-mobile__link {
+    transform: none;
+  }
+}
+

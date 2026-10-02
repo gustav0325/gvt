@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+{#- --tom-topo: a cor do topo desta página (front matter tomTopo), o fundo
+    que aparece atrás do conteúdo na transição entre páginas #}
+<html lang="pt-BR"{% if tomTopo %} style="--tom-topo: {{ tomTopo }}"{% endif %}>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {#- Favicon: o iconify.webp (63 x 54) num quadrado de 64 com margem
+      transparente, para não ser esticado. O /favicon.ico da raiz (mesmo desenho)
+      fica só para quem não lê este <link> #}
+  <link rel="icon" type="image/png" sizes="64x64" href="{{ '/assets/img/global/icons/favicon-gvt.png' | versao }}">
+  {#- Chegada por uma transição (assets/js/transicao.js): se a página
+      anterior deixou o aviso para ESTA página há pouco, o <html> ganha
+      .pagina-chegada antes do primeiro paint e o conteúdo nasce invisível,
+      para assentar em seguida. Fica de fora com reduced-motion e em
+      recarregar ou voltar/avançar. A trava mostra a página se o script do
+      fim do <body> não rodar. #}
+  <script>
+    (function () {
+      try {
+        var aviso = sessionStorage.getItem("gvt-transicao");
+        if (!aviso) return;
+        sessionStorage.removeItem("gvt-transicao");
+        aviso = JSON.parse(aviso);
+        var aqui = location.pathname.replace(/index\.html?$/i, "").replace(/\/?$/, "/");
+        if (!aviso || aviso.para !== aqui || Date.now() - aviso.em > 5000) return;
+        if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        var nav = window.performance && performance.getEntriesByType
+          ? performance.getEntriesByType("navigation")[0]
+          : null;
+        if (nav && nav.type !== "navigate") return;
+        var raiz = document.documentElement;
+        raiz.classList.add("pagina-chegada", "via-transicao");
+        // numa #âncora, só opacidade: o navegador mede a seção de destino
+        // com o conteúdo na posição final
+        if (location.hash) raiz.classList.add("chegada-ancora");
+        setTimeout(function () {
+          if (!window.__gvtEntrada) raiz.classList.remove("pagina-chegada");
+        }, 2500);
+      } catch (e) {}
+    })();
+  </script>
+  {#- Posição da rolagem ao carregar. Roda antes do primeiro paint e antes do
+      GSAP, que lê este valor como base (ScrollTrigger usa o scrollRestoration
+      vigente), então não há duas lógicas competindo.
+      · recarregar ou abrir normalmente: "manual" — o navegador não restaura a
+        posição antiga, a página nasce no topo, sem flash;
+      · abrir com #âncora na URL: o navegador salta para a seção sozinho (o
+        modo manual não impede isso, não é restauração);
+      · RECARREGAR com #âncora: aí o navegador só restauraria, não salta —
+        então o salto é feito aqui, logo depois dos scripts (com o pin de
+        Serviços já montado, que muda a posição das seções abaixo dele). Até
+        lá a página fica invisível (visibility, sem afetar o layout), para
+        não aparecer um quadro do topo antes do salto;
+      · voltar/avançar no histórico: "auto" — ali restaurar é o esperado. #}
+  <script>
+    (function () {
+      if (!("scrollRestoration" in history)) return;
+      var nav = window.performance && performance.getEntriesByType
+        ? performance.getEntriesByType("navigation")[0]
+        : null;
+      var tipo = nav ? nav.type : "navigate";
+      history.scrollRestoration = tipo === "back_forward" ? "auto" : "manual";
+
+      // ABRIR com #âncora: o navegador salta sozinho, mas o primeiro refresh
+      // do ScrollTrigger (que rola ao topo para medir os pins) às vezes
+      // devolve a página ao topo. Depois do load, se a seção não estiver sob
+      // a navbar e o usuário ainda não tiver rolado, o salto é refeito.
+      if (tipo === "navigate" && location.hash) {
+        var rolou = false;
+        var marcar = function () {
+          rolou = true;
+        };
+        ["wheel", "touchmove", "keydown"].forEach(function (evento) {
+          addEventListener(evento, marcar, { once: true, passive: true });
+        });
+        addEventListener("load", function () {
+          requestAnimationFrame(function () {
+            var alvo = null;
+            try {
+              alvo = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+            } catch (e) {}
+            if (!alvo || rolou) return;
+            var margem = parseFloat(getComputedStyle(alvo).scrollMarginTop) || 0;
+            if (Math.abs(alvo.getBoundingClientRect().top - margem) > 2) alvo.scrollIntoView();
+          });
+        }, { once: true });
+        return;
+      }
+
+      if (tipo !== "reload" || !location.hash) return;
+      var raiz = document.documentElement;
+      function mostrar() {
+        raiz.style.removeProperty("visibility");
+        if (!raiz.getAttribute("style")) raiz.removeAttribute("style");
+      }
+      raiz.style.visibility = "hidden";
+      setTimeout(mostrar, 3000); // trava de segurança
+      function irParaAncora() {
+        var alvo = null;
+        try {
+          alvo = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+        } catch (e) {}
+        if (!alvo) return null; // âncora inexistente: fica no topo
+        alvo.scrollIntoView(); // respeita o scroll-margin-top da navbar
+        return window.scrollY;
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        var y = irParaAncora();
+        mostrar();
+        // se as fontes/imagens mudarem a altura antes do load, reposiciona —
+        // só se o usuário ainda não tiver rolado
+        if (y !== null) {
+          addEventListener("load", function () {
+            if (window.scrollY === y) irParaAncora();
+          }, { once: true });
+        }
+      });
+    })();
+  </script>
+{% if heroPage %}
+  {#- Abertura animada da Home. Roda antes do primeiro paint: marca o <html>
+      com .hero-intro para a navbar e os textos do Hero já nascerem ocultos,
+      sem piscar na posição final. Fica de fora com reduced-motion ou com
+      #âncora na URL. A trava de segurança libera tudo se hero-intro.js não
+      chegar. #}
+  <script>
+    (function () {
+      var raiz = document.documentElement;
+      if (location.hash) return;
+      if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      raiz.classList.add("hero-intro");
+      setTimeout(function () {
+        if (!window.__gvtIntro) raiz.classList.remove("hero-intro");
+      }, 4000);
+    })();
+  </script>
+{% endif %}
+{% if aberturaAnimada %}
+  {#- Abertura animada de uma página interna (front matter aberturaAnimada):
+      mesma ideia da Home — o <html> ganha .abertura-animada antes do primeiro
+      paint e o CSS da página oculta o que vai entrar. Fica de fora com
+      reduced-motion ou #âncora; a trava libera tudo se o script não chegar. #}
+  <script>
+    (function () {
+      var raiz = document.documentElement;
+      if (location.hash) return;
+      if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      raiz.classList.add("abertura-animada");
+      setTimeout(function () {
+        if (!window.__gvtAbertura) raiz.classList.remove("abertura-animada");
+      }, 4000);
+    })();
+  </script>
+{% endif %}
+{% if ancoras %}
+  {#- Aberta numa #âncora conhecida (front matter ancoras): o tema da navbar
+      e o tom de fundo da transição são os da seção atrás da barra, já no
+      primeiro paint (a navbar o aplica logo após o <header>) #}
+  <script>
+    (function () {
+      var ancoras = {{ ancoras | dump | safe }};
+      var nome = location.hash.slice(1);
+      if (!Object.prototype.hasOwnProperty.call(ancoras, nome)) return;
+      var raiz = document.documentElement;
+      raiz.setAttribute("data-nav-ancora", ancoras[nome] || "base");
+      if (ancoras[nome] === "claro") raiz.style.setProperty("--tom-topo", "#ffffff");
+    })();
+  </script>
+{% endif %}
+  <title>{{ title }} | GVT Cortes e Furos</title>
+  <meta name="description" content="{{ description | default('Soluções especializadas em cortes, furos e demolições técnicas com segurança, precisão e eficiência para a sua obra.') }}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@600&family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+{#- Fontes que só uma página usa (front matter fontesPagina: famílias no
+    formato do Google Fonts), sem mudar a tipografia das outras #}
+{% if fontesPagina %}
+  <link href="https://fonts.googleapis.com/css2?{{ fontesPagina }}&display=swap" rel="stylesheet">
+{% endif %}
+
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/navbar.css">
+  <link rel="stylesheet" href="/assets/css/hero.css">
+  <link rel="stylesheet" href="/assets/css/sobre.css">
+  <link rel="stylesheet" href="/assets/css/servicos.css">
+  <link rel="stylesheet" href="/assets/css/obras.css">
+  <link rel="stylesheet" href="/assets/css/contato.css">
+  <link rel="stylesheet" href="/assets/css/footer.css">
+  <link rel="stylesheet" href="/assets/css/interacoes.css">
+  <link rel="stylesheet" href="/assets/css/transicao.css">
+{#- CSS próprio de uma página (front matter: estilosPagina: [nome]) #}
+{% for estilo in estilosPagina %}
+  <link rel="stylesheet" href="/assets/css/{{ estilo }}.css">
+{% endfor %}
+</head>
+{#- is-hero: a navbar fica sobre a primeira seção, sem o recuo do <main>. A
+    Home (heroPage) e as páginas que abrem com uma seção própria sob a barra
+    (navSobreposta) — estas sem os scripts de animação da Home. #}
+<body class="{% if heroPage or navSobreposta %}is-hero{% endif %}">
+
+
+  {% include "navbar.njk" %}
+
+  <main class="site-main">
+    {{ content | safe }}
+  </main>
+
+  {% include "footer.njk" %}
+
+  {#- Transição entre páginas: o tema da navbar e o tom do topo de cada página,
+      para a saída (transicao.js) já deixar a navbar e o fundo como os do
+      destino #}
+  <script type="application/json" id="gvt-paginas">{
+    {%- for item in collections.all %}"{{ item.url }}": {"nav": "{{ item.data.navTema }}", "tom": "{{ item.data.tomTopo }}"}
+      {%- for nome, tema in item.data.ancoras %}, "{{ item.url }}#{{ nome }}": {"nav": "{{ tema }}", "tom": "{{ '#ffffff' if tema == 'claro' else item.data.tomTopo }}"}{% endfor %}
+      {%- if not loop.last %}, {% endif %}{% endfor -%}
+  }</script>
+
+  {#- Chegada por uma transição: o conteúdo (main e rodapé) assenta — de
+      invisível e poucos pixels abaixo à posição final, em 360ms. Disparada
+      aqui, assim que os dois existem, para começar no primeiro frame (Web
+      Animations: transform e opacity, no compositor). No fim a classe sai;
+      transicao.js libera a abertura da página. #}
+  <script>
+    (function () {
+      var raiz = document.documentElement;
+      if (!raiz.classList.contains("pagina-chegada")) return;
+      var partes = [document.querySelector(".site-main"), document.querySelector(".rodape")];
+      if (!partes[0] || !partes[0].animate) return;
+      var dy = raiz.classList.contains("chegada-ancora") ? 0 : matchMedia("(max-width: 1023px)").matches ? 6 : 10;
+      var animacoes = partes.filter(Boolean).map(function (el) {
+        return el.animate(
+          [{ opacity: 0, transform: "translateY(" + dy + "px)" }, { opacity: 1, transform: "none" }],
+          { duration: 360, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)" }
+        );
+      });
+      var fim = function () {
+        raiz.classList.remove("pagina-chegada");
+      };
+      animacoes[0].addEventListener("finish", fim);
+      animacoes[0].addEventListener("cancel", fim);
+      window.__gvtEntrada = animacoes[0];
+    })();
+  </script>
+
+
+{#- GSAP (Home e páginas com animações); depois a transição entre páginas,
+    que cria window.gvtEntradaPronta antes de os scripts das páginas a
+    esperarem #}
+{% if heroPage or animacoesPagina %}
+  <script src="/assets/js/vendor/gsap.min.js" defer></script>
+  <script src="/assets/js/vendor/ScrollTrigger.min.js" defer></script>
+  <script src="/assets/js/vendor/SplitText.min.js" defer></script>
+{% endif %}
+  <script src="/assets/js/transicao.js" defer></script>
+{% if heroPage %}
+  <script src="/assets/js/revelar.js" defer></script>
+  <script src="/assets/js/hero-intro.js" defer></script>
+  <script src="/assets/js/sobre.js" defer></script>
+  <script src="/assets/js/servicos.js" defer></script>
+  <script src="/assets/js/obras.js" defer></script>
+  <script src="/assets/js/contato.js" defer></script>
+  <script src="/assets/js/rodape.js" defer></script>
+{% endif %}
+{#- Animações de uma página interna (front matter animacoesPagina: nome do
+    script em assets/js), com o mesmo GSAP da Home #}
+{% if animacoesPagina %}
+  <script src="/assets/js/{{ animacoesPagina }}.js" defer></script>
+{% endif %}
+  <script src="/assets/js/main.js" defer></script>
+</body>
+</html>

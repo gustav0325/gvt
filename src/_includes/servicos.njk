@@ -1,0 +1,130 @@
+{# ==========================================================================
+   Seção Serviços — três estados da mesma seção.
+   Figma: "Serviços resumo" 25:271 (1440x1426) · "serviços1" 30:356 (1440x653)
+        · "serviços2" 30:414 (1440x653)
+
+   No canvas do Figma os três frames terminam na mesma linha de base (y 4148)
+   e estão lado a lado no eixo X: os slides 2 e 3 correspondem exatamente à
+   faixa inferior do slide 1 (offset de 773 em todos os elementos).
+
+   O .servicos__track já está preparado para virar um track horizontal na
+   etapa de animação. Nenhuma animação aqui — layout estático apenas.
+   ========================================================================== #}
+<section class="servicos" id="servicos" data-nav-tema="claro">
+
+  {#- Mobile animado: o fundo fica parado atrás da faixa e troca por crossfade
+      (amarelo → fio → disco) enquanto ela corre. Só aparece nesse modo; as
+      texturas vêm por CSS, então o desktop não as baixa. #}
+  <div class="servicos__fundos-mobile" aria-hidden="true">
+    <div class="servicos__fundo-mobile servicos__fundo-mobile--amarelo"></div>
+    <div class="servicos__fundo-mobile servicos__fundo-mobile--fio"></div>
+    <div class="servicos__fundo-mobile servicos__fundo-mobile--disco"></div>
+  </div>
+
+  <div class="servicos__track">
+
+    {# ---- Slide 1 — "Serviços resumo" (25:271) ---------------------------- #}
+    <article class="servicos__slide servicos__slide--resumo">
+      <picture>
+        <source media="(max-width: 1023px)" srcset="/assets/img/home/servicos/resumo/textura-mobile.webp">
+        <img class="servicos__fundo" src="/assets/img/home/servicos/resumo/fundo-resumo.webp" alt="" aria-hidden="true">
+      </picture>
+
+      <h2 class="servicos__titulo">SOLUÇÕES ESPECIALIZADAS PARA CORTES, FUROS E DEMOLIÇÕES TÉCNICAS.</h2>
+
+      <div class="servicos__card">
+        <p class="servicos__etiqueta">
+          <span>FUROS EM CONCRETO</span>
+          <span class="servicos__risco" aria-hidden="true"></span>
+        </p>
+        <h3 class="servicos__chamada">PRECISÃO EM FUROS DE CONCRETO PARA GRANDES PROJETOS.</h3>
+        <p class="servicos__apoio">SOLUÇÕES SEGURAS E EFICIENTES EM CORTES E FUROS, COM QUALIDADE GVT.</p>
+
+        <a class="servicos__link" href="/servicos/furos-em-concreto/">
+          <span class="servicos__link-texto">SAIBA MAIS</span>
+          <img class="servicos__link-seta" src="/assets/img/global/icons/icon_seta_saiba_claro.svg" width="17" height="13" alt="" aria-hidden="true">
+        </a>
+      </div>
+
+      <figure class="servicos__foto servicos__foto--resumo">
+      <img src="/assets/img/home/servicos/resumo/foto-furos-concreto.webp" width="412" height="604" alt="Operador da GVT executando furo em concreto" loading="lazy">
+      </figure>
+    </article>
+
+    {# ---- Slide 2 — "serviços1" (30:356) ---------------------------------- #}
+    <article class="servicos__slide servicos__slide--fio">
+      <picture>
+        <source media="(max-width: 1023px)" srcset="/assets/img/home/servicos/fio-diamantado/textura-mobile.webp">
+        <img class="servicos__fundo" src="/assets/img/home/servicos/fio-diamantado/fundo-fio.webp" alt="" aria-hidden="true">
+      </picture>
+
+      <div class="servicos__card">
+        <p class="servicos__etiqueta">
+          <span>CORTE COM FIO DIAMANTADO</span>
+          <span class="servicos__risco" aria-hidden="true"></span>
+        </p>
+        <h3 class="servicos__chamada">CORTES COMPLEXOS. SOLUÇÕES SOB MEDIDA.</h3>
+        <p class="servicos__apoio">Cortes de alta complexidade com precisão, segurança e tecnologia diamantada.</p>
+
+        <a class="servicos__link" href="/servicos/corte-fio-diamantado/">
+          <span class="servicos__link-texto">SAIBA MAIS</span>
+          <img class="servicos__link-seta" src="/assets/img/global/icons/icon_seta_saiba_escuro.svg" width="17" height="13" alt="" aria-hidden="true">
+        </a>
+      </div>
+
+      <figure class="servicos__foto servicos__foto--obra">
+      <picture>
+        <source media="(max-width: 1023px)" srcset="/assets/img/home/servicos/fio-diamantado/foto-obra-mobile.webp">
+        <img src="/assets/img/home/servicos/fio-diamantado/foto-obra.webp" width="412" height="431" alt="Corte com fio diamantado em estrutura de concreto" loading="lazy">
+      </picture>
+      </figure>
+
+      <figure class="servicos__foto servicos__foto--equipamento">
+      <picture>
+        <source media="(max-width: 1023px)" srcset="/assets/img/home/servicos/fio-diamantado/foto-equipamento-mobile.webp">
+        <img src="/assets/img/home/servicos/fio-diamantado/foto-equipamento.webp" width="412" height="604" alt="Detalhe do fio diamantado em operação" loading="lazy">
+      </picture>
+      </figure>
+    </article>
+
+    {# ---- Slide 3 — "serviços2" (30:414) ---------------------------------- #}
+    <article class="servicos__slide servicos__slide--disco">
+      <picture>
+        <source media="(max-width: 1023px)" srcset="/assets/img/home/servicos/disco-diamantado/textura-mobile.webp">
+        <img class="servicos__fundo" src="/assets/img/home/servicos/disco-diamantado/fundo-disco.webp" alt="" aria-hidden="true">
+      </picture>
+
+      <div class="servicos__card">
+        <p class="servicos__etiqueta">
+          <span>CORTE COM DISCO DIAMANTADO</span>
+          <span class="servicos__risco" aria-hidden="true"></span>
+        </p>
+        <h3 class="servicos__chamada">CADA CORTE, A PRECISÃO QUE SUA OBRA EXIGE.</h3>
+      </div>
+
+      <div class="servicos__bloco-lateral">
+      <p class="servicos__apoio">Cortes precisos em concreto, com tecnologia, segurança e eficiência.</p>
+
+      <a class="servicos__link" href="/servicos/corte-disco-diamantado/">
+        <span class="servicos__link-texto">SAIBA MAIS</span>
+        <img class="servicos__link-seta" src="/assets/img/global/icons/icon_seta_saiba_escuro.svg" width="17" height="13" alt="" aria-hidden="true">
+      </a>
+      </div>
+
+      <figure class="servicos__foto servicos__foto--corte">
+      <picture>
+        <source media="(max-width: 1023px)" srcset="/assets/img/home/servicos/disco-diamantado/foto-corte-mobile.webp">
+        <img src="/assets/img/home/servicos/disco-diamantado/foto-corte.webp" width="412" height="326" alt="Corte com disco diamantado em pavimento" loading="lazy">
+      </picture>
+      </figure>
+
+      <figure class="servicos__foto servicos__foto--torre">
+      <picture>
+        <source media="(max-width: 1023px)" srcset="/assets/img/home/servicos/disco-diamantado/foto-torre-mobile.webp">
+        <img src="/assets/img/home/servicos/disco-diamantado/foto-torre.webp" width="412" height="604" alt="Obra vertical atendida pela GVT" loading="lazy">
+      </picture>
+      </figure>
+    </article>
+
+  </div>
+</section>

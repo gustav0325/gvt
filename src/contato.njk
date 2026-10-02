@@ -1,0 +1,76 @@
+---
+layout: base.njk
+tomTopo: "#ffffff"
+title: Contato
+activeNav: contato
+navSobreposta: true
+navTema: claro
+estilosPagina: [contato-pagina]
+fontesPagina: "family=Manrope:wght@800"
+animacoesPagina: contato-pagina
+aberturaAnimada: true
+# Endereço do mapa — o mesmo do briefing. A busca do Google resolve a rua
+# pelo nome + cidade; não há bairro/CEP confirmados para acrescentar.
+mapaEndereco: "Rua Ernesto Sena, 232 - São Paulo - SP"
+---
+{#- Página Contato — Figma node 82:2 (frame 1440 x 1390). Navbar e rodapé
+    são os componentes do site (base.njk). Estilos em
+    assets/css/contato-pagina.css (prefixo ct-; a Home já tem uma seção
+    .contato). Animações em assets/js/contato-pagina.js. O retângulo
+    cinza do Figma (83:353) é o lugar do mapa. #}
+
+<section class="ct-pagina" id="contato-canais" data-nav-tema="claro">
+
+  {# Figma 83:316 / 83:317 / 83:321 #}
+  <header class="ct-abertura">
+    <h1 class="ct-titulo">Fale com a <span class="ct-destaque">GVT</span>.</h1>
+    <p class="ct-subtitulo">Escolha o canal de sua preferência.</p>
+    <p class="ct-selo"><span>SOLUÇÕES.</span> <span>RESULTADOS</span> <span>REAIS.</span></p>
+  </header>
+
+  {# Figma 83:322–324 (cartões) e 211:23 / 211:22 (conteúdo e ícones) #}
+  <div class="ct-cartoes">
+
+    <article class="ct-cartao ct-cartao--whatsapp">
+      <img class="ct-cartao__icone" src="/assets/img/contato/icone-whatsapp.svg" width="31.8467" height="32" alt="" aria-hidden="true">
+      <h2 class="ct-cartao__titulo">Whatsapp</h2>
+      <div class="ct-cartao__info">
+        <p class="ct-cartao__rotulo">Atendimento rápido:</p>
+        <p class="ct-cartao__valor">(11) 9 1234-5678</p>
+      </div>
+      <a class="ct-cartao__link ct-cartao__acao" href="https://wa.me/5511912345678" target="_blank" rel="noopener" aria-label="Falar agora pelo WhatsApp: (11) 9 1234-5678">Falar agora</a>
+    </article>
+
+    <article class="ct-cartao ct-cartao--email">
+      <img class="ct-cartao__icone" src="/assets/img/contato/icone-email.svg" width="32" height="25" alt="" aria-hidden="true">
+      <h2 class="ct-cartao__titulo">E-mail</h2>
+      <div class="ct-cartao__info">
+        <p class="ct-cartao__rotulo">Contato geral:</p>
+        <p class="ct-cartao__valor"><a class="ct-cartao__link" href="mailto:contato@gvt.com.br">contato@gvt.com.br</a></p>
+      </div>
+    </article>
+
+    <article class="ct-cartao ct-cartao--atendimento">
+      <img class="ct-cartao__icone" src="/assets/img/contato/icone-localizacao.svg" width="25.5875" height="32" alt="" aria-hidden="true">
+      <h2 class="ct-cartao__titulo">Atendimento</h2>
+      <dl class="ct-cartao__info">
+        <dt class="ct-cartao__rotulo">Região:</dt>
+        <dd class="ct-cartao__valor">São Paulo - SP</dd>
+        <dt class="ct-cartao__rotulo">Horário:</dt>
+        <dd class="ct-cartao__valor">SEG - SEX, das 8h ás 18h</dd>
+      </dl>
+    </article>
+
+  </div>
+
+  {# Figma 83:353 — 1280 x 310. Embed público do Google Maps (sem chave de
+     API): navegável, com o link "Ver mapa ampliado" do próprio Google. #}
+  <div class="ct-mapa">
+    <iframe class="ct-mapa__quadro"
+      src="https://maps.google.com/maps?q={{ mapaEndereco | urlencode }}&z=16&hl=pt-BR&output=embed"
+      title="Mapa do Google com a localização da GVT: {{ mapaEndereco }}"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      allowfullscreen></iframe>
+  </div>
+</section>

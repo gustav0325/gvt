@@ -1,0 +1,591 @@
+/* ==========================================================================
+   Hero — Figma node 4:9 (frame 1440 x 1024)
+
+   Distribuição vertical do Figma, medida com get_metadata:
+     navbar 132 | gap 48 | conteúdo 467 | gap 69 | indicadores 104 |
+     gap 69 | base 105 | folga 30   =  1024
+
+   Os dois gaps internos são iguais (69), então `justify-content: space-between`
+   reproduz o design exatamente — sem alturas fixas.
+
+   Toda medida está em --base (ver base.css): 1 unidade = 1px do frame do Figma.
+   Como --base encolhe junto com a viewport, o Hero cabe em 100vh em qualquer
+   resolução desktop mantendo as proporções originais — sem transform: scale.
+   ========================================================================== */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  padding-top: var(--nav-altura); /* a navbar é sobreposta */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* cover + center, sem distorção (object-fit preserva a proporção da foto) */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Nota: o Figma declara um retângulo rgba(0,0,0,0.65) sobre a foto, mas o
+   render do frame bate pixel a pixel com background_hero.webp sem overlay —
+   a imagem exportada já traz o escurecimento. Aplicá-lo duplicaria o efeito. */
+
+.hero__stage {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: calc(48 * var(--base));
+  padding-bottom: calc(30 * var(--base));
+}
+
+/* --------------------------------------------------------------------------
+   Faixa 1 — conteúdo principal (Figma 11:53, x 864, w 446)
+   -------------------------------------------------------------------------- */
+
+.hero__content {
+  width: calc(446 * var(--base));
+  margin-left: auto;
+  margin-right: var(--margem-direita);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(17 * var(--base));
+}
+
+.hero__intro {
+  width: calc(430 * var(--base));
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(9 * var(--base));
+}
+
+.hero__selo {
+  font-family: var(--fonte-corpo);
+  font-weight: 300;
+  font-size: calc(16 * var(--base));
+  line-height: calc(22 * var(--base));
+  letter-spacing: calc(15.04 * var(--base));
+  color: var(--branco);
+}
+
+.hero__titulo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(72 * var(--base));
+  line-height: calc(78 * var(--base));
+  letter-spacing: calc(2 * var(--base));
+  color: var(--branco);
+}
+
+.hero__titulo-linha {
+  display: block;
+  width: 100%;
+}
+
+.hero__titulo-linha--destaque {
+  color: var(--dourado);
+}
+
+.hero__descricao {
+  width: calc(446 * var(--base));
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: clamp(16px, calc(22 * var(--base)), 24px);
+  line-height: calc(30 * var(--base));
+  letter-spacing: calc(2 * var(--base));
+  color: var(--branco);
+}
+
+/* Botão — Figma 6:88 (padding 15/29, raio 20).
+   O Figma desenhou 419px de largura para "SOLICITE UM ORÇAMENTO" (texto de
+   320px). O texto aqui é "SOLICITAR UM ORÇAMENTO", 20px mais largo, e com
+   largura fixa o conteúdo transbordava e comia o padding (sobravam 6px de
+   folga). Com largura automática o padding de 29px do Figma é respeitado; o
+   gap cai de 50 para 28 para o botão não ultrapassar os 446px do bloco. */
+.hero__cta {
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(28 * var(--base));
+  padding: calc(15 * var(--base)) calc(29 * var(--base));
+  border-radius: calc(20 * var(--base));
+  background: var(--dourado);
+}
+
+.hero__cta-texto {
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: calc(22 * var(--base));
+  line-height: calc(30 * var(--base));
+  letter-spacing: calc(2 * var(--base));
+  color: var(--fundo-principal);
+  white-space: nowrap;
+}
+
+.hero__cta-icone {
+  flex-shrink: 0;
+  width: calc(17 * var(--base));
+  height: calc(15 * var(--base));
+}
+
+/* --------------------------------------------------------------------------
+   Faixa 2 — indicadores (Figma 9:31, altura 104)
+   Coordenadas X do frame; Y relativo ao topo da faixa (y do Figma − 716).
+   -------------------------------------------------------------------------- */
+
+.hero__indicadores {
+  position: relative;
+  height: calc(104 * var(--base));
+  flex-shrink: 0;
+}
+
+.hero__indicador {
+  position: absolute;
+}
+
+.hero__indicador-icone {
+  position: absolute;
+}
+
+.hero__indicador-numero {
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: clamp(34px, calc(47 * var(--base)), 50px);
+  line-height: calc(64 * var(--base));
+  color: var(--branco);
+  white-space: nowrap;
+}
+
+.hero__indicador-texto {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  font-size: clamp(14px, calc(18 * var(--base)), 20px);
+  line-height: calc(25 * var(--base));
+  color: var(--branco);
+  white-space: nowrap;
+}
+
+/* "20+ ANOS DE EXPERIÊNCIA" */
+.hero__indicador--experiencia {
+  left: 21.5972%; /* x 311 */
+  top: 0;
+}
+
+.hero__indicador--experiencia .hero__indicador-icone {
+  left: calc(-67 * var(--base)); /* x 244 */
+  top: calc(37 * var(--base));   /* y 753 */
+  width: calc(47 * var(--base));
+  height: calc(50 * var(--base));
+}
+
+/* "OBRAS EM TODO O BRASIL" */
+.hero__indicador--obras {
+  left: 46.6667%; /* x 672 */
+  top: calc(38 * var(--base)); /* y 754 */
+}
+
+.hero__indicador--obras .hero__indicador-icone {
+  left: calc(-84 * var(--base)); /* x 588 */
+  top: 0;
+  width: calc(64 * var(--base));
+  height: calc(44 * var(--base));
+}
+
+/* "EQUIPAMENTOS DE ALTA PERFORMANCE" */
+.hero__indicador--equipamentos {
+  left: 71.5972%; /* x 1031 */
+  top: calc(39 * var(--base)); /* y 755 */
+}
+
+.hero__indicador--equipamentos .hero__indicador-icone {
+  left: calc(-67 * var(--base)); /* x 964 */
+  top: calc(-3 * var(--base));   /* y 752 */
+  width: calc(48 * var(--base));
+  height: calc(48 * var(--base));
+}
+
+/* Divisores verticais — Figma 9:26 / 9:27 (y 740, altura 63).
+   A espessura fica em 1px real para a linha não sumir ao reduzir. */
+.hero__divisor {
+  position: absolute;
+  top: calc(24 * var(--base));
+  width: 1px;
+  height: calc(63 * var(--base));
+  background: var(--texto-sec);
+}
+
+.hero__divisor--um {
+  left: 34.7222%; /* x 500 */
+}
+
+.hero__divisor--dois {
+  left: 60.9028%; /* x 877 */
+}
+
+/* --------------------------------------------------------------------------
+   Faixa 3 — rodapé do hero (altura 105, a do bloco de scroll 9:37)
+   -------------------------------------------------------------------------- */
+
+.hero__base {
+  position: relative;
+  height: calc(105 * var(--base));
+  flex-shrink: 0;
+}
+
+/* "CORTES / FUROS / DEMOLIÇÕES TÉCNICAS" — Figma 9:4 (x 120, y 907) */
+.hero__atuacao {
+  position: absolute;
+  left: var(--margem-lateral); /* x 120 */
+  top: calc(18 * var(--base)); /* 907 − 889 */
+  /* a largura acompanha a fonte pela razão 180/16 = 11.25 do frame, com os
+     mesmos limites do clamp da fonte (14 e 20), para "DEMOLIÇÕES TÉCNICAS"
+     continuar em uma linha em qualquer tela */
+  width: clamp(158px, calc(203 * var(--base)), 225px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(14 * var(--base));
+}
+
+.hero__atuacao-linha {
+  display: block;
+  width: calc(124 * var(--base));
+  height: 1px;
+  margin-top: -1px; /* a linha do Figma (9:3) desenha 1px acima da coordenada */
+  background: var(--dourado);
+}
+
+.hero__atuacao-texto {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: clamp(14px, calc(18 * var(--base)), 20px);
+  line-height: calc(25 * var(--base));
+  color: var(--branco);
+}
+
+/* "ROLE PARA EXPLORAR" — Figma 9:37 (x 640, y 889) */
+.hero__scroll {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  /* idem: razão 161/16 = 10.06, limites da fonte (13 e 19) */
+  width: clamp(131px, calc(181 * var(--base)), 191px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(10 * var(--base));
+}
+
+.hero__scroll-mouse {
+  width: calc(29 * var(--base));
+  height: calc(45 * var(--base));
+}
+
+.hero__scroll-seta {
+  width: calc(15 * var(--base));
+  height: calc(21 * var(--base));
+}
+
+.hero__scroll-texto {
+  font-family: var(--fonte-corpo);
+  font-weight: 300;
+  font-size: clamp(13px, calc(18 * var(--base)), 19px);
+  line-height: calc(25 * var(--base));
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ==========================================================================
+   Mobile (até 1023px) — Figma "Hero Mobile" 162:2 (390 x 844)
+
+   Tela cheia (100svh) medida em --mh, que também encolhe pela altura: em
+   celulares baixos o conjunto inteiro reduz em vez de se sobrepor. O
+   conteúdo principal fica preso ao topo (y 230) e o grupo de baixo —
+   diferenciais, "role para explorar" e microtexto — à base, como no frame;
+   em telas mais altas que o frame, a sobra fica entre os dois.
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .hero {
+    --hero-margem: calc((100vw - 342 * var(--mh)) / 2); /* 24 no frame */
+
+    height: 100svh;
+    min-height: 0;
+    padding-top: 0;
+    display: block;
+  }
+
+  /* Foto: no frame, uma caixa de 735 x 920 a partir de y −76, com a base na
+     base da tela. Aqui a caixa tem a altura do Hero + 76 e a mesma proporção,
+     sempre alinhada embaixo — o mesmo recorte em qualquer altura. */
+  .hero__bg {
+    inset: auto auto 0 0;
+    height: calc(100% + 76 * var(--mh));
+    width: auto;
+    max-width: none; /* a caixa de 735 é mais larga que a tela, de propósito */
+    aspect-ratio: 735 / 920;
+    /* em telas deitadas (tablet na horizontal) a caixa ficaria mais estreita
+       que a tela: aí ela alarga e o cover recorta em cima e embaixo */
+    min-width: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* overlay do frame (preto a 70%), entre a foto e o conteúdo */
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.7);
+    pointer-events: none;
+  }
+
+  .hero__stage {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: block;
+    padding: 0;
+  }
+
+  /* --- Conteúdo principal — Figma 162:36 (x 24, y 230, w 342) ---------- */
+
+  .hero__content {
+    position: absolute;
+    left: var(--hero-margem);
+    top: calc(230 * var(--mh));
+    width: calc(342 * var(--mh));
+    margin: 0;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .hero__intro {
+    width: 100%;
+    gap: calc(14 * var(--mh));
+  }
+
+  .hero__selo {
+    font-size: calc(12 * var(--mh));
+    line-height: calc(16 * var(--mh)); /* caixa de 16 no frame */
+    letter-spacing: calc(5 * var(--mh));
+  }
+
+  .hero__titulo {
+    font-size: calc(46 * var(--mh));
+    line-height: normal;
+    letter-spacing: 0;
+  }
+
+  .hero__descricao {
+    width: 100%;
+    margin-top: calc(20 * var(--mh));
+    font-size: calc(16 * var(--mh));
+    line-height: calc(22 * var(--mh)); /* 1.4, que o Figma arredonda: 66 = 3 x 22 */
+    letter-spacing: calc(0.2 * var(--mh));
+  }
+
+  /* CTA — Figma 162:44 (padding 14/22, raio 16, gap 16) */
+  .hero__cta {
+    margin-top: calc(32 * var(--mh));
+    gap: calc(16 * var(--mh));
+    padding: calc(14 * var(--mh)) calc(22 * var(--mh));
+    border-radius: calc(16 * var(--mh));
+  }
+
+  .hero__cta-texto {
+    font-size: calc(14 * var(--mh));
+    line-height: normal;
+    letter-spacing: calc(1 * var(--mh));
+  }
+
+  /* a seta do frame tem 14 x 12.25; o SVG inclui a espessura do traço */
+  .hero__cta-icone {
+    width: calc(15 * var(--mh));
+    height: calc(13.25 * var(--mh));
+    margin: calc(-0.5 * var(--mh));
+  }
+
+  /* --- Diferenciais — Figma 162:47 (centrados, y 623): só dois --------- */
+
+  .hero__indicadores {
+    position: absolute;
+    left: calc(50% - 10.08 * var(--mh));
+    bottom: calc(150 * var(--mh));
+    width: max-content; /* absoluto e centrado: sem isto, cabe só na metade direita */
+    height: auto;
+    display: flex;
+    align-items: center;
+    gap: calc(24 * var(--mh));
+    transform: translateX(-50%);
+  }
+
+  /* no mobile, só dois diferenciais (especificidade maior que a do
+     .hero__indicador { display: flex } logo abaixo) */
+  .hero__indicadores .hero__indicador--equipamentos,
+  .hero__indicadores .hero__divisor--dois {
+    display: none;
+  }
+
+  .hero__indicador,
+  .hero__indicador-icone,
+  .hero__divisor {
+    position: static;
+  }
+
+  /* o max-width: 100% global entra em ciclo na coluna automática do grid */
+  .hero__indicador-icone {
+    max-width: none;
+  }
+
+  .hero__indicador {
+    display: flex;
+    align-items: center;
+    gap: calc(10 * var(--mh));
+  }
+
+  /* 20+ e o texto empilhados ao lado do escudo */
+  .hero__indicador--experiencia {
+    display: grid;
+    grid-template-areas: "icone numero" "icone texto";
+    row-gap: 0;
+    column-gap: calc(10 * var(--mh));
+    align-items: center;
+  }
+
+  .hero__indicador--experiencia .hero__indicador-icone {
+    grid-area: icone;
+    width: calc(32.2 * var(--mh));
+    height: calc(34 * var(--mh));
+  }
+
+  .hero__indicador--experiencia .hero__indicador-numero { grid-area: numero; }
+  .hero__indicador--experiencia .hero__indicador-texto { grid-area: texto; }
+
+  .hero__indicador--obras .hero__indicador-icone {
+    width: calc(43.64 * var(--mh));
+    height: calc(30 * var(--mh));
+  }
+
+  .hero__indicador-numero {
+    font-size: calc(26 * var(--mh));
+    line-height: normal;
+  }
+
+  .hero__indicador-texto {
+    font-size: calc(13 * var(--mh));
+    line-height: normal;
+  }
+
+  .hero__divisor--um {
+    width: 1px;
+    height: calc(42 * var(--mh));
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  /* --- Base: "role para explorar" e microtexto ------------------------- */
+
+  .hero__base {
+    position: static;
+    height: auto;
+  }
+
+  /* Figma 162:58 — mouse + texto em linha, centrados (y 735) */
+  .hero__scroll {
+    top: auto;
+    bottom: calc(87 * var(--mh));
+    left: calc(50% - 0.43 * var(--mh));
+    width: auto;
+    flex-direction: row;
+    gap: calc(10 * var(--mh));
+  }
+
+  .hero__scroll-mouse {
+    width: calc(15.14 * var(--mh));
+    height: calc(23 * var(--mh));
+    margin: calc(-0.5 * var(--mh));
+  }
+
+  .hero__scroll-texto {
+    font-size: calc(12 * var(--mh));
+    line-height: normal;
+    white-space: nowrap;
+  }
+
+  .hero__scroll-seta {
+    display: none;
+  }
+
+  /* Figma 161:10 — linha amarela vertical + "cortes / furos / demolições" */
+  .hero__atuacao {
+    top: auto;
+    bottom: calc(20 * var(--mh)); /* texto termina em y 824 no frame */
+    left: var(--hero-margem);
+    width: auto;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: calc(8 * var(--mh));
+  }
+
+  .hero__atuacao-linha {
+    width: 1px;
+    height: calc(45 * var(--mh));
+    margin-top: 0;
+    background: var(--amarelo-destaque);
+  }
+
+  .hero__atuacao-texto {
+    font-size: calc(11 * var(--mh));
+    line-height: normal;
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
+   Abertura animada — estados temporários (ver assets/js/hero-intro.js)
+
+   .hero-intro é posta no <html> por um script inline no <head>, antes do
+   primeiro paint, só na Home. A foto do Hero NÃO entra aqui: ela já nasce
+   visível, no tamanho final. Ficam ocultos apenas a navbar e os conteúdos
+   que vão entrar sobre ela, para não piscarem na posição final antes da
+   animação. No fim a timeline remove a classe e limpa os estilos inline.
+   O .hero__scroll já usa translateX(-50%) para centralizar, então quem anima
+   são os seus filhos.
+   ========================================================================== */
+
+html.hero-intro .navbar,
+html.hero-intro .hero__selo,
+html.hero-intro .hero__titulo,
+html.hero-intro .hero__descricao,
+html.hero-intro .hero__cta,
+html.hero-intro .hero__indicador,
+html.hero-intro .hero__divisor,
+html.hero-intro .hero__atuacao,
+html.hero-intro .hero__scroll-mouse,
+html.hero-intro .hero__scroll-texto,
+html.hero-intro .hero__scroll-seta {
+  opacity: 0;
+}

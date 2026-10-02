@@ -1,0 +1,69 @@
+{# ==========================================================================
+   Seção Obras — Figma node 35:446 (frame 1440x1024)
+
+   O mapa é, por ora, uma imagem estática exportada do Figma (lá ele também é
+   raster, não vetor). Para a interação por estado numa etapa futura, basta
+   trocar .obras__mapa-img por um <svg> com um <path> por UF: o wrapper
+   .obras__mapa já isola posição e dimensão, então nada em volta muda.
+   ========================================================================== #}
+<section class="obras" id="obras" data-nav-tema="claro">
+
+  {# Mapa — Figma 38:534 (x 15, y 155, 772x869) #}
+  <div class="obras__mapa">
+    {# no mobile, o mapa do frame "Obras Mobile" (mesmo desenho, mais contraste) #}
+    <picture>
+      <source media="(max-width: 1023px)" srcset="/assets/img/home/obras/mapa-brasil-mobile.webp">
+      <img class="obras__mapa-img" src="/assets/img/home/obras/mapa-brasil.webp" width="772" height="869" alt="Mapa do Brasil com os estados onde a GVT atua" loading="lazy">
+    </picture>
+  </div>
+
+  {# Legenda à esquerda — Figma 38:543 (x 80, y 728) #}
+  <div class="obras__legenda">
+    <span class="obras__legenda-risco" aria-hidden="true"></span>
+    <p class="obras__legenda-texto">
+      <span>DO NORTE</span>
+      <span>AO SUL,</span>
+      <span>CONSTRUINDO</span>
+      <span>O BRASIL</span>
+      <span>COM VOCÊ.</span>
+    </p>
+  </div>
+
+  {# Card branco — Figma 38:502 (x 825, y 201, 860x754, raio 50 à esquerda) #}
+  <div class="obras__card">
+    <div class="obras__card-conteudo">
+
+      <p class="obras__etiqueta">
+        <span class="obras__etiqueta-risco" aria-hidden="true"></span>
+        <span>ATUAÇÃO NACIONAL</span>
+      </p>
+
+      <h2 class="obras__titulo">Obras que reforçam nossa presença em todo o Brasil.</h2>
+
+      <p class="obras__descricao">Com experiência em cortes, furos e demolições técnicas, a GVT participa de obras em diferentes regiões do país, atendendo projetos da construção civil, indústrias e usinas com precisão, segurança e tecnologia.</p>
+
+      <div class="obras__numeros">
+        <span class="obras__divisor" aria-hidden="true"></span>
+
+        <div class="obras__numeros-linha">
+          <img class="obras__capacete" src="/assets/img/home/obras/icone-capacete.webp" width="127" height="88" alt="" aria-hidden="true">
+          <span class="obras__divisor-vertical" aria-hidden="true"></span>
+          <p class="obras__contador">
+            <span class="obras__contador-numero">250+</span>
+            <span class="obras__contador-texto">obras em território nacional</span>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    {# CTA — Figma 38:526 (x 884, y 854, 196.058x40): 59 da borda esquerda do
+       card e 61 da inferior. Fica fora de .obras__card-conteudo e ancorado no
+       proprio card para que a borda inferior seja a referencia, como no frame. #}
+    <a class="obras__botao" href="/obras/">
+      <span class="obras__botao-texto">VER OBRAS</span>
+      <img class="obras__botao-seta" src="/assets/img/global/icons/icon_seta_ver_obras.svg" width="16" height="12" alt="" aria-hidden="true">
+    </a>
+  </div>
+
+</section>

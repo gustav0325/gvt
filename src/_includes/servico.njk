@@ -1,0 +1,137 @@
+---
+layout: base.njk
+activeNav: servicos
+navSobreposta: true
+estilosPagina: [servico-detalhe]
+fontesPagina: "family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400"
+animacoesPagina: servico-detalhe
+aberturaAnimada: true
+---
+{#- Página individual de serviço — Figma 114:2 (Fio), 123:2 (Disco), 126:2
+    (Furos) e 131:2 (Demolição), 1440 de largura. Os quatro frames têm o
+    mesmo desenho; o que muda (textos, fotos, ícones, cores do Hero e as
+    medidas que o Figma varia de um para outro) vem do front matter de cada
+    página em src/servicos/. Estilos em assets/css/servico-detalhe.css
+    (prefixo sd-). Navbar e rodapé são os do site (base.njk).
+
+    Linhas: quando o Figma quebra um texto em linhas fixas, o dado é uma
+    lista e cada item vira uma linha; quando é um texto corrido, a quebra é
+    a natural da largura. -#}
+
+{%- macro linhas(texto) -%}
+  {%- if texto is string -%}{{ texto }}{%- else -%}{{ texto | join(" <br>") | safe }}{%- endif -%}
+{%- endmacro -%}
+
+{#- Ícone recortado de uma imagem maior, como no Figma: a caixa tem o
+    tamanho do ícone e a imagem é posicionada dentro dela (percentuais do
+    próprio Figma) #}
+{%- macro icone(i, altura) -%}
+  <span class="sd-icone" style="--l: {{ i.l }}; --a: {{ altura }}; --w: {{ i.w }}%; --h: {{ i.h }}%; --x: {{ i.x }}%; --y: {{ i.y }}%" aria-hidden="true">
+    <img src="/assets/img/servicos/{{ i.src }}" alt="" loading="lazy">
+  </span>
+{%- endmacro -%}
+
+{#- data-servico escolhe a identidade de movimento (assets/js/servico-detalhe.js);
+    data-foco: o ponto da foto (em pixels da imagem original) de onde partem
+    as revelações circulares #}
+<div class="sd-pagina" data-servico="{{ servico }}">
+
+  {# Seção 1 — Abertura (Figma "Seção 1 - Abertura") #}
+  <section class="sd-hero{% if hero.telaCheia %} sd-hero--tela-cheia{% endif %}" data-nav-tema="{{ navTema or '' }}"
+    style="--hero-altura: {{ hero.altura }}; --foto-topo: {{ hero.fotoTopo }}; --hero-fundo: {{ hero.fundo }};{% if hero.enquadramento %} --foto-enquadramento: {{ hero.enquadramento }};{% endif %} --cor-migalha: {{ hero.cores.migalha }}; --cor-titulo: {{ hero.cores.titulo }}; --cor-descricao: {{ hero.cores.descricao }}">
+    <img class="sd-hero__foto" src="/assets/img/servicos/{{ hero.foto }}" width="{{ hero.fotoLargura }}" height="{{ hero.fotoAltura }}" alt="{{ hero.alt }}"{% if hero.foco %} data-foco="{{ hero.foco | join(' ') }}"{% endif %}>
+    <div class="sd-hero__texto">
+      <nav class="sd-migalha" aria-label="Você está em">
+        <a href="/servicos/">Serviços</a> / <span aria-current="page">{{ title }}</span>
+      </nav>
+      <span class="sd-traco" aria-hidden="true"></span>
+      <h1 class="sd-hero__titulo">{{ linhas(hero.titulo) }}</h1>
+      <p class="sd-hero__descricao">{{ hero.descricao }}</p>
+    </div>
+  </section>
+
+  {# Seção 2 — A Técnica #}
+  <section class="sd-tecnica" data-nav-tema="claro" style="--fundo: {{ tecnica.fundo }}">
+    <div class="sd-tecnica__texto">
+      <p class="sd-rotulo">A TÉCNICA</p>
+      <span class="sd-traco" aria-hidden="true"></span>
+      <h2 class="sd-tecnica__titulo">{{ linhas(tecnica.titulo) }}</h2>
+      <p class="sd-tecnica__paragrafo">{{ tecnica.texto }}</p>
+    </div>
+    {# a ilustração ocupa, dentro do quadro branco, a posição e o tamanho do Figma #}
+    <div class="sd-tecnica__quadro" style="--ql: {{ tecnica.quadro.l }}; --qa: {{ tecnica.quadro.a }}; --il: {{ tecnica.imagem.l }}; --ia: {{ tecnica.imagem.a }}; --ix: {{ tecnica.imagem.x }}; --iy: {{ tecnica.imagem.y }}">
+      <img src="/assets/img/servicos/{{ tecnica.imagem.src }}" width="1536" height="1024" alt="{{ tecnica.imagem.alt }}" loading="lazy"{% if tecnica.imagem.foco %} data-foco="{{ tecnica.imagem.foco | join(' ') }}"{% endif %}>
+    </div>
+  </section>
+
+  {# Seção 3 — Aplicações #}
+  <section class="sd-aplicacoes" data-nav-tema="claro">
+    <p class="sd-rotulo">APLICAÇÕES</p>
+    <span class="sd-traco" aria-hidden="true"></span>
+    <h2 class="sd-titulo-secao">QUANDO UTILIZAR ESSE SERVIÇO</h2>
+    <ul class="sd-aplicacoes__lista">
+      {%- for item in aplicacoes.itens %}
+      <li class="sd-aplicacao">
+        {{ icone(item.icone, aplicacoes.iconeAltura) }}
+        <h3 class="sd-aplicacao__titulo">{{ linhas(item.titulo) }}</h3>
+        <p class="sd-aplicacao__texto">{{ item.texto }}</p>
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+
+  {# Seção 4 — Diferenciais Técnicos #}
+  <section class="sd-diferenciais" data-nav-tema="claro">
+    <div class="sd-diferenciais__cabecalho">
+      <p class="sd-rotulo">CARACTERÍSTICAS DA TÉCNICA</p>
+      <span class="sd-traco" aria-hidden="true"></span>
+      <h2 class="sd-titulo-secao">DIFERENCIAIS TÉCNICOS</h2>
+    </div>
+    <ul class="sd-diferenciais__fila" style="--fila-altura: {{ diferenciais.altura }}">
+      {%- for item in diferenciais.itens %}
+      {%- if not loop.first %}<li class="sd-diferenciais__divisor" aria-hidden="true"></li>{% endif %}
+      <li class="sd-diferencial">
+        {{ icone(item.icone, 73) }}
+        <p class="sd-diferencial__valor">{{ item.valor }}</p>
+        <p class="sd-diferencial__texto">{{ linhas(item.texto) }}</p>
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+
+  {# Seção 6 — CTA (Figma "Seção 6 - CTA", sobre a textura "image 22") #}
+  <section class="sd-cta" data-nav-tema="claro">
+    <img class="sd-cta__textura" src="/assets/img/servicos/comum/textura-cta.webp" width="2103" height="748" alt="" loading="lazy">
+    <div class="sd-cta__conteudo">
+      <div class="sd-cta__texto">
+        <p class="sd-cta__rotulo">PRECISA DESSE SERVIÇO?</p>
+        <h2 class="sd-cta__titulo">SOLICITE UM ORÇAMENTO PARA SEU PROJETO.</h2>
+        <p class="sd-cta__descricao">Fale com nossa equipe e encontre a solução adequada para as necessidades da sua obra.</p>
+      </div>
+      {#- seta: ícone ArrowRight do Lucide (ISC), na cor do texto #}
+      <a class="sd-cta__botao" href="/contato/"><span>SOLICITAR ORÇAMENTO</span><svg class="sd-seta" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+    </div>
+  </section>
+
+  {# Seção 7 — Outros Serviços #}
+  <section class="sd-outros" data-nav-tema="claro">
+    <p class="sd-outros__rotulo"><span class="sd-outros__traco" aria-hidden="true"></span>OUTROS SERVIÇOS</p>
+    <ul class="sd-outros__lista">
+      {%- for chave in outros.servicos %}
+      {%- set s = servicosIndividuais[chave] %}
+      <li>
+        <a class="sd-outro" href="{{ s.url }}">
+          <img class="sd-outro__foto" src="{{ s.foto }}" width="{{ s.fotoLargura }}" height="{{ s.fotoAltura }}" alt="{{ s.alt }}" loading="lazy">
+          <span class="sd-outro__texto">
+            <span class="sd-outro__nome">{% if outros.duasLinhas %}{{ s.nome | join(" <br>") | safe }}{% else %}{{ s.nome | join(" ") }}{% endif %}</span>
+            {#- seta: ícone ArrowRight do Lucide (ISC); o traço e a ponta são
+                caminhos separados para o traço poder se alongar no hover #}
+            <svg class="sd-outro__seta" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path class="sd-outro__haste" d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </span>
+        </a>
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+
+</div>

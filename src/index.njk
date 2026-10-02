@@ -1,0 +1,111 @@
+---
+layout: base.njk
+tomTopo: "#060606"
+# Tema da navbar ao abrir a Home numa âncora: o da seção que fica atrás da
+# barra (a anterior à do link). Usado na transição entre páginas e no
+# primeiro paint de /#seção — a barra já nasce certa (base.njk, navbar.njk).
+ancoras:
+  inicio: ""
+  sobre: ""
+  servicos: claro
+  obras: claro
+  contato: claro
+title: Início
+activeNav: inicio
+heroPage: true
+---
+<section class="hero" id="inicio">
+  {# No mobile (≤1023px) a foto é a mesma, no enquadramento e sem o escurecimento
+     embutido do arquivo desktop: o overlay do frame mobile vem do CSS. #}
+  <picture>
+    <source media="(max-width: 1023px)" srcset="/assets/img/home/hero/background-hero-mobile.webp">
+    <img class="hero__bg" src="/assets/img/home/hero/background-hero.webp" alt="" aria-hidden="true" fetchpriority="high">
+  </picture>
+
+  <div class="hero__stage">
+
+    {# Faixa 1 — conteúdo principal (Figma 11:53, y 180→647) #}
+    <div class="hero__content">
+      <div class="hero__intro">
+        <p class="hero__selo">GVT CORTES E FUROS</p>
+        <h1 class="hero__titulo">
+          <span class="hero__titulo-linha">PRECISÃO</span>
+          <span class="hero__titulo-linha hero__titulo-linha--destaque">EM CADA</span>
+          <span class="hero__titulo-linha">DETALHE</span>
+        </h1>
+      </div>
+
+      <p class="hero__descricao">Soluções especializadas em cortes, furos e demolições técnicas com segurança, precisão e eficiência para a sua obra.</p>
+
+      <a class="hero__cta" href="/contato/">
+        <span class="hero__cta-texto">SOLICITAR UM ORÇAMENTO</span>
+        <picture>
+          <source media="(max-width: 1023px)" srcset="/assets/img/global/icons/icon_seta_direita_mobile.svg">
+          <img class="hero__cta-icone" src="/assets/img/global/icons/icon_seta_direita.svg" width="17" height="15" alt="" aria-hidden="true">
+        </picture>
+      </a>
+    </div>
+
+    {# Faixa 2 — indicadores (Figma 9:31, y 716→820) #}
+    <div class="hero__indicadores">
+      <div class="hero__indicador hero__indicador--experiencia">
+        <img class="hero__indicador-icone" src="/assets/img/global/icons/icon_seguranca.svg" width="47" height="50" alt="" aria-hidden="true">
+        <p class="hero__indicador-numero">20+</p>
+        <p class="hero__indicador-texto">
+          <span>ANOS DE</span>
+          <span>EXPERIÊNCIA</span>
+        </p>
+      </div>
+
+      <span class="hero__divisor hero__divisor--um" aria-hidden="true"></span>
+
+      <div class="hero__indicador hero__indicador--obras">
+        <img class="hero__indicador-icone" src="/assets/img/global/icons/icon_capacete.svg" width="64" height="44" alt="" aria-hidden="true">
+        <p class="hero__indicador-texto">
+          <span>OBRAS EM</span>
+          <span>TODO O BRASIL</span>
+        </p>
+      </div>
+
+      <span class="hero__divisor hero__divisor--dois" aria-hidden="true"></span>
+
+      <div class="hero__indicador hero__indicador--equipamentos">
+        <img class="hero__indicador-icone" src="/assets/img/global/icons/icon_engrenagem.svg" width="48" height="48" alt="" aria-hidden="true">
+        <p class="hero__indicador-texto">
+          <span>EQUIPAMENTOS DE</span>
+          <span>ALTA PERFORMANCE</span>
+        </p>
+      </div>
+    </div>
+
+    {# Faixa 3 — rodapé do hero (Figma 9:4 em y 907 e 9:37 em y 889) #}
+    <div class="hero__base">
+      <div class="hero__atuacao">
+        <span class="hero__atuacao-linha" aria-hidden="true"></span>
+        <p class="hero__atuacao-texto">
+          <span>CORTES</span>
+          <span>FUROS</span>
+          <span>DEMOLIÇÕES TÉCNICAS</span>
+        </p>
+      </div>
+
+      <div class="hero__scroll">
+        <picture>
+          <source media="(max-width: 1023px)" srcset="/assets/img/global/icons/icon_mouse_mobile.svg">
+          <img class="hero__scroll-mouse" src="/assets/img/global/icons/icon_mouse.svg" width="29" height="45" alt="" aria-hidden="true">
+        </picture>
+        <p class="hero__scroll-texto">ROLE PARA EXPLORAR</p>
+        <img class="hero__scroll-seta" src="/assets/img/global/icons/icon_seta.svg" width="15" height="21" alt="" aria-hidden="true">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% include "sobre.njk" %}
+
+{% include "servicos.njk" %}
+
+{% include "obras.njk" %}
+
+{% include "contato.njk" %}

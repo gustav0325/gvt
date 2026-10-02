@@ -1,0 +1,796 @@
+/* ==========================================================================
+   Seção Serviços — Figma "Serviços resumo" 25:271 (1440x1426),
+   "serviços1" 30:356 e "serviços2" 30:414 (1440x653 cada, a faixa inferior
+   do primeiro — offset de 773 em todos os elementos).
+
+   ESTRATÉGIA DE ESCALA
+   A seção ocupa 100% da largura do navegador. A unidade --s é 1/1440 da
+   largura da viewport, ou seja, cada calc(N * var(--s)) equivale exatamente a
+   N/1440 da largura — as posições são proporcionais, nunca fixas em 1440px.
+
+       --s = 100vw / 1440
+
+   Como a altura de cada slide também sai de --s, a seção mantém o aspect do
+   frame (1440/1426 = 1.0098) e a imagem de fundo, que tem esse mesmo aspect,
+   preenche 100% da seção sem recorte e sem distorção.
+
+   Sem stage centralizada, sem faixas laterais, sem transform: scale().
+
+   Sem JS (e em telas menores ou com reduced-motion) os slides ficam
+   empilhados, como abaixo. No desktop, assets/js/servicos.js liga o modo
+   horizontal (.servicos--horizontal, no fim deste arquivo): a seção vira uma
+   janela de 100vh pinada, e o track percorre os três serviços.
+   ========================================================================== */
+
+.servicos {
+  /* Exatamente 1/1440 da largura da viewport: cada calc(N * var(--s)) é
+     N/1440 da largura. Sem teto — qualquer limite quebraria a proporção
+     entre a seção e a imagem de fundo. */
+  --s: 0.06944vw;
+
+  position: relative;
+  background: var(--amarelo-destaque);
+}
+
+/* Empilhado por enquanto; vira row na etapa de animação. */
+.servicos__track {
+  display: flex;
+  flex-direction: column;
+}
+
+.servicos__slide {
+  position: relative;
+  width: 100%;
+  flex: none;
+  overflow: hidden;
+  background: var(--amarelo-destaque);
+}
+
+/* Alturas proporcionais à largura: preservam o aspect do frame. */
+.servicos__slide--resumo {
+  height: calc(1426 * var(--s));
+}
+
+.servicos__slide--fio,
+.servicos__slide--disco {
+  height: calc(653 * var(--s));
+}
+
+/* O fundo cobre a seção inteira, de ponta a ponta do navegador. */
+.servicos__fundo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* --------------------------------------------------------------------------
+   Título da seção — Figma 27:345 (x 80, y 199, w 1187)
+   -------------------------------------------------------------------------- */
+
+.servicos__titulo {
+  position: absolute;
+  left: calc(80 * var(--s));
+  top: calc(199 * var(--s));
+  /* a largura acompanha a fonte pela razão 1187/88 = 13.489 do frame, com os
+     MESMOS limites do clamp da fonte (44 e 88): assim a razão fica constante e
+     as quebras continuam sendo as quatro da referência em qualquer tela */
+  width: clamp(594px, calc(944 * var(--s)), 1187px);
+  margin: 0;
+  font-family: var(--fonte-titulo-alt);
+  font-weight: 600;
+  /* −20% sobre o frame (88): em 88 o título dominava a viewport inteira.
+     O teto evita que volte a inflar em telas largas, já que --s segue a
+     largura. Os demais textos da seção ficam intocados. */
+  font-size: clamp(44px, calc(70 * var(--s)), 88px);
+  line-height: 1.393;
+  color: var(--cards);
+}
+
+/* --------------------------------------------------------------------------
+   Bloco de texto do card
+   resumo  → x 80, y 822   |   fio/disco → x 80, y 49
+   -------------------------------------------------------------------------- */
+
+.servicos__card {
+  position: absolute;
+  left: calc(80 * var(--s));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.servicos__slide--resumo .servicos__card {
+  top: calc(822 * var(--s));
+  width: calc(842 * var(--s));
+}
+
+.servicos__slide--fio .servicos__card,
+.servicos__slide--disco .servicos__card {
+  top: calc(49 * var(--s));
+  width: calc(745 * var(--s));
+}
+
+/* Etiqueta + risco — Figma 30:353 / 30:407 / 30:419 */
+.servicos__etiqueta {
+  display: flex;
+  align-items: center;
+  gap: calc(14 * var(--s));
+  margin: 0 0 calc(14 * var(--s));
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  font-size: calc(18 * var(--s));
+  line-height: 1.393;
+  letter-spacing: calc(1.8 * var(--s));
+  white-space: nowrap;
+}
+
+.servicos__risco {
+  display: block;
+  width: calc(88 * var(--s));
+  height: 1px;
+  background: currentColor;
+}
+
+/* Chamada — Figma 30:350 / 30:410 / 30:422 */
+.servicos__chamada {
+  width: 100%;
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(52 * var(--s));
+  line-height: 1.393;
+  letter-spacing: calc(5.2 * var(--s));
+}
+
+/* Texto de apoio — Figma 30:351 / 30:411 / 30:424 (w 442) */
+.servicos__apoio {
+  width: calc(442 * var(--s));
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  font-size: calc(18 * var(--s));
+  line-height: 1.393;
+  letter-spacing: calc(1.8 * var(--s));
+}
+
+/* gap 39 entre o bloco da chamada e o texto de apoio (Figma 30:355 / 30:413) */
+.servicos__slide--resumo .servicos__apoio,
+.servicos__slide--fio .servicos__apoio {
+  margin-top: calc(39 * var(--s));
+}
+
+/* --------------------------------------------------------------------------
+   Link "SAIBA MAIS" — Figma 35:435 / 35:436 / 35:441
+   -------------------------------------------------------------------------- */
+
+.servicos__link {
+  display: flex;
+  align-items: center;
+  gap: calc(29 * var(--s));
+  /* mesmo vão de 39 do bloco de apoio, em todos os três slides */
+  margin-top: calc(39 * var(--s));
+}
+
+.servicos__link-texto {
+  display: block;
+  width: calc(130 * var(--s));
+  border-bottom: 1px solid currentColor;
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: calc(20 * var(--s));
+  line-height: 1.393;
+  letter-spacing: calc(2 * var(--s));
+  white-space: nowrap;
+}
+
+.servicos__link-seta {
+  flex-shrink: 0;
+  width: calc(17.06 * var(--s));
+  height: calc(12.54 * var(--s));
+}
+
+/* --------------------------------------------------------------------------
+   Fotografias
+   -------------------------------------------------------------------------- */
+
+.servicos__foto {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+}
+
+.servicos__foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Vertical grande à direita — 412x604, raio 40 no topo (todos os slides) */
+.servicos__foto--resumo,
+.servicos__foto--equipamento,
+.servicos__foto--torre {
+  left: calc(1011 * var(--s));
+  width: calc(412 * var(--s));
+  height: calc(604 * var(--s));
+  border-radius: calc(40 * var(--s)) calc(40 * var(--s)) 0 0;
+}
+
+.servicos__foto--resumo  { top: calc(822 * var(--s)); }
+.servicos__foto--equipamento,
+.servicos__foto--torre   { top: calc(49 * var(--s)); }
+
+/* Foto central do slide "fio" — Figma 30:404 (x 582, y 222, 412x431, raio 25) */
+.servicos__foto--obra {
+  left: calc(582 * var(--s));
+  top: calc(222 * var(--s));
+  width: calc(412 * var(--s));
+  height: calc(431 * var(--s));
+  border-radius: calc(25 * var(--s)) calc(25 * var(--s)) 0 0;
+}
+
+/* Foto à esquerda do slide "disco" — Figma 30:416 (x 80, y 327, 412x326, raio 25) */
+.servicos__foto--corte {
+  left: calc(80 * var(--s));
+  top: calc(327 * var(--s));
+  width: calc(412 * var(--s));
+  height: calc(326 * var(--s));
+  border-radius: calc(25 * var(--s)) calc(25 * var(--s)) 0 0;
+}
+
+/* Bloco lateral do slide "disco" — Figma 30:424 / 35:441 (x 518) */
+.servicos__bloco-lateral {
+  position: absolute;
+  left: calc(518 * var(--s));
+  top: calc(327 * var(--s));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* --------------------------------------------------------------------------
+   Cores por slide — resumo sobre o amarelo, demais sobre o concreto claro
+   -------------------------------------------------------------------------- */
+
+.servicos__slide--resumo .servicos__etiqueta,
+.servicos__slide--resumo .servicos__chamada,
+.servicos__slide--resumo .servicos__apoio {
+  color: var(--cards);
+}
+
+.servicos__slide--resumo .servicos__link-texto {
+  color: #ededed;
+}
+
+.servicos__slide--fio .servicos__etiqueta,
+.servicos__slide--fio .servicos__chamada,
+.servicos__slide--disco .servicos__etiqueta,
+.servicos__slide--disco .servicos__chamada,
+.servicos__slide--fio .servicos__link-texto,
+.servicos__slide--disco .servicos__link-texto {
+  color: var(--titulo);
+}
+
+.servicos__slide--fio .servicos__apoio,
+.servicos__slide--disco .servicos__apoio {
+  color: var(--cards-escuro);
+}
+
+/* ==========================================================================
+   Modo horizontal (desktop) — ligado e desligado por assets/js/servicos.js
+
+   A seção vira uma janela de 100vh, pinada pelo ScrollTrigger. Dentro dela o
+   track fica em linha, com os três painéis alinhados pela base — a faixa de
+   653 do "resumo" e os slides "fio" e "disco" no mesmo nível, como no canvas
+   do Figma — e é movido só por transform: primeiro sobe até a faixa, depois
+   corre para a esquerda.
+
+   Os painéis continuam com exatamente o tamanho e o conteúdo de hoje. O que
+   este bloco acrescenta é só fundo, para a composição ser contínua:
+     · acima de "fio" e "disco", que têm 653 de altura, o espelho vertical do
+       próprio fundo cobre o que sobra da tela (contínuo por construção);
+     · entre dois painéis, uma zona de transição onde o fundo de um, espelhado,
+       se funde no fundo do outro, também espelhado. Parado em cada serviço,
+       a zona fica fora da tela: o que se vê é o fundo original.
+   ========================================================================== */
+
+.servicos--horizontal {
+  /* 100cqw = a largura da seção (sem a barra de rolagem), a mesma dos slides
+     no layout empilhado */
+  container-type: inline-size;
+  --transicao: 32cqw;
+
+  /* Unidade da FAIXA dos serviços. --s segue só a largura, então a faixa de
+     653 teria sempre a mesma altura, caiba ou não abaixo da navbar (numa
+     janela de 1366x650 ela entraria por trás dela). --sb é a menor entre --s
+     e a escala que faz os 653 caberem em 100vh − navbar − respiro: quando
+     falta altura, a composição inteira encolhe na mesma proporção. */
+  --respiro: calc(24 * var(--base));
+  --sb: min(var(--s), calc((100vh - var(--nav-altura) - var(--respiro)) / 653));
+  /* a composição de 1440 unidades, centrada na largura da tela */
+  --centro: calc((100cqw - 1440 * var(--sb)) / 2);
+
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* "fio" e "disco" são só a faixa: o painel inteiro passa para a unidade dela */
+.servicos--horizontal .servicos__slide--fio,
+.servicos--horizontal .servicos__slide--disco {
+  --s: var(--sb);
+}
+
+.servicos--horizontal .servicos__slide--fio > :is(.servicos__card, .servicos__foto, .servicos__bloco-lateral),
+.servicos--horizontal .servicos__slide--disco > :is(.servicos__card, .servicos__foto, .servicos__bloco-lateral) {
+  margin-left: var(--centro);
+}
+
+/* No "resumo" só a faixa de baixo muda de unidade; o título e o fundo seguem
+   em --s. A faixa (1440 x 653 em --sb) fica com a base na base do painel:
+   o card e a foto ficam a 49 do topo dela, ou seja, 604 acima da base. */
+.servicos--horizontal .servicos__slide--resumo .servicos__card,
+.servicos--horizontal .servicos__foto--resumo {
+  --s: var(--sb);
+  top: calc(1426 * 0.06944vw - 604 * var(--sb));
+}
+
+.servicos--horizontal .servicos__slide--resumo .servicos__card {
+  left: calc(var(--centro) + 80 * var(--sb));
+}
+
+.servicos--horizontal .servicos__foto--resumo {
+  left: calc(var(--centro) + 1011 * var(--sb));
+}
+
+.servicos--horizontal .servicos__track {
+  flex-direction: row;
+  align-items: flex-end;
+  width: max-content;
+  will-change: transform;
+}
+
+.servicos--horizontal .servicos__slide {
+  width: 100cqw;
+  /* deixa aparecer o espelho acima de "fio" e "disco" */
+  overflow: visible;
+}
+
+/* Espelho vertical acima dos painéis de 653 */
+.servicos__espelho-acima {
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scaleY(-1);
+}
+
+/* Zona de transição entre dois painéis */
+.servicos__transicao {
+  position: relative;
+  flex: none;
+  width: var(--transicao);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.servicos__transicao-camada {
+  position: absolute;
+  bottom: 0;
+  width: 100cqw;
+  height: 100%;
+  transform: scaleX(-1);
+}
+
+/* o painel da esquerda, espelhado: a borda esquerda da zona continua a borda
+   direita dele */
+.servicos__transicao-camada--saida {
+  left: 0;
+}
+
+/* o painel da direita, espelhado: a borda direita da zona continua a borda
+   esquerda dele */
+.servicos__transicao-camada--entrada {
+  right: 0;
+}
+
+/* o painel da direita entra por cima, surgindo ao longo da zona */
+.servicos__transicao-mascara {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent 6%, #000 94%);
+          mask-image: linear-gradient(90deg, transparent 6%, #000 94%);
+}
+
+/* Réplica do fundo de um painel, com a mesma caixa e o mesmo cover do
+   original, para o recorte da imagem ser idêntico */
+.servicos__fundo-painel {
+  position: absolute;
+  inset: 0;
+}
+
+/* réplicas de "fio" e "disco" na mesma unidade dos painéis originais */
+.servicos__fundo-painel:not(.servicos__fundo-painel--resumo) {
+  --s: var(--sb);
+}
+
+.servicos__fundo-copia {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: calc(653 * var(--s));
+  object-fit: cover;
+  object-position: center;
+}
+
+.servicos__fundo-painel--resumo .servicos__fundo-copia {
+  height: calc(1426 * var(--s));
+}
+
+.servicos__fundo-copia--espelho {
+  bottom: calc(653 * var(--s));
+  transform: scaleY(-1);
+}
+
+/* --------------------------------------------------------------------------
+   Título revelado pelo scroll — uma única máscara sobre o bloco inteiro
+
+   O título fica parado na posição, no tamanho e na cor finais. O JS anima só
+   --progresso (0 → 1), e a borda inferior do recorte desce do topo à base do
+   bloco: uma linha de corte horizontal que atravessa as linhas em sequência,
+   revelando primeiro o topo das letras de cada uma. Sem opacity, sem
+   movimento. As folgas negativas nas laterais, no topo e na base deixam
+   acentos e o cedilha inteiros; a largura nunca é recortada.
+   -------------------------------------------------------------------------- */
+
+.servicos--horizontal .servicos__titulo {
+  --progresso: 0;
+  clip-path: inset(-0.3em -0.3em calc((1 - var(--progresso)) * (100% + 0.6em) - 0.3em) -0.3em);
+}
+
+/* ==========================================================================
+   Mobile (até 1023px) — Figma "Serviços Mobile": Intro 170:2, Furos 170:37,
+   Fio 171:2, Disco 171:48 (390 x 844 cada)
+
+   Os quatro frames são estados de uma seção só. O slide "resumo" do desktop
+   já contém o título (Intro) e o card de Furos: aqui ele vira dois painéis.
+   Fio e Disco são um painel cada — quatro telas no total.
+
+   Base (sem JS ou com reduced-motion): os painéis empilhados, cada um com o
+   seu fundo. Com animação, servicos.js liga .servicos--mobile: a seção é
+   pinada, a faixa corre na horizontal (Intro → Furos → Fio → Disco) e o
+   fundo fica parado atrás dela, trocando por crossfade.
+
+   Medidas em --mh (telas cheias), posições horizontais pela margem da coluna.
+   ========================================================================== */
+
+.servicos__fundos-mobile {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .servicos {
+    --sv-margem: calc((100vw - 342 * var(--mh)) / 2); /* 24 no frame */
+    --painel: 100svh;
+    /* deslocamento do segundo painel do "resumo" (Furos): abaixo do Intro */
+    --p2x: 0px;
+    --p2y: var(--painel);
+  }
+
+  /* cada slide isola as próprias camadas: fundo (−1) < tinta (0) < conteúdo */
+  .servicos__slide {
+    width: 100%;
+    height: var(--painel);
+    isolation: isolate;
+  }
+
+  .servicos__slide--resumo {
+    height: calc(2 * var(--painel));
+  }
+
+  .servicos__fundo {
+    z-index: -1;
+    object-position: center;
+  }
+
+  /* amarelo do frame sobre a textura (Intro e Furos) */
+  .servicos__slide--resumo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: rgba(245, 184, 0, 0.55);
+    pointer-events: none;
+  }
+
+  .servicos__slide > :not(picture) {
+    z-index: 1;
+  }
+
+  /* o <picture> do fundo sai do fluxo: no Disco o slide é uma coluna flex, e
+     ele contaria como item (com o gap) antes do texto */
+  .servicos__slide > picture {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  /* --- Intro — Figma 170:36: Inter SemiBold 38, 6 linhas de 44 (y 290) --- */
+
+  .servicos__titulo {
+    left: var(--sv-margem);
+    top: calc(290 * var(--mh));
+    width: calc(342 * var(--mh));
+    font-size: calc(38 * var(--mh));
+    line-height: calc(44 * var(--mh));
+  }
+
+  /* --- Texto dos painéis (y 112) ---------------------------------------- */
+
+  .servicos__card {
+    left: var(--sv-margem);
+    top: calc(112 * var(--mh));
+    width: calc(342 * var(--mh));
+    gap: calc(14 * var(--mh));
+  }
+
+  .servicos__slide--resumo .servicos__card {
+    left: calc(var(--p2x) + var(--sv-margem));
+    top: calc(var(--p2y) + 112 * var(--mh));
+    width: calc(342 * var(--mh));
+    gap: calc(16 * var(--mh));
+  }
+
+  .servicos__slide--fio .servicos__card,
+  .servicos__slide--disco .servicos__card {
+    top: calc(112 * var(--mh));
+    width: calc(342 * var(--mh));
+  }
+
+  /* Disco: o apoio e o link (bloco lateral no desktop) seguem o card; os
+     dois ficam no fluxo de uma coluna a partir de y 112 */
+  .servicos__slide--disco {
+    display: flex;
+    flex-direction: column;
+    gap: calc(14 * var(--mh));
+    padding: calc(112 * var(--mh)) var(--sv-margem) 0;
+  }
+
+  .servicos__slide--disco .servicos__card,
+  .servicos__slide--disco .servicos__bloco-lateral {
+    position: relative;
+    left: auto;
+    top: auto;
+    gap: calc(14 * var(--mh));
+  }
+
+  .servicos__etiqueta {
+    gap: calc(10 * var(--mh));
+    margin: 0;
+    line-height: normal;
+  }
+
+  .servicos__risco {
+    height: 1px;
+  }
+
+  /* Furos (sobre o amarelo) — etiqueta 13, risco 40; chamada 32 em linhas de
+     38; apoio 13 em linhas de 18; link 14 com traço de 90 */
+  .servicos__slide--resumo .servicos__etiqueta {
+    font-size: calc(13 * var(--mh));
+    letter-spacing: calc(1.3 * var(--mh));
+  }
+
+  .servicos__slide--resumo .servicos__risco {
+    width: calc(40 * var(--mh));
+  }
+
+  .servicos__slide--resumo .servicos__chamada {
+    font-size: calc(32 * var(--mh));
+    line-height: calc(38 * var(--mh));
+    letter-spacing: calc(1 * var(--mh));
+  }
+
+  .servicos__slide--resumo .servicos__apoio {
+    letter-spacing: calc(1 * var(--mh));
+  }
+
+  .servicos__slide--resumo .servicos__link-texto {
+    width: calc(90 * var(--mh));
+    font-size: calc(14 * var(--mh));
+    letter-spacing: calc(1.4 * var(--mh));
+  }
+
+  /* Fio e Disco (sobre o concreto) — etiqueta 12, risco 36; chamada 30 em
+     linhas de 35; apoio 13; link 13 com traço de 80 */
+  .servicos__slide--fio .servicos__etiqueta,
+  .servicos__slide--disco .servicos__etiqueta {
+    font-size: calc(12 * var(--mh));
+    line-height: calc(16 * var(--mh)); /* caixa de 16 no frame */
+    letter-spacing: calc(1.2 * var(--mh));
+  }
+
+  .servicos__slide--fio .servicos__risco,
+  .servicos__slide--disco .servicos__risco {
+    width: calc(36 * var(--mh));
+  }
+
+  .servicos__slide--fio .servicos__chamada,
+  .servicos__slide--disco .servicos__chamada {
+    font-size: calc(30 * var(--mh));
+    line-height: calc(35 * var(--mh));
+    letter-spacing: calc(0.8 * var(--mh));
+  }
+
+  .servicos__slide--fio .servicos__apoio,
+  .servicos__slide--disco .servicos__apoio {
+    letter-spacing: calc(0.4 * var(--mh));
+  }
+
+  .servicos__slide--fio .servicos__link-texto,
+  .servicos__slide--disco .servicos__link-texto {
+    width: calc(80 * var(--mh));
+    font-size: calc(13 * var(--mh));
+    letter-spacing: calc(1.3 * var(--mh));
+  }
+
+  .servicos__apoio {
+    width: 100%;
+    margin: 0;
+    font-size: calc(13 * var(--mh));
+    line-height: calc(18 * var(--mh));
+  }
+
+  /* link: texto + traço 6 abaixo, seta a 12 */
+  .servicos__link {
+    margin: 0;
+    gap: calc(12 * var(--mh));
+  }
+
+  .servicos__slide--resumo .servicos__apoio,
+  .servicos__slide--fio .servicos__apoio {
+    margin-top: 0;
+  }
+
+  .servicos__link-texto {
+    padding-bottom: calc(6 * var(--mh));
+    line-height: normal;
+  }
+
+  /* a seta do frame tem 15.06 x 10.54; o SVG inclui 1 de traço em volta */
+  .servicos__link-seta {
+    width: calc(17.06 * var(--mh));
+    height: calc(12.54 * var(--mh));
+    margin: calc(-1 * var(--mh));
+  }
+
+  /* --- Fotos: a principal termina 24 acima da base; o detalhe, 40 ------- */
+
+  .servicos__foto,
+  .servicos__foto--resumo,
+  .servicos__foto--equipamento,
+  .servicos__foto--torre,
+  .servicos__foto--obra,
+  .servicos__foto--corte {
+    top: auto;
+    left: var(--sv-margem);
+    bottom: calc(24 * var(--mh));
+    width: calc(342 * var(--mh));
+    border-radius: calc(24 * var(--mh));
+  }
+
+  /* Furos — Figma 168:16 (342 x 363). No frame o espaço é um retângulo
+     cinza sem imagem: recebe a mesma foto de furos do desktop. */
+  .servicos__foto--resumo {
+    left: calc(var(--p2x) + var(--sv-margem));
+    height: calc(363 * var(--mh));
+  }
+
+  /* Fio e Disco — foto principal de 342 x 422 */
+  .servicos__foto--equipamento,
+  .servicos__foto--torre {
+    height: calc(422 * var(--mh));
+  }
+
+  /* detalhe de 120 x 120, borda branca de 4, raio 16 — sobre a foto
+     principal (especificidade acima da regra geral de z-index do slide) */
+  .servicos__slide .servicos__foto--obra,
+  .servicos__slide .servicos__foto--corte {
+    z-index: 2;
+    bottom: calc(40 * var(--mh));
+    width: calc(120 * var(--mh));
+    height: calc(120 * var(--mh));
+    border: calc(4 * var(--mh)) solid #fff;
+    border-radius: calc(16 * var(--mh));
+  }
+
+  .servicos__foto--obra {
+    left: calc(var(--sv-margem) + 206 * var(--mh)); /* x 230 */
+  }
+
+  .servicos__foto--corte {
+    left: calc(var(--sv-margem) + 16 * var(--mh)); /* x 40 */
+  }
+
+  /* ------------------------------------------------------------------------
+     Modo animado — ligado por servicos.js
+     ------------------------------------------------------------------------ */
+
+  .servicos--mobile {
+    --p2x: 100vw;
+    --p2y: 0px;
+
+    height: var(--painel);
+    overflow: hidden;
+  }
+
+  .servicos--mobile .servicos__track {
+    flex-direction: row;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .servicos--mobile .servicos__slide {
+    width: 100vw;
+    background: none;
+  }
+
+  .servicos--mobile .servicos__slide--resumo {
+    width: 200vw;
+    height: var(--painel);
+  }
+
+  /* os fundos de cada slide dão lugar ao fundo parado atrás da faixa */
+  .servicos--mobile .servicos__fundo,
+  .servicos--mobile .servicos__slide--resumo::before {
+    display: none;
+  }
+
+  .servicos--mobile .servicos__fundos-mobile {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .servicos--mobile .servicos__track {
+    position: relative;
+    z-index: 1;
+  }
+
+  .servicos__fundo-mobile {
+    position: absolute;
+    inset: 0;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .servicos__fundo-mobile--amarelo {
+    background-image:
+      linear-gradient(rgba(245, 184, 0, 0.55), rgba(245, 184, 0, 0.55)),
+      url("/assets/img/home/servicos/resumo/textura-mobile.webp");
+  }
+
+  .servicos__fundo-mobile--fio {
+    background-image: url("/assets/img/home/servicos/fio-diamantado/textura-mobile.webp");
+    opacity: 0;
+  }
+
+  .servicos__fundo-mobile--disco {
+    background-image: url("/assets/img/home/servicos/disco-diamantado/textura-mobile.webp");
+    opacity: 0;
+  }
+
+  /* título revelado por uma máscara única, como no desktop */
+  .servicos--mobile .servicos__titulo {
+    --progresso: 0;
+    clip-path: inset(-0.3em -0.3em calc((1 - var(--progresso)) * (100% + 0.6em) - 0.3em) -0.3em);
+  }
+}
+

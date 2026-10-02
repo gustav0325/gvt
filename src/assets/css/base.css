@@ -1,0 +1,122 @@
+/* ==========================================================================
+   Base — tokens, reset e tipografia
+   Design system: Figma "GVT cortes e furos"
+   ========================================================================== */
+
+:root {
+  /* Cores */
+  --dourado: #d99f00;            /* DouradoEscuro — títulos de destaque e botões */
+  --amarelo-destaque: #f5b800;   /* Item ativo da navegação */
+  --texto-sec: #8b8e8c;          /* TextosSEC — divisores e textos secundários */
+  --fundo-principal: #fafaf8;
+  --branco: #ffffff;
+  --preto-borda: #1e1e1e;
+  --titulo: #181a19;        /* Titulo (Figma) — links da navbar clara */
+  --cards: #f1f2f0;         /* Cards (Figma) — textos sobre o amarelo */
+  --cards-escuro: #272a29;  /* Cards (Figma) — texto de apoio sobre concreto */
+
+  /* Tipografia */
+  --fonte-titulo: "Archivo Black", "Arial Black", sans-serif;
+  --fonte-titulo-alt: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --fonte-corpo: "Manrope", "Helvetica Neue", Arial, sans-serif;
+
+  /* Layout
+     --base é a unidade do design: 1 unidade = 1px no frame 1440x1024 do Figma.
+     Encolhe proporcionalmente conforme falta altura OU largura de viewport, e
+     nunca passa de 1px — então em telas grandes o design fica no tamanho original.
+       0.09766vh = 1/1024 da altura   |   0.06944vw = 1/1440 da largura
+     Governa TAMANHOS (fontes, alturas, gaps). As POSIÇÕES horizontais usam
+     porcentagem da largura da tela, para o conteúdo ficar ancorado nas mesmas
+     bordas do Figma em qualquer viewport. Assim o Hero cabe em 100vh sem
+     transform: scale, mantendo as proporções do frame. */
+  --base: clamp(0.58px, min(0.09766vh, 0.06944vw), 1.25px);
+
+  /* Margens do frame convertidas em % de 1440 (a grade do Figma) */
+  --margem-lateral: 8.3333%;  /* x 120  */
+  --margem-direita: 9.0278%;  /* 1440 − 1310, fim do bloco de conteúdo */
+
+  --nav-altura: calc(132 * var(--base));
+}
+
+/* --------------------------------------------------------------------------
+   Mobile e tablet (até 1023px) — frames "Mobile" do Figma, 390 de largura
+     --m   1 unidade = 1px do frame de 390, acompanhando a largura; teto de
+           1.4px, para tablets verem a mesma coluna um pouco maior e centrada
+     --mh  a menor entre largura e ALTURA (frames de 844 de altura): usada nas
+           telas cheias — Hero e Serviços — para caberem em celulares baixos
+   -------------------------------------------------------------------------- */
+@media (max-width: 1023px) {
+  :root {
+    --m: min(calc(100vw / 390), 1.4px);
+    --mh: min(calc(100vw / 390), calc(100svh / 844), 1.4px);
+    --coluna: calc(342 * var(--m));                  /* largura útil do frame */
+    --margem-mobile: calc((100vw - var(--coluna)) / 2); /* 24 no frame de 390 */
+    --nav-altura: calc(88 * var(--m));
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* A navbar é fixed: âncoras não podem parar atrás dela. */
+section[id] {
+  scroll-margin-top: var(--nav-altura);
+}
+
+/* o menu mobile passa o foco à seção de destino (tabindex="-1"): ela não é
+   um controle, então não ganha contorno */
+section[id][tabindex="-1"]:focus {
+  outline: none;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo-principal);
+  color: var(--preto-borda);
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Páginas sem hero precisam compensar a navbar, que é sobreposta. */
+body:not(.is-hero) .site-main {
+  padding-top: var(--nav-altura);
+}
+
+/* Placeholder das páginas ainda não implementadas */
+.pagina-stub {
+  margin: 0 auto;
+  padding: 80px var(--margem-lateral);
+}
+
+.pagina-stub h1 {
+  font-family: var(--fonte-titulo);
+  font-size: 48px;
+  letter-spacing: 2px;
+}
+

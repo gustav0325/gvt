@@ -1,0 +1,15 @@
+node_modules/
+_site/
+_previews/
+
+# dependências e builds locais já acima; abaixo, o que nunca deve ir ao repositório
+.env
+.env.*
+*.log
+npm-debug.log*
+.cache/
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+*~

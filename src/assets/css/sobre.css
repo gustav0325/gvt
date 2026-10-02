@@ -1,0 +1,336 @@
+/* ==========================================================================
+   Seção Sobre — Figma node 17:54 (frame 1440 x 1024)
+
+   Grade do frame (margem lateral 80):
+     80 ──[ 373 ]── 69 ──[ 396 foto ]── 69 ──[ 373 ]── 80   = 1280 de container
+
+   Cada coluna tem um topo diferente no frame:
+     foto y 189 · traço da direita y 276.5 · label da esquerda y 335
+   Os offsets abaixo são relativos ao topo da foto (o elemento mais alto).
+
+   A unidade --u é a do frame (1 = 1px no frame 1440x1024), limitada pelo que
+   faltar primeiro — altura ou largura — para a composição caber em uma tela.
+   ========================================================================== */
+
+.sobre {
+  /* O frame do Sobre tem 1024 de altura — uma viewport — com a navbar
+     sobreposta no topo (o conteúdo começa em y 189, abaixo dos 132 dela).
+     Por isso a unidade considera a ALTURA além da largura, como no Hero:
+     a seção passa a ocupar exatamente 100vh quando a altura é o limite,
+     sem criar scroll interno e mantendo as proporções do frame. */
+  --u: clamp(0.62px, min(0.09766vh, 0.06944vw), 1.25px);
+
+  /* Afastamento lateral das colunas em relação à foto. Aplicado por transform,
+     então nem o container nem a fotografia mudam de posição ou tamanho.
+     Só entra a partir de 1200px, onde há margem lateral sobrando. */
+  --afastamento: 0px;
+
+  background: var(--branco);
+  /* A foto ampliada (396x749 no frame -> 449x837) é quem define a altura da
+     seção. O padding-top fica preservado para a foto não encostar na navbar;
+     só o inferior cede, mantendo o total em 1024 unidades — uma viewport. */
+  padding-top: calc(148 * var(--u));
+  padding-bottom: calc(39 * var(--u));
+}
+
+.sobre__container {
+  width: calc(1280 * var(--u));
+  max-width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns:
+    calc(373 * var(--u))
+    calc(449 * var(--u))
+    calc(373 * var(--u));
+  /* 373 + 42 + 449 + 42 + 373 = 1279: o container e a margem lateral de 80
+     do frame ficam intactos; só os vãos cedem para a foto maior. */
+  column-gap: calc(42 * var(--u));
+  align-items: start;
+  justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
+   Coluna esquerda — label y 335, título y 397, link y 702
+   -------------------------------------------------------------------------- */
+
+.sobre__esquerda {
+  transform: translateX(calc(-1 * var(--afastamento)));
+  margin-top: calc(146 * var(--u)); /* 335 − 189 */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Figma 22:168 */
+.sobre__label {
+  margin-bottom: calc(37 * var(--u)); /* 397 − (335 + 25) */
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  font-size: clamp(14px, calc(19.8 * var(--u)), 22px);
+  line-height: calc(27 * var(--u));
+  letter-spacing: calc(5 * var(--u));
+  color: var(--dourado);
+  white-space: nowrap;
+}
+
+/* Figma 19:129 */
+.sobre__titulo {
+  width: 100%; /* a caixa ocupa a coluna inteira, como no frame (373) */
+  margin-bottom: calc(41 * var(--u));
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  /* 47.5 é o teto para "Quem somos?" caber em uma linha na coluna de 373
+     do frame (em 49 ele precisa de 376 e quebra em duas) */
+  font-size: clamp(33px, calc(47.5 * var(--u)), 52px);
+  line-height: calc(52 * var(--u));
+  color: #000;
+}
+
+/* Figma 20:131 / 22:162 / 22:167 */
+.sobre__texto {
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: clamp(14px, calc(19 * var(--u)), 21px);
+  line-height: calc(26 * var(--u));
+  color: #000;
+}
+
+/* Figma 20:141 — link com underline dourado e seta deslocada */
+.sobre__link {
+  margin-top: calc(82 * var(--u));
+  display: inline-flex;
+  align-items: flex-start;
+  gap: calc(30 * var(--u)); /* fim do texto (268) → seta (298) */
+}
+
+.sobre__link-texto {
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: clamp(16px, calc(22.5 * var(--u)), 25px);
+  line-height: calc(30 * var(--u));
+  color: #000;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--dourado); /* Figma 20:135, largura 267 */
+}
+
+.sobre__link-seta {
+  flex-shrink: 0;
+  margin-top: calc(7 * var(--u));
+  width: calc(21.5 * var(--u));
+  height: calc(15.5 * var(--u));
+}
+
+/* --------------------------------------------------------------------------
+   Coluna central — Figma 20:144 (396 x 749, raio 45)
+   A foto tem exatamente 396x749, o mesmo do slot: cover não recorta nada.
+   -------------------------------------------------------------------------- */
+
+.sobre__foto {
+  margin: 0;
+  width: calc(449 * var(--u));
+  height: calc(837 * var(--u));
+  /* trava de segurança: nunca ultrapassa o que sobra da viewport */
+  max-height: calc(100vh - (187 * var(--u)));
+  border-radius: calc(45 * var(--u));
+  overflow: hidden;
+}
+
+.sobre__foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* --------------------------------------------------------------------------
+   Coluna direita — traço y 276.5, blocos y 298 / 688, divisória y 588
+   -------------------------------------------------------------------------- */
+
+.sobre__direita {
+  transform: translateX(var(--afastamento));
+  margin-top: calc(87.5 * var(--u)); /* 276.5 − 189 */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Figma 22:171 — traço dourado de 91 x 3 */
+.sobre__traco {
+  width: calc(91 * var(--u));
+  height: calc(3 * var(--u));
+  margin-left: calc(1.5 * var(--u));
+  margin-bottom: calc(18.5 * var(--u)); /* 298 − 279.5 */
+  background: var(--dourado);
+}
+
+.sobre__bloco {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: calc(41 * var(--u));
+}
+
+/* Figma 22:161 / 22:166 */
+.sobre__subtitulo {
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: clamp(27px, calc(38.5 * var(--u)), 42px);
+  line-height: calc(42 * var(--u));
+  color: #000;
+}
+
+/* Figma 22:164 — divisória fina entre missão e visão */
+.sobre__divisor {
+  width: 100%;
+  height: 1px;
+  /* como as linhas do Hero, a Line 5 do Figma desenha 1px acima da coordenada */
+  margin: calc(100 * var(--u) - 1px) 0 calc(100 * var(--u));
+  background: #000;
+}
+
+/* --------------------------------------------------------------------------
+   Respiro lateral da fotografia — só onde há margem sobrando.
+   Abaixo de 1200px o afastamento volta a zero, evitando overflow.
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 1200px) {
+  .sobre {
+    --afastamento: clamp(35px, calc(40 * var(--u)), 45px);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Animação de entrada (assets/js/sobre.js)
+   A coluna direita entra vindo de 100px à direita e, em telas de 1440 para
+   cima, passaria da borda da página, criando uma barra de rolagem horizontal
+   por um instante. O recorte vale só enquanto a entrada roda: o JS tira a
+   classe no fim, e o layout (inclusive o mobile atual) fica como está.
+   -------------------------------------------------------------------------- */
+
+.sobre--entrando {
+  overflow-x: clip;
+}
+
+/* ==========================================================================
+   Mobile (até 1023px) — Figma "Sobre Mobile" 167:2 (390 x 983)
+
+   Uma coluna: SOBRE A GVT · Quem somos? · texto · foto · traço · Nossa
+   missão · texto · CONHEÇA NOSSA HISTÓRIA. As colunas do desktop são
+   "achatadas" (display: contents) e os itens reordenados, sem duplicar HTML.
+   "Nossa visão" e a divisória ficam só no desktop.
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .sobre {
+    padding: calc(56 * var(--m)) 0 calc(79 * var(--m));
+  }
+
+  .sobre__container {
+    width: var(--coluna);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sobre__entrada,
+  .sobre__esquerda,
+  .sobre__direita {
+    display: contents;
+  }
+
+  .sobre__label   { order: 1; }
+  .sobre__titulo  { order: 2; }
+  .sobre__esquerda > .sobre__texto { order: 3; }
+  .sobre__foto    { order: 4; }
+  .sobre__traco   { order: 5; }
+  .sobre__bloco   { order: 6; }
+  .sobre__link    { order: 7; }
+
+  .sobre__divisor,
+  .sobre__bloco ~ .sobre__bloco {
+    display: none;
+  }
+
+  /* Figma 167:5 — Manrope ExtraBold 13, tracking 4 */
+  .sobre__label {
+    margin: 0;
+    font-size: calc(13 * var(--m));
+    line-height: normal;
+    letter-spacing: calc(4 * var(--m));
+  }
+
+  /* Figma 167:6 — Archivo Black 32 */
+  .sobre__titulo {
+    margin: calc(16 * var(--m)) 0 0;
+    font-size: calc(32 * var(--m));
+    line-height: normal;
+    color: var(--titulo);
+  }
+
+  /* Figma 167:7 / 167:12 — Manrope 15, entrelinha 1.5, que o Figma arredonda
+     para 23 (161 = 7 x 23; 115 = 5 x 23) */
+  .sobre__texto {
+    font-size: calc(15 * var(--m));
+    line-height: calc(23 * var(--m));
+    color: var(--titulo);
+  }
+
+  .sobre__esquerda > .sobre__texto {
+    margin-top: calc(16 * var(--m));
+  }
+
+  /* Figma 167:8 — 342 x 260, raio 24 (y 346) */
+  .sobre__foto {
+    width: 100%;
+    height: calc(260 * var(--m));
+    max-height: none;
+    margin-top: calc(44 * var(--m));
+    border-radius: calc(24 * var(--m));
+  }
+
+  /* Figma 167:17 — traço de 50 x 3, pontas arredondadas (y 650) */
+  .sobre__traco {
+    width: calc(50 * var(--m));
+    height: calc(3 * var(--m));
+    margin: calc(42.5 * var(--m)) 0 0; /* centrado em y 650 */
+    border-radius: calc(1.5 * var(--m));
+  }
+
+  .sobre__bloco {
+    margin-top: calc(18.5 * var(--m)); /* "Nossa missão" em y 670 */
+    gap: calc(20 * var(--m));
+  }
+
+  /* Figma 167:11 — Archivo Black 28 */
+  .sobre__subtitulo {
+    font-size: calc(28 * var(--m));
+    line-height: calc(30 * var(--m)); /* caixa de 30 no frame */
+    color: var(--titulo);
+  }
+
+  /* Figma 161:14 — texto 16 + seta, vão 25; sublinhado amarelo (y 903) */
+  .sobre__link {
+    margin-top: calc(44 * var(--m)); /* y 879 */
+    align-items: flex-start;
+    gap: calc(25 * var(--m));
+  }
+
+  /* no frame a caixa do texto (17.28) é menor que a linha, e o texto
+     transborda para baixo a partir do topo: entrelinha normal; o sublinhado
+     fica 24 abaixo do topo (y 903) */
+  .sobre__link-texto {
+    padding-bottom: calc(24 * var(--m) - 1lh);
+    font-size: calc(16 * var(--m));
+    line-height: normal;
+    border-bottom-color: var(--amarelo-destaque);
+  }
+
+  /* a seta do frame (16 x 9) fica centrada na caixa de 17.28 do texto; o SVG
+     inclui a espessura do traço (0.75 de cada lado) */
+  .sobre__link-seta {
+    width: calc(17.54 * var(--m));
+    height: calc(10.46 * var(--m));
+    margin: calc(3.41 * var(--m)) calc(-0.75 * var(--m)) 0;
+  }
+}
+

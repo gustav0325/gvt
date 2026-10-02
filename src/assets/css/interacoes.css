@@ -1,0 +1,499 @@
+/* ==========================================================================
+   Microinterações de hover — botões e links do site
+
+   Só acrescenta camadas e transições: nenhuma largura, altura, padding,
+   raio, fonte ou cor-base definidos nos CSS das seções é alterada.
+
+   Um único estado para tudo: --ativo vale 1 no hover (apenas em dispositivos
+   com mouse, para o toque não deixar o estado preso) e no foco por teclado
+   (:focus-visible). Todos os efeitos abaixo derivam dele (os filtros dos
+   ícones, de --icone-para-claro / --icone-para-escuro, definidos junto):
+
+     CTA amarelo     preenchimento grafite entra da esquerda; texto → branco
+     CTA contorno    preenchimento claro entra da esquerda; texto → escuro
+     link editorial  o sublinhado avança até a seta
+     navbar          linha amarela fina cresce sob o link
+     setas           avançam 6px (propriedade translate, que não apaga o
+                     rotate da seta do WhatsApp)
+   ========================================================================== */
+
+:root {
+  --hover-tempo: 0.45s;
+  --hover-curva: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero__cta:hover,
+  .sn-chamada__botao:hover,
+  .obras__botao:hover,
+  .contato__botao:hover,
+  .sobre__link:hover,
+  .servicos__link:hover,
+  .nav__link:hover {
+    --ativo: 1;
+    --icone-para-claro: brightness(0) invert(1);
+    --icone-para-escuro: brightness(0);
+  }
+}
+
+.hero__cta:focus-visible,
+.sn-chamada__botao:focus-visible,
+.obras__botao:focus-visible,
+.contato__botao:focus-visible,
+.sobre__link:focus-visible,
+.servicos__link:focus-visible,
+.nav__link:focus-visible {
+  --ativo: 1;
+  --icone-para-claro: brightness(0) invert(1);
+  --icone-para-escuro: brightness(0);
+}
+
+/* --------------------------------------------------------------------------
+   Botões com preenchimento
+   A camada fica atrás do texto e dos ícones (z-index -1 dentro do contexto
+   isolado do botão) e é recortada pelo próprio raio (overflow hidden).
+   O .obras__botao já é position: absolute, por isso não entra no relative.
+   .sn-chamada__botao é o CTA da página Sobre Nós, igual ao .obras__botao.
+   -------------------------------------------------------------------------- */
+
+.hero__cta,
+.sn-chamada__botao,
+.contato__botao {
+  position: relative;
+}
+
+.hero__cta,
+.sn-chamada__botao,
+.obras__botao,
+.contato__botao {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.hero__cta::before,
+.sn-chamada__botao::before,
+.obras__botao::before,
+.contato__botao::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--titulo); /* grafite */
+  transform: scaleX(var(--ativo, 0));
+  transform-origin: left center;
+  pointer-events: none;
+  transition: transform var(--hover-tempo) var(--hover-curva);
+}
+
+/* Halo: fundo e camada são recortados pela mesma curva do raio, e nos
+   pixels da borda o amarelo vazaria em volta do grafite. Quando a camada já
+   cobriu o botão, o próprio fundo passa a grafite (atraso de 0.3s só na
+   entrada: o atraso sai de --ativo, então na saída o amarelo volta na hora e
+   a camada recua sobre ele). Em repouso a mistura é 0%: a cor original. */
+.hero__cta,
+.sn-chamada__botao,
+.obras__botao,
+.contato__botao--wpp {
+  transition: background-color 0.15s linear calc(var(--ativo, 0) * 0.3s);
+}
+
+.hero__cta {
+  background-color: color-mix(in srgb, var(--titulo) calc(var(--ativo, 0) * 100%), var(--dourado));
+}
+
+.sn-chamada__botao,
+.obras__botao,
+.contato__botao--wpp {
+  background-color: color-mix(in srgb, var(--titulo) calc(var(--ativo, 0) * 100%), var(--amarelo-destaque));
+}
+
+/* contorno: o preenchimento é a cor da própria borda */
+.contato__botao--vazado::before {
+  background: var(--fundo-principal);
+}
+
+/* textos: amarelo → branco sobre o grafite; contorno → escuro sobre o claro.
+   (o texto do CTA do Hero já é claro e continua igual) */
+.sn-chamada__botao-texto,
+.obras__botao-texto,
+.contato__botao-texto {
+  transition: color var(--hover-tempo) var(--hover-curva);
+}
+
+.sn-chamada__botao-texto,
+.obras__botao-texto {
+  color: color-mix(in srgb, #fff calc(var(--ativo, 0) * 100%), #000);
+}
+
+.contato__botao--wpp .contato__botao-texto {
+  color: color-mix(in srgb, #fff calc(var(--ativo, 0) * 100%), var(--titulo));
+}
+
+.contato__botao--vazado .contato__botao-texto {
+  color: color-mix(in srgb, var(--titulo) calc(var(--ativo, 0) * 100%), var(--fundo-principal));
+}
+
+/* ícones em <img>: os escuros viram brancos, a seta clara do contorno vira
+   escura. Em repouso não há filtro nenhum (nem um filtro neutro, que já
+   muda a rasterização da imagem); o filtro só existe no estado ativo, e a
+   transição de none até ele é interpolada. */
+.sn-chamada__botao-seta,
+.obras__botao-seta,
+.contato__botao-wpp-icone,
+.contato__botao--wpp .contato__botao-seta {
+  filter: var(--icone-para-claro, none);
+  transition:
+    filter var(--hover-tempo) var(--hover-curva),
+    translate var(--hover-tempo) var(--hover-curva);
+}
+
+.contato__botao--vazado .contato__botao-seta {
+  filter: var(--icone-para-escuro, none);
+  transition:
+    filter var(--hover-tempo) var(--hover-curva),
+    translate var(--hover-tempo) var(--hover-curva);
+}
+
+/* --------------------------------------------------------------------------
+   Setas: avançam 6px. O ícone do WhatsApp não se move.
+   -------------------------------------------------------------------------- */
+
+.hero__cta-icone,
+.sn-chamada__botao-seta,
+.obras__botao-seta,
+.contato__botao-seta,
+.sobre__link-seta,
+.servicos__link-seta {
+  translate: calc(var(--ativo, 0) * 6px) 0;
+}
+
+.hero__cta-icone,
+.sobre__link-seta,
+.servicos__link-seta {
+  transition: translate var(--hover-tempo) var(--hover-curva);
+}
+
+/* --------------------------------------------------------------------------
+   Links editoriais: o sublinhado existente avança até onde estava a seta,
+   que por sua vez anda 6px. Sem caixa, sem fundo.
+   -------------------------------------------------------------------------- */
+
+.sobre__link-texto,
+.servicos__link-texto {
+  position: relative;
+}
+
+.sobre__link-texto::after,
+.servicos__link-texto::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  bottom: -1px; /* sobre a borda inferior existente */
+  height: 1px;
+  transform: scaleX(var(--ativo, 0));
+  transform-origin: left center;
+  pointer-events: none;
+  transition: transform var(--hover-tempo) var(--hover-curva);
+}
+
+/* larguras = o vão entre o texto e a seta de cada link */
+.sobre__link-texto::after {
+  width: calc(30 * var(--u));
+  background: var(--dourado);
+}
+
+.servicos__link-texto::after {
+  width: calc(29 * var(--s));
+  background: currentColor;
+}
+
+/* --------------------------------------------------------------------------
+   Navbar: linha amarela fina crescendo sob o link. O item ativo (INICIO)
+   mantém o próprio destaque e não recebe a linha.
+   -------------------------------------------------------------------------- */
+
+/* só nos links comuns: position relative no item ativo altera a pintura do
+   brilho (text-shadow) dele, que precisa continuar exatamente como está */
+.nav__link:not(.nav__link--active) {
+  position: relative;
+}
+
+.nav__link:not(.nav__link--active)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-6 * var(--base));
+  height: 1px;
+  background: var(--amarelo-destaque);
+  transform: scaleX(var(--ativo, 0));
+  transform-origin: left center;
+  pointer-events: none;
+  transition: transform var(--hover-tempo) var(--hover-curva);
+}
+
+/* --------------------------------------------------------------------------
+   Movimento reduzido: nada desliza nem cresce; as camadas e linhas apenas
+   aparecem com um fade curto, e as setas ficam paradas.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__cta::before,
+  .sn-chamada__botao::before,
+  .obras__botao::before,
+  .contato__botao::before,
+  .sobre__link-texto::after,
+  .servicos__link-texto::after,
+  .nav__link:not(.nav__link--active)::after {
+    transform: none;
+    opacity: var(--ativo, 0);
+    transition: opacity 0.2s linear;
+  }
+
+  .hero__cta-icone,
+  .sn-chamada__botao-seta,
+  .obras__botao-seta,
+  .contato__botao-seta,
+  .sobre__link-seta,
+  .servicos__link-seta {
+    translate: none;
+  }
+}
+
+/* ==========================================================================
+   Footer — hovers
+   Mesma linguagem, um pouco mais rápida (0.35s): links ficam amarelos com um
+   sublinhado que cresce da esquerda; contatos ganham o amarelo e avançam 3px;
+   os sociais recebem um círculo amarelo atrás, com o ícone preto. O logo, a
+   descrição e o copyright não têm hover.
+   ========================================================================== */
+
+.rodape {
+  --hover-tempo-rodape: 0.35s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .rodape__lista a:hover,
+  .rodape__contatos li:hover,
+  .rodape__social:hover {
+    --ativo: 1;
+  }
+}
+
+.rodape__lista a:focus-visible,
+.rodape__contatos li:has(a:focus-visible),
+.rodape__social:focus-visible {
+  --ativo: 1;
+}
+
+/* --- Navegação e Serviços ------------------------------------------------ */
+
+.rodape__lista a {
+  position: relative;
+  color: color-mix(in srgb, var(--amarelo-destaque) calc(var(--ativo, 0) * 100%), #fff);
+  transition: color var(--hover-tempo-rodape) var(--hover-curva);
+}
+
+.rodape__lista a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-2 * var(--f));
+  height: 1px;
+  background: var(--amarelo-destaque);
+  transform: scaleX(var(--ativo, 0));
+  transform-origin: left center;
+  pointer-events: none;
+  transition: transform var(--hover-tempo-rodape) var(--hover-curva);
+}
+
+/* --- Fale conosco -------------------------------------------------------- */
+
+/* o item inteiro (ícone + texto) avança no máximo 3px */
+.rodape__contatos li {
+  position: relative;
+  translate: calc(var(--ativo, 0) * 3px) 0;
+  transition: translate var(--hover-tempo-rodape) var(--hover-curva);
+}
+
+.rodape__contatos li :is(a, span) {
+  color: color-mix(in srgb, #f8cb4a calc(var(--ativo, 0) * 100%), #fff);
+  transition: color var(--hover-tempo-rodape) var(--hover-curva);
+}
+
+/* Ícone amarelo exato: uma cópia do mesmo SVG, pintada por mask-image, fica
+   sobre o original e os dois trocam de opacidade. Em repouso a cópia está
+   invisível e o ícone é exatamente o de hoje. */
+.rodape__contatos li img {
+  opacity: calc(1 - var(--ativo, 0));
+  transition: opacity var(--hover-tempo-rodape) var(--hover-curva);
+}
+
+.rodape__contatos li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  translate: 0 -50%;
+  background: var(--amarelo-destaque);
+  -webkit-mask: var(--icone) center / contain no-repeat;
+          mask: var(--icone) center / contain no-repeat;
+  opacity: var(--ativo, 0);
+  pointer-events: none;
+  transition: opacity var(--hover-tempo-rodape) var(--hover-curva);
+}
+
+/* mesmas caixas dos ícones em footer.css */
+.rodape__contatos li:nth-child(1)::before {
+  --icone: url("/assets/img/global/icons/icon_telefone.svg");
+  width: calc(11 * var(--f));
+  height: calc(11 * var(--f));
+}
+
+.rodape__contatos li:nth-child(2)::before {
+  --icone: url("/assets/img/global/icons/icon_email.svg");
+  width: calc(14 * var(--f));
+  height: calc(11 * var(--f));
+}
+
+.rodape__contatos li:nth-child(3)::before {
+  --icone: url("/assets/img/global/icons/icon_local.svg");
+  width: calc(8 * var(--f));
+  height: calc(11 * var(--f));
+}
+
+/* --- Instagram e WhatsApp ------------------------------------------------ */
+
+.rodape__social {
+  position: relative;
+  isolation: isolate;
+}
+
+/* círculo de 40 unidades centrado no ícone de 25 (7.5 de folga em volta);
+   com o vão de 34 entre os ícones, os dois círculos nunca se tocam */
+.rodape__social::before {
+  content: "";
+  position: absolute;
+  inset: calc(-7.5 * var(--f));
+  z-index: -1;
+  border-radius: 50%;
+  background: var(--amarelo-destaque);
+  opacity: var(--ativo, 0);
+  transform: scale(calc(0.6 + var(--ativo, 0) * 0.4));
+  pointer-events: none;
+  transition:
+    opacity var(--hover-tempo-rodape) var(--hover-curva),
+    transform var(--hover-tempo-rodape) var(--hover-curva);
+}
+
+.rodape__social img {
+  scale: calc(1 + var(--ativo, 0) * 0.04);
+  /* em repouso, sem filtro nenhum; no hover o ícone claro fica preto */
+  filter: var(--icone-social, none);
+  transition:
+    scale var(--hover-tempo-rodape) var(--hover-curva),
+    filter var(--hover-tempo-rodape) var(--hover-curva);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .rodape__social:hover {
+    --icone-social: brightness(0);
+  }
+}
+
+.rodape__social:focus-visible {
+  --icone-social: brightness(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rodape__lista a::after {
+    transform: none;
+    opacity: var(--ativo, 0);
+    transition: opacity 0.2s linear;
+  }
+
+  .rodape__contatos li {
+    translate: none;
+  }
+
+  .rodape__social::before {
+    transform: none;
+  }
+
+  .rodape__social img {
+    scale: none;
+  }
+}
+
+/* ==========================================================================
+   Toque (celular, tablet)
+   Sem hover, o retorno vem no próprio toque: enquanto o dedo está sobre o
+   CTA ele cede de leve (97%) e escurece um pouco, e volta ao soltar. Nada
+   depende disso para ser entendido — os botões já dizem o que fazem. O
+   realce azul/cinza padrão do navegador sai, para não somar ao nosso.
+   As transições repetem a do fundo (acima) e acrescentam a do toque.
+   ========================================================================== */
+
+@media (hover: none), (pointer: coarse) {
+  .hero__cta,
+  .sn-chamada__botao,
+  .obras__botao,
+  .contato__botao,
+  .sobre__link,
+  .servicos__link,
+  .rodape__social,
+  .rodape__lista a,
+  .rodape__contatos a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .hero__cta,
+  .sn-chamada__botao,
+  .obras__botao,
+  .contato__botao--wpp {
+    transition:
+      background-color 0.15s linear calc(var(--ativo, 0) * 0.3s),
+      scale 0.25s var(--hover-curva),
+      filter 0.25s var(--hover-curva);
+  }
+
+  .contato__botao--vazado {
+    transition:
+      scale 0.25s var(--hover-curva),
+      opacity 0.25s var(--hover-curva);
+  }
+
+  .sobre__link,
+  .servicos__link {
+    transition: opacity 0.25s var(--hover-curva);
+  }
+
+  .hero__cta:active,
+  .sn-chamada__botao:active,
+  .obras__botao:active,
+  .contato__botao--wpp:active {
+    scale: 0.97;
+    filter: brightness(0.9);
+  }
+
+  .contato__botao--vazado:active {
+    scale: 0.97;
+    opacity: 0.75;
+  }
+
+  .sobre__link:active,
+  .servicos__link:active {
+    opacity: 0.6;
+  }
+}
+
+@media (hover: none) and (prefers-reduced-motion: reduce),
+       (pointer: coarse) and (prefers-reduced-motion: reduce) {
+  .hero__cta:active,
+  .sn-chamada__botao:active,
+  .obras__botao:active,
+  .contato__botao:active {
+    scale: none;
+  }
+}

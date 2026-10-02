@@ -1,0 +1,454 @@
+/* ==========================================================================
+   Seção Obras — Figma node 35:446 (frame 1440 x 1024)
+
+   ESTRATÉGIA DE ESCALA
+   Mesma das seções Hero e Sobre, e deliberadamente DIFERENTE da de Serviços:
+   as POSIÇÕES horizontais são porcentagens da grade de 1440 (o conteúdo
+   acompanha a largura da tela) e os TAMANHOS usam --o, que encolhe pelo que
+   faltar primeiro — altura ou largura:
+
+       --o = min(100vh / 1024, 100vw / 1440)
+
+   Assim a seção ocupa exatamente 100vh, mapa e card cabem juntos e a
+   composição não é esticada na proporção do frame.
+   ========================================================================== */
+
+.obras {
+  --o: clamp(0.5px, min(0.09766vh, 0.06944vw), 1.25px);
+
+  position: relative;
+  height: 100vh;
+  background: var(--fundo-principal);
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Mapa — Figma 38:534 (slot x 15, y 155, 772x869)
+
+   Ampliado 4% e deslocado para a direita (1.04% -> 3.5%) para ocupar o vão
+   central. O teto é baixo por geometria: dentro do slot o desenho do Brasil
+   mede 750x839 e precisa caber entre a navbar (132) e a base (1024) — 892 de
+   espaço. Em 5% a ponta do Rio Grande do Sul encosta na borda inferior e em
+   6% o mapa passaria por baixo da navbar; 4% mantém folga real nos dois lados.
+
+   O max-width de 51% evita que o mapa encoste no card em telas de proporção
+   próxima à do frame; a aspect-ratio mantém as medidas travadas, sem distorção.
+   -------------------------------------------------------------------------- */
+
+.obras__mapa {
+  position: absolute;
+  left: calc(3.5% + 25px);
+  top: calc(141 * var(--o)); /* centra o desenho entre a navbar e a base */
+  /* o mesmo 25px sai do teto, para o respiro até o card não encolher */
+  width: min(calc(803 * var(--o)), calc(51% - 25px)); /* 772 * 1.04 */
+  aspect-ratio: 772 / 869;
+}
+
+.obras__mapa-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center top;
+}
+
+/* --------------------------------------------------------------------------
+   Legenda à esquerda — Figma 38:543 (x 80, y 728, w 152, gap 18)
+   -------------------------------------------------------------------------- */
+
+.obras__legenda {
+  position: absolute;
+  left: calc(8% + 25px); /* acompanha o deslocamento do mapa (Figma: x 80) */
+  top: calc(715 * var(--o)); /* sobe junto com o mapa */
+  width: calc(152 * var(--o));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(18 * var(--o));
+}
+
+/* Figma 38:536 — risco dourado de 69 x 2 */
+.obras__legenda-risco {
+  display: block;
+  width: calc(69 * var(--o));
+  height: calc(2 * var(--o));
+  margin-top: calc(-2 * var(--o)); /* a linha do Figma desenha acima da coordenada */
+  background: var(--dourado);
+}
+
+.obras__legenda-texto {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  font-size: clamp(13px, calc(18 * var(--o)), 20px);
+  line-height: calc(25 * var(--o));
+  letter-spacing: calc(4 * var(--o));
+  color: #8b8b8b;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Card branco — Figma 38:502 (x 825, y 201, 860x754)
+   Só os cantos da esquerda são arredondados: o card sangra pela direita,
+   como no frame (825 + 860 = 1685 > 1440).
+   -------------------------------------------------------------------------- */
+
+.obras__card {
+  position: absolute;
+  left: 57.2917%; /* x 825 de 1440 */
+  top: calc(201 * var(--o));
+  width: calc(860 * var(--o));
+  min-width: 42.7084%; /* garante a sangria à direita em qualquer tela */
+  height: calc(754 * var(--o));
+  background: #fff;
+  border-radius: calc(50 * var(--o)) 0 0 calc(50 * var(--o));
+  box-shadow:
+    0 35px 10px rgba(0, 0, 0, 0),
+    0 22px 9px rgba(0, 0, 0, 0.04),
+    0 12px 7px rgba(0, 0, 0, 0.13),
+    0 6px 6px rgba(0, 0, 0, 0.22),
+    0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* Conteúdo — Figma 38:527 (x 884, y 261, w 522, gap 39) */
+.obras__card-conteudo {
+  position: absolute;
+  left: calc(59 * var(--o)); /* 884 − 825 */
+  top: calc(60 * var(--o));  /* 261 − 201 */
+  /* a largura acompanha a fonte do título (razão 522/44 = 11.86 do frame),
+     para o título manter as 3 linhas da referência. Sem clamp proprio: piso ou
+     teto aqui quebram a proporção conteúdo/card que o frame define. */
+  width: calc(581 * var(--o));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Etiqueta — Figma 38:506 (risco 93x2 + gap 24 + texto) */
+.obras__etiqueta {
+  display: flex;
+  align-items: center;
+  gap: calc(24 * var(--o));
+  margin: 0 0 calc(20 * var(--o));
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  font-size: calc(20 * var(--o));
+  letter-spacing: calc(5 * var(--o));
+  color: var(--texto-sec);
+  white-space: nowrap;
+}
+
+.obras__etiqueta-risco {
+  display: block;
+  flex-shrink: 0;
+  width: calc(93 * var(--o));
+  height: calc(2 * var(--o));
+  background: var(--dourado);
+}
+
+/* Figma 38:505 — Archivo Black 44, tracking 1.5 */
+.obras__titulo {
+  width: 100%;
+  margin: 0 0 calc(20 * var(--o));
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(49 * var(--o));
+  line-height: normal;
+  letter-spacing: calc(1.5 * var(--o));
+  color: #000;
+}
+
+/* Figma 38:508 */
+.obras__descricao {
+  width: 100%;
+  margin: 0 0 calc(39 * var(--o));
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(21 * var(--o));
+  line-height: calc(28 * var(--o));
+  color: var(--texto-sec);
+}
+
+/* Bloco do contador — Figma 38:522 (w 490, gap 39) */
+.obras__numeros {
+  width: calc(545 * var(--o));
+  display: flex;
+  flex-direction: column;
+  gap: calc(39 * var(--o));
+  margin-bottom: 0; /* o CTA saiu deste fluxo: ancora na base do card */
+}
+
+.obras__divisor {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--texto-sec);
+  opacity: 0.4;
+}
+
+/* Figma 38:519 — capacete + divisor vertical + contador, gap 45 */
+.obras__numeros-linha {
+  display: flex;
+  align-items: center;
+  gap: calc(45 * var(--o));
+}
+
+.obras__capacete {
+  flex-shrink: 0;
+  width: calc(127 * var(--o));
+  height: calc(88 * var(--o));
+  object-fit: contain;
+}
+
+.obras__divisor-vertical {
+  display: block;
+  flex-shrink: 0;
+  width: 1px;
+  height: calc(167 * var(--o));
+  background: var(--texto-sec);
+  opacity: 0.4;
+}
+
+.obras__contador {
+  display: flex;
+  flex-direction: column;
+  width: calc(270 * var(--o));
+  margin: 0;
+}
+
+/* Figma 38:514 — Archivo Black 88 em amarelo, com margin-bottom negativa */
+.obras__contador-numero {
+  margin-bottom: calc(-18 * var(--o));
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(88 * var(--o));
+  line-height: normal;
+  color: var(--amarelo-destaque);
+}
+
+.obras__contador-texto {
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(20.7 * var(--o));
+  line-height: normal;
+  color: var(--texto-sec);
+}
+
+/* Botão — Figma 38:526: 196.058x40, padding 10/20, raio 10, gap 18.
+   No frame ele fica em (884, 854) e o card em (825, 201, 860x754), ou seja
+   59 da borda esquerda do card e 61 da inferior. Ancorado na base do card,
+   e nao no fim do fluxo do conteudo, para nunca atravessar essa borda. */
+.obras__botao {
+  position: absolute;
+  left: calc(59 * var(--o));
+  bottom: calc(61 * var(--o));
+  display: inline-flex;
+  align-items: center;
+  gap: calc(18 * var(--o));
+  padding: calc(10 * var(--o)) calc(20 * var(--o));
+  border-radius: calc(10 * var(--o));
+  background: var(--amarelo-destaque);
+}
+
+.obras__botao-texto {
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  /* Figma 38:524: Manrope ExtraBold 15, tracking 5, caixa de 123x20 */
+  font-size: calc(15 * var(--o));
+  line-height: normal;
+  letter-spacing: calc(5 * var(--o));
+  /* o CSS aplica o tracking tambem depois do ultimo caractere, o Figma nao;
+     sem isto a caixa do texto sai 5 mais larga e o vao ate a seta vira 23 */
+  margin-right: calc(-5 * var(--o));
+  color: #000;
+  white-space: nowrap;
+}
+
+.obras__botao-seta {
+  flex-shrink: 0;
+  /* Figma 38:525: 15.058 x 10.540 */
+  width: calc(15.058 * var(--o));
+  height: calc(10.54 * var(--o));
+}
+
+/* ==========================================================================
+   Mobile (até 1023px) — Figma "Obras Mobile" 174:2 (390 x 1159)
+
+   Coluna única, integrada ao fundo claro, sem o card flutuante: o card e o
+   bloco de conteúdo do desktop viram display: contents e os itens são
+   reordenados — etiqueta · título · texto · 250+ · VER OBRAS · mapa ·
+   microtexto. Blocos separados por 30, respiro de 64 em cima e embaixo.
+
+   O mapa fica em .obras__mapa, que continua sendo o container posicionado
+   com a proporção travada do desenho: marcadores por estado entram depois
+   ali dentro, em coordenadas percentuais, sem mexer no resto da seção.
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .obras {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: calc(64 * var(--m)) var(--margem-mobile);
+  }
+
+  .obras__card,
+  .obras__card-conteudo {
+    display: contents;
+  }
+
+  .obras__etiqueta  { order: 1; }
+  .obras__titulo    { order: 2; }
+  .obras__descricao { order: 3; }
+  .obras__numeros   { order: 4; }
+  .obras__botao     { order: 5; }
+  .obras__mapa      { order: 6; }
+  .obras__legenda   { order: 7; }
+
+  /* Figma 174:5 — risco 40 x 2 + vão 16 + ExtraBold 13, tracking 3 */
+  .obras__etiqueta {
+    gap: calc(16 * var(--m));
+    margin: 0;
+    font-size: calc(13 * var(--m));
+    line-height: calc(18 * var(--m));
+    letter-spacing: calc(3 * var(--m));
+  }
+
+  .obras__etiqueta-risco {
+    width: calc(40 * var(--m));
+    height: 2px;
+  }
+
+  /* Figma 174:8 — Archivo Black 30, linhas de 35 */
+  .obras__titulo {
+    margin: calc(18 * var(--m)) 0 0;
+    font-size: calc(30 * var(--m));
+    line-height: calc(35 * var(--m));
+    letter-spacing: calc(0.5 * var(--m));
+  }
+
+  /* Figma 174:9 — Manrope 15, linhas de 23 */
+  .obras__descricao {
+    margin: calc(18 * var(--m)) 0 0;
+    font-size: calc(15 * var(--m));
+    line-height: calc(23 * var(--m));
+  }
+
+  /* Figma 174:10 — linha cheia, 32, e a fileira capacete | divisor | 250+ */
+  .obras__numeros {
+    width: 100%;
+    margin: calc(30 * var(--m)) 0 0;
+    gap: calc(32 * var(--m));
+  }
+
+  /* as linhas do Figma têm altura 0 e desenham acima da coordenada: não
+     ocupam espaço no fluxo */
+  .obras__divisor {
+    margin-top: -1px;
+    opacity: 1;
+    /* no frame a linha fica acima do bloco e o recorte dele a esconde: no
+       design aprovado ela não aparece */
+    visibility: hidden;
+  }
+
+  .obras__numeros-linha {
+    gap: calc(20 * var(--m));
+  }
+
+  .obras__capacete {
+    width: calc(75.05 * var(--m));
+    height: calc(52 * var(--m));
+  }
+
+  .obras__divisor-vertical {
+    height: calc(60 * var(--m));
+    background: #b3b3b3;
+    opacity: 1;
+  }
+
+  .obras__contador {
+    width: calc(190 * var(--m));
+  }
+
+  /* Figma 174:16 / 174:17 — 250+ em Archivo Black 50 (caixa de 54) */
+  .obras__contador-numero {
+    margin: 0;
+    font-size: calc(50 * var(--m));
+    line-height: calc(54 * var(--m));
+  }
+
+  .obras__contador-texto {
+    font-size: calc(14 * var(--m));
+    line-height: calc(19 * var(--m));
+  }
+
+  /* Figma 174:18 — padding 12/20, gap 14, raio 10 (y 503) */
+  .obras__botao {
+    position: static;
+    margin-top: calc(30 * var(--m));
+    gap: calc(14 * var(--m));
+    padding: calc(12 * var(--m)) calc(20 * var(--m));
+    border-radius: calc(10 * var(--m));
+  }
+
+  .obras__botao-texto {
+    font-size: calc(14 * var(--m));
+    line-height: calc(19 * var(--m));
+    letter-spacing: calc(3 * var(--m));
+    margin-right: calc(-3 * var(--m));
+  }
+
+  /* a seta do frame tem 15.06 x 10.54; o SVG inclui a espessura do traço */
+  .obras__botao-seta {
+    width: calc(16.06 * var(--m));
+    height: calc(11.54 * var(--m));
+    margin: calc(-0.5 * var(--m));
+  }
+
+  /* Figma 178:3 — 366 x 412, 12 além da coluna de cada lado (y 576) */
+  .obras__mapa {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: calc(366 * var(--m));
+    max-width: none;
+    margin: calc(30 * var(--m)) 0 0 calc(-12 * var(--m));
+  }
+
+  /* Figma 174:22 — risco 40 x 2, vão 14, SemiBold 14 em linhas de 21 */
+  .obras__legenda {
+    position: static;
+    width: 100%;
+    margin-top: calc(30 * var(--m));
+    gap: calc(14 * var(--m));
+  }
+
+  .obras__legenda-risco {
+    width: calc(40 * var(--m));
+    height: 2px;
+    margin-top: -2px; /* desenha acima da coordenada, como no frame */
+    visibility: hidden; /* e, como no frame, o recorte do bloco a esconde */
+  }
+
+  /* três linhas no frame: "DO NORTE AO SUL," / "CONSTRUINDO O BRASIL" /
+     "COM VOCÊ." — as cinco linhas do desktop, reagrupadas */
+  .obras__legenda-texto {
+    display: block;
+    font-size: calc(14 * var(--m));
+    line-height: calc(21 * var(--m));
+    letter-spacing: calc(2.5 * var(--m));
+  }
+
+  .obras__legenda-texto span {
+    display: inline;
+  }
+
+  .obras__legenda-texto span:nth-child(2)::after,
+  .obras__legenda-texto span:nth-child(4)::after {
+    content: "\A";
+    white-space: pre;
+  }
+}
+

@@ -1,0 +1,429 @@
+/* ==========================================================================
+   Página Contato — Figma "Contato" 82:2 (1440 x 1390)
+
+   Prefixo ct- (a Home já tem uma seção .contato). Mesmo sistema das outras
+   páginas internas: a unidade --p é 1/1440 da largura, com teto; tudo fica
+   entre as margens de 80 do frame (cartões e mapa ocupam a mesma largura).
+
+   Ritmo vertical: cartões de 284 em y 369 · mapa de 310 em 696 · rodapé em
+   1060 (54 depois do mapa), como no frame. O bloco de abertura (título,
+   subtítulo e selo) sobe 56 em relação ao Figma (título em 148, não 204),
+   a pedido do usuário: esses 56 passam para o respiro antes dos cartões,
+   então os cartões e tudo abaixo deles ficam no lugar.
+
+   Alturas de linha = altura da caixa de cada texto no Figma (o line-height
+   que o MCP informa não é o real). Manrope 800 é carregado só nesta página
+   (front matter fontesPagina). Animações em assets/js/contato-pagina.js (o
+   bloco no fim deste arquivo); o layout é o estado final delas.
+   ========================================================================== */
+
+.ct-pagina {
+  --p: clamp(0.6px, calc(100vw / 1440), 1.15px);
+  --margem: 5.5556%; /* x 80 */
+  padding: calc(148 * var(--p)) var(--margem) calc(54 * var(--p));
+  background: var(--branco);
+  color: #000;
+}
+
+/* --------------------------------------------------------------------------
+   Abertura — título e subtítulo à esquerda, o selo à direita (x 1238, a 80
+   da borda). No Figma a caixa do subtítulo começa 81 abaixo da do título
+   (6 antes do fim dela): os três ficam na mesma célula da grade, cada um com
+   o seu recuo a partir do topo.
+   -------------------------------------------------------------------------- */
+
+.ct-abertura {
+  display: grid;
+  grid-template-columns: 1fr calc(122 * var(--p));
+  align-items: start;
+}
+
+.ct-abertura > * {
+  grid-row: 1;
+}
+
+/* Figma 83:316 — Manrope ExtraBold 64, caixa de 87; "GVT" em amarelo */
+.ct-titulo {
+  grid-column: 1;
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  font-size: calc(64 * var(--p));
+  line-height: calc(87 * var(--p));
+  white-space: nowrap;
+}
+
+.ct-destaque {
+  color: var(--amarelo-destaque);
+}
+
+/* Figma 83:317 — Manrope Regular 22, caixa de 30, y 285 */
+.ct-subtitulo {
+  grid-column: 1;
+  margin-top: calc(81 * var(--p));
+  font-size: calc(22 * var(--p));
+  line-height: calc(30 * var(--p));
+  color: var(--texto-sec);
+  white-space: nowrap;
+}
+
+/* Figma 83:321 — Manrope SemiBold 15, espaçamento 3, três linhas de 20
+   com 2 entre elas, y 216 */
+.ct-selo {
+  grid-column: 2;
+  margin-top: calc(12 * var(--p));
+  font-weight: 600;
+  font-size: calc(15 * var(--p));
+  line-height: calc(20 * var(--p));
+  letter-spacing: calc(3 * var(--p));
+  color: var(--texto-sec);
+  white-space: nowrap;
+}
+
+.ct-selo span {
+  display: block;
+}
+
+.ct-selo span + span {
+  margin-top: calc(2 * var(--p));
+}
+
+/* --------------------------------------------------------------------------
+   Cartões — Figma 83:322–324: 411 x 284, 24 entre eles, borda de 1 #696969,
+   raio 20. Por dentro (medidas a partir da borda externa): ícone a 25 do
+   topo numa faixa de 32; título a 79; textos alinhados a 36 da esquerda.
+   O 1px da borda sai do recuo para os textos caírem no x do Figma.
+   -------------------------------------------------------------------------- */
+
+.ct-cartoes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(24 * var(--p));
+  margin-top: calc(110 * var(--p)); /* da caixa do subtítulo (259) a 369 */
+}
+
+.ct-cartao {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: calc(284 * var(--p));
+  padding: calc(25 * var(--p) - 1px) 0 0 calc(36 * var(--p) - 1px);
+  border: 1px solid #696969;
+  border-radius: calc(20 * var(--p));
+}
+
+/* Ícones (Figma 211:3, 211:16, 211:24) — cada um com o seu x no frame:
+   WhatsApp a 34 da borda, envelope a 44, marcador a 36; o envelope (25 de
+   altura) fica centrado na faixa de 32 */
+.ct-cartao__icone {
+  width: auto;
+  height: calc(32 * var(--p));
+}
+
+.ct-cartao--whatsapp .ct-cartao__icone {
+  margin-left: calc(-2 * var(--p));
+}
+
+.ct-cartao--email .ct-cartao__icone {
+  height: calc(25 * var(--p));
+  margin: calc(3.5 * var(--p)) 0 calc(3.5 * var(--p)) calc(8 * var(--p));
+}
+
+/* Figma 83:325 / 83:337 / 83:346 — Manrope ExtraBold 32, caixa de 44 */
+.ct-cartao__titulo {
+  margin-top: calc(22 * var(--p));
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  font-size: calc(32 * var(--p));
+  line-height: calc(44 * var(--p));
+  white-space: nowrap;
+}
+
+/* Grupo de informações, 71 abaixo do topo do título */
+.ct-cartao__info {
+  margin: calc(27 * var(--p)) 0 0;
+}
+
+/* rótulos — Manrope Regular 17, caixa de 23, 5 à direita do título */
+.ct-cartao__rotulo {
+  margin-left: calc(5 * var(--p));
+  font-size: calc(17 * var(--p));
+  line-height: calc(23 * var(--p));
+  color: var(--texto-sec);
+}
+
+/* valores — Manrope Bold 25, caixa de 34 */
+.ct-cartao__valor {
+  margin: 0;
+  font-weight: 700;
+  font-size: calc(25 * var(--p));
+  line-height: calc(34 * var(--p));
+  color: var(--titulo);
+  white-space: nowrap;
+}
+
+/* Atendimento (Figma 83:348) — valores menores (Bold 18, caixa de 25),
+   alinhados aos rótulos; "Horário:" 17 abaixo de "São Paulo - SP" e 1 mais
+   à esquerda, como no frame */
+.ct-cartao--atendimento .ct-cartao__valor {
+  margin-left: calc(5 * var(--p));
+  font-size: calc(18 * var(--p));
+  line-height: calc(25 * var(--p));
+}
+
+.ct-cartao--atendimento dt + dd + dt {
+  margin-top: calc(17 * var(--p));
+  margin-left: calc(4 * var(--p));
+}
+
+/* "Falar agora" — Figma 83:332: SemiBold 17 amarelo, caixa de 23, linha de
+   1 da mesma largura com o traço 24 abaixo do topo do texto; 22 depois do
+   número e 2 à direita */
+.ct-cartao__acao {
+  position: static;
+  margin: calc(22 * var(--p)) 0 0 calc(2 * var(--p));
+  padding-bottom: calc(2 * var(--p));
+  font-weight: 600;
+  font-size: calc(17 * var(--p));
+  line-height: calc(23 * var(--p));
+  color: var(--amarelo-destaque);
+  /* a linha do Figma (amarela) e, por cima, a da microinteração, que é
+     traçada da esquerda no hover (largura 0 em repouso) */
+  background:
+    linear-gradient(var(--titulo), var(--titulo)) left calc(24 * var(--p)) / 0% 1px no-repeat,
+    linear-gradient(currentColor, currentColor) left calc(24 * var(--p)) / 100% 1px no-repeat;
+}
+
+/* O link de cada cartão (o "Falar agora" e o e-mail) cobre o cartão
+   inteiro: um alvo grande, um único ponto no Tab, sem mudar o desenho */
+.ct-cartao__link::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+}
+
+.ct-cartao__link:focus-visible {
+  outline: none;
+}
+
+.ct-cartao__link:focus-visible::after {
+  outline: 2px solid var(--titulo);
+  outline-offset: 3px;
+  border-radius: calc(20 * var(--p));
+}
+
+/* --------------------------------------------------------------------------
+   Microinterações dos cartões — só com mouse (hover) e no foco por teclado;
+   no toque nada depende delas. Nenhuma medida muda: o cartão sobe 4px pela
+   propriedade translate (sem conflito com o transform das animações), a
+   borda e o ícone passam ao amarelo, e a ação de cada um responde:
+     WhatsApp     a linha de "Falar agora" é retraçada da esquerda, em grafite
+     E-mail       uma linha amarela de 1px é traçada sob o endereço
+     Atendimento  só borda e ícone
+   O filtro leva o ícone preto exatamente ao #F5B800 (calculado).
+   -------------------------------------------------------------------------- */
+
+.ct-cartao {
+  transition:
+    translate var(--hover-tempo) var(--hover-curva),
+    border-color var(--hover-tempo) var(--hover-curva);
+}
+
+.ct-cartao__icone {
+  transition: filter var(--hover-tempo) var(--hover-curva);
+}
+
+.ct-cartao__acao,
+.ct-cartao--email .ct-cartao__link {
+  transition: background-size var(--hover-tempo) var(--hover-curva);
+}
+
+.ct-cartao--email .ct-cartao__link {
+  background: linear-gradient(var(--amarelo-destaque), var(--amarelo-destaque)) left bottom / 0% 1px no-repeat;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ct-cartao:hover {
+    --ct-ativo: 1;
+  }
+}
+
+.ct-cartao:has(.ct-cartao__link:focus-visible) {
+  --ct-ativo: 1;
+}
+
+.ct-cartao {
+  translate: 0 calc(var(--ct-ativo, 0) * -4px);
+  border-color: color-mix(in srgb, var(--amarelo-destaque) calc(var(--ct-ativo, 0) * 100%), #696969);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ct-cartao:hover .ct-cartao__icone {
+    filter: invert(63%) sepia(100%) saturate(4295%) hue-rotate(28deg) brightness(130%) contrast(112%);
+  }
+
+  .ct-cartao:hover .ct-cartao__acao {
+    background-size: 100% 1px, 100% 1px;
+  }
+
+  .ct-cartao--email:hover .ct-cartao__link {
+    background-size: 100% 1px;
+  }
+}
+
+.ct-cartao:has(.ct-cartao__link:focus-visible) .ct-cartao__icone {
+  filter: invert(63%) sepia(100%) saturate(4295%) hue-rotate(28deg) brightness(130%) contrast(112%);
+}
+
+.ct-cartao__acao:focus-visible {
+  background-size: 100% 1px, 100% 1px;
+}
+
+.ct-cartao--email .ct-cartao__link:focus-visible {
+  background-size: 100% 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ct-cartao {
+    translate: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Mapa — ocupa o retângulo 83:353: largura dos cartões, 310 de altura, 43
+   depois deles. O cinza do Figma fica como fundo enquanto o mapa carrega.
+   -------------------------------------------------------------------------- */
+
+.ct-mapa {
+  height: calc(310 * var(--p));
+  margin-top: calc(43 * var(--p));
+  background: #d9d9d9;
+}
+
+.ct-mapa__quadro {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ==========================================================================
+   Animações (assets/js/contato-pagina.js)
+   O layout acima é o estado final; nada aqui muda medidas.
+   ========================================================================== */
+
+/* Abertura: o que entra primeiro nasce oculto, sem piscar na posição final
+   (a classe sai pelo script, ou pela trava de 4s do <head>) */
+html.abertura-animada .ct-titulo,
+html.abertura-animada .ct-cartao {
+  clip-path: inset(0% 0% 100% 0%);
+}
+
+html.abertura-animada .ct-subtitulo,
+html.abertura-animada .ct-selo {
+  opacity: 0;
+}
+
+/* Mapa: a máscara é uma cortina da cor da página que recolhe para baixo
+   (transform), sobre o iframe já desenhado — um recorte faria o navegador
+   só pintar o mapa no fim. A cortina e a linha de corte (1px amarelo, na
+   fronteira) são criadas pelo script e removidas depois do reveal. Antes
+   do script, o ::after cobre o mapa da mesma forma. */
+.ct-mapa {
+  position: relative;
+}
+
+html.abertura-animada .ct-mapa::after,
+.ct-mapa__cortina {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: var(--branco);
+  pointer-events: none;
+}
+
+.ct-mapa__cortina {
+  transform-origin: 50% 100%;
+}
+
+/* enquanto coberto, o mapa não recebe cliques */
+.ct-mapa--coberto .ct-mapa__quadro {
+  pointer-events: none;
+}
+
+.ct-mapa__corte {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--amarelo-destaque);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Mobile e tablet (até 1023px)
+   Não há frame mobile desta página no Figma (o "Contato Mobile" 181:2 é da
+   Home): adaptação estrutural na coluna dos frames mobile (342, --m). O selo
+   desce para baixo do subtítulo; os cartões ficam um embaixo do outro, com
+   as mesmas medidas internas; o mapa ocupa a largura da coluna.
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .ct-pagina {
+    --p: var(--m);
+    padding: calc(var(--nav-altura) + 48 * var(--m)) var(--margem-mobile) calc(64 * var(--m));
+  }
+
+  .ct-abertura {
+    grid-template-columns: 1fr;
+  }
+
+  .ct-abertura > * {
+    grid-row: auto;
+  }
+
+  .ct-titulo {
+    font-size: calc(40 * var(--m));
+    line-height: calc(54 * var(--m));
+  }
+
+  .ct-subtitulo {
+    margin-top: calc(4 * var(--m));
+    font-size: calc(17 * var(--m));
+    line-height: calc(23 * var(--m));
+    white-space: normal;
+  }
+
+  .ct-selo {
+    grid-column: 1;
+    margin-top: calc(24 * var(--m));
+    font-size: calc(12 * var(--m));
+    line-height: calc(16 * var(--m));
+  }
+
+  .ct-selo span {
+    display: inline;
+  }
+
+  /* os três com a mesma altura, como no desktop (a do mais alto) */
+  .ct-cartoes {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
+    gap: calc(16 * var(--m));
+    margin-top: calc(40 * var(--m));
+  }
+
+  .ct-cartao {
+    height: auto;
+    padding: calc(25 * var(--m) - 1px) calc(24 * var(--m)) calc(30 * var(--m)) calc(28 * var(--m) - 1px);
+  }
+
+  .ct-mapa {
+    margin-top: calc(40 * var(--m));
+  }
+}

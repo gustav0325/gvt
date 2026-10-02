@@ -1,0 +1,961 @@
+/* ==========================================================================
+   Páginas individuais de serviço — Figma 114:2 (Fio Diamantado), 123:2
+   (Disco Diamantado), 126:2 (Furos em Concreto) e 131:2 (Demolição
+   Controlada), frames de 1440 de largura.
+
+   Prefixo sd- (serviço detalhe). Mesmo sistema das outras páginas internas:
+   --p é 1/1440 da largura, com teto; tudo ancorado às margens de 80 do
+   frame. Barlow e Barlow Condensed são carregadas só nestas páginas (front
+   matter fontesPagina, em _includes/servico.njk).
+
+   Ritmo vertical do frame: Hero 649 (642 na Demolição) · A Técnica 620 ·
+   Aplicações 531 · Diferenciais 524 · CTA 209 · Outros Serviços 296.
+   O que varia entre os quatro frames chega por variáveis no HTML.
+   ========================================================================== */
+
+.sd-pagina {
+  --p: clamp(0.6px, calc(100vw / 1440), 1.15px);
+  --margem: 5.5556%; /* x 80 */
+  --sd-amarelo: #f5b800;
+  --sd-titulo: #181a19;
+  --sd-condensada: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --sd-texto: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--sd-texto);
+  color: var(--sd-titulo);
+}
+
+:where(.sd-pagina) ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:where(.sd-pagina) :is(h1, h2, h3) {
+  margin: 0;
+  font-weight: inherit;
+}
+
+/* traço amarelo de 34 x 4 sob os rótulos */
+.sd-traco {
+  display: block;
+  width: calc(34 * var(--p));
+  height: calc(4 * var(--p));
+  background: var(--sd-amarelo);
+}
+
+/* rótulo das seções — Barlow Condensed SemiBold 15, espaçamento 0.6 */
+.sd-rotulo {
+  font-family: var(--sd-condensada);
+  font-weight: 600;
+  font-size: calc(15 * var(--p));
+  line-height: calc(18 * var(--p));
+  letter-spacing: calc(0.6 * var(--p));
+  color: #555856;
+  white-space: nowrap;
+}
+
+/* títulos de Aplicações e Diferenciais — ExtraBold 44 */
+.sd-titulo-secao {
+  font-family: var(--sd-condensada);
+  font-weight: 800;
+  font-size: calc(44 * var(--p));
+  white-space: nowrap;
+}
+
+/* Ícone recortado de uma imagem maior (como o Figma faz): a caixa tem o
+   tamanho do ícone (--l x --a) e a imagem fica posicionada dentro dela */
+.sd-icone {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  width: calc(var(--l) * var(--p));
+  height: calc(var(--a) * var(--p));
+  overflow: hidden;
+}
+
+.sd-icone img {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  height: var(--h);
+  max-width: none;
+}
+
+/* --------------------------------------------------------------------------
+   Seção 1 — Abertura. A foto cobre o Hero inteiro, desde o topo, por trás
+   da navbar de vidro. (No Figma ela começa 7 abaixo do topo em três dos
+   frames; reproduzir isso deixava uma faixa clara artificial sob a navbar.
+   Cobrindo os 649 em vez de 642, a escala muda 1% e o enquadramento se
+   mantém.) O texto começa 100 abaixo da navbar do frame (--foto-topo + 232).
+   -------------------------------------------------------------------------- */
+
+.sd-hero {
+  position: relative;
+  height: calc(var(--hero-altura) * var(--p));
+  overflow: hidden;
+  background: var(--hero-fundo);
+}
+
+.sd-hero__foto {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sd-hero__texto {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(16 * var(--p));
+  width: calc(560 * var(--p));
+  margin-left: var(--margem);
+  padding-top: calc((var(--foto-topo) + 232) * var(--p));
+}
+
+/* Hero em tela cheia (front matter hero.telaCheia — Demolição): no mínimo a
+   altura da janela, com a foto em cover desde o topo, atrás da navbar. O
+   texto fica onde está; o enquadramento horizontal da foto vem do front
+   matter (com o Hero mais alto a foto amplia e as laterais são cortadas). */
+@media (min-width: 1024px) {
+  .sd-hero--tela-cheia {
+    height: auto;
+    min-height: max(calc(var(--hero-altura) * var(--p)), 100vh);
+    min-height: max(calc(var(--hero-altura) * var(--p)), 100dvh);
+  }
+
+  .sd-hero--tela-cheia .sd-hero__foto {
+    object-position: var(--foto-enquadramento, 50% 50%);
+  }
+}
+
+/* Barlow Regular 15 */
+.sd-migalha {
+  font-size: calc(15 * var(--p));
+  line-height: calc(18 * var(--p));
+  color: var(--cor-migalha);
+  white-space: nowrap;
+}
+
+.sd-migalha a {
+  color: inherit;
+}
+
+/* Barlow Condensed ExtraBold 68, linhas de 64 */
+.sd-hero__titulo {
+  font-family: var(--sd-condensada);
+  font-weight: 800;
+  font-size: calc(68 * var(--p));
+  line-height: calc(64 * var(--p));
+  letter-spacing: calc(-0.68 * var(--p));
+  color: var(--cor-titulo);
+}
+
+/* Barlow Regular 20, linhas de 29 */
+.sd-hero__descricao {
+  width: calc(500 * var(--p));
+  font-size: calc(20 * var(--p));
+  line-height: calc(29 * var(--p));
+  color: var(--cor-descricao);
+}
+
+/* --------------------------------------------------------------------------
+   Seção 2 — A Técnica: 620 de altura, texto de 520 e o quadro da
+   ilustração 100 à direita, os dois centrados na altura. O quadro (branco,
+   recortado) e a ilustração dentro dele têm as medidas de cada frame; a
+   ilustração é posicionada em proporção do quadro, que guarda a proporção
+   em qualquer largura.
+   -------------------------------------------------------------------------- */
+
+.sd-tecnica {
+  display: flex;
+  align-items: center;
+  gap: calc(100 * var(--p));
+  height: calc(620 * var(--p));
+  padding: 0 var(--margem);
+  background: var(--fundo);
+}
+
+.sd-tecnica__texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(16 * var(--p));
+  flex-shrink: 0;
+  width: calc(520 * var(--p));
+}
+
+/* ExtraBold 50, linhas de 48 */
+.sd-tecnica__titulo {
+  font-family: var(--sd-condensada);
+  font-weight: 800;
+  font-size: calc(50 * var(--p));
+  line-height: calc(48 * var(--p));
+}
+
+/* Barlow Regular 17, linhas de 26 */
+.sd-tecnica__paragrafo {
+  width: calc(510 * var(--p));
+  font-size: calc(17 * var(--p));
+  line-height: calc(26 * var(--p));
+  color: #666866;
+}
+
+.sd-tecnica__quadro {
+  position: relative;
+  flex-shrink: 0;
+  width: calc(var(--ql) * var(--p));
+  aspect-ratio: var(--ql) / var(--qa);
+  overflow: hidden;
+  background: #fff;
+}
+
+.sd-tecnica__quadro img {
+  position: absolute;
+  left: calc(var(--ix) / var(--ql) * 100%);
+  top: calc(var(--iy) / var(--qa) * 100%);
+  width: calc(var(--il) / var(--ql) * 100%);
+  height: calc(var(--ia) / var(--qa) * 100%);
+  max-width: none;
+  object-fit: cover;
+}
+
+/* --------------------------------------------------------------------------
+   Seção 3 — Aplicações: quatro cartões de 295 x 245, 22 entre eles
+   -------------------------------------------------------------------------- */
+
+.sd-aplicacoes {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: calc(80 * var(--p)) var(--margem);
+  background: #fff;
+}
+
+.sd-aplicacoes .sd-traco {
+  margin-top: calc(12 * var(--p));
+}
+
+.sd-aplicacoes .sd-titulo-secao {
+  margin-top: calc(12 * var(--p));
+  line-height: calc(48 * var(--p));
+}
+
+.sd-aplicacoes__lista {
+  display: flex;
+  gap: calc(22 * var(--p));
+  margin-top: calc(32 * var(--p));
+}
+
+/* borda de 1 dentro dos 295 x 245; conteúdo a 25 da borda externa */
+.sd-aplicacao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(12 * var(--p));
+  width: calc(295 * var(--p));
+  height: calc(245 * var(--p));
+  padding: calc(24 * var(--p));
+  border: 1px solid #dddedb;
+  border-radius: calc(12 * var(--p));
+  background: #fff;
+}
+
+/* Barlow Condensed Bold 24, linhas de 25 */
+.sd-aplicacao__titulo {
+  font-family: var(--sd-condensada);
+  font-weight: 700;
+  font-size: calc(24 * var(--p));
+  line-height: calc(25 * var(--p));
+  white-space: nowrap;
+}
+
+/* Barlow Regular 15, linhas de 21 */
+.sd-aplicacao__texto {
+  width: calc(246 * var(--p));
+  font-size: calc(15 * var(--p));
+  line-height: calc(21 * var(--p));
+  color: #666866;
+}
+
+/* --------------------------------------------------------------------------
+   Seção 4 — Diferenciais Técnicos: 524 de altura. A fila (348 de altura;
+   337 na Demolição) começa 16 abaixo do título. No Figma ela é montada com
+   espaços fixos de 158 entre itens e divisores, e o centro de cada item
+   depende da largura do seu texto — os conjuntos não ficavam no meio das
+   suas colunas. Aqui a fila é uma grade de três colunas iguais na largura
+   do conteúdo (80 a 1360), com os divisores entre elas, e cada conjunto
+   (ícone, título e descrição) é centrado na sua coluna.
+   -------------------------------------------------------------------------- */
+
+.sd-diferenciais {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: calc(524 * var(--p));
+  padding: calc(70 * var(--p)) var(--margem) 0;
+  overflow: hidden;
+  background: #f1f2f0;
+}
+
+.sd-diferenciais__cabecalho {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(12 * var(--p));
+  width: 100%;
+}
+
+.sd-diferenciais__cabecalho .sd-titulo-secao {
+  line-height: calc(53 * var(--p));
+}
+
+/* Três linhas compartilhadas pelas colunas (subgrid): ícones, títulos e
+   descrições ficam na mesma altura nas três, mesmo quando uma descrição tem
+   duas linhas; o bloco inteiro é centrado na altura da fila. */
+.sd-diferenciais__fila {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr 1px 1fr;
+  grid-template-rows: repeat(3, auto);
+  align-content: center;
+  justify-items: center;
+  row-gap: calc(20 * var(--p));
+  flex-shrink: 0;
+  width: 100%;
+  height: calc(var(--fila-altura) * var(--p));
+  margin-top: calc(16 * var(--p));
+}
+
+.sd-diferencial {
+  display: grid;
+  grid-row: 1 / 4;
+  grid-template-rows: subgrid;
+  justify-items: center;
+  align-items: start;
+}
+
+/* ExtraBold 52 */
+.sd-diferencial__valor {
+  font-family: var(--sd-condensada);
+  font-weight: 800;
+  font-size: calc(52 * var(--p));
+  line-height: calc(62 * var(--p));
+  white-space: nowrap;
+}
+
+/* Barlow Regular 16, linhas de 22 */
+.sd-diferencial__texto {
+  font-size: calc(16 * var(--p));
+  line-height: calc(22 * var(--p));
+  color: #777977;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* divisor: 1 x 268, preto a 50%, centrado na altura do bloco. O elemento
+   ocupa só a altura do bloco (não estica as linhas da grade); o traço de
+   268 é o ::before, centrado nele */
+.sd-diferenciais__divisor {
+  position: relative;
+  grid-row: 1 / 4;
+  align-self: stretch;
+  width: 1px;
+}
+
+.sd-diferenciais__divisor::before {
+  content: "";
+  position: absolute;
+  top: calc(50% - 134 * var(--p));
+  left: 0;
+  width: 1px;
+  height: calc(268 * var(--p));
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   Seção 6 — CTA: a textura (image 22) cobre 1440 x 208 a partir de 1 do
+   topo; o conteúdo, nos 208 de cima, vai das margens de 80 até o botão
+   -------------------------------------------------------------------------- */
+
+.sd-cta {
+  position: relative;
+  height: calc(209 * var(--p));
+  overflow: hidden;
+  background: #f1f2f0;
+}
+
+.sd-cta__textura {
+  position: absolute;
+  top: calc(1 * var(--p));
+  left: 0;
+  width: 100%;
+  height: calc(208 * var(--p));
+  object-fit: cover;
+}
+
+.sd-cta__conteudo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(208 * var(--p));
+  padding: 0 var(--margem);
+}
+
+.sd-cta__texto {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--p));
+  color: var(--sd-titulo);
+}
+
+.sd-cta__rotulo {
+  font-family: var(--sd-condensada);
+  font-weight: 600;
+  font-size: calc(14 * var(--p));
+  line-height: calc(17 * var(--p));
+  letter-spacing: calc(0.42 * var(--p));
+  white-space: nowrap;
+}
+
+.sd-cta__titulo {
+  width: calc(700 * var(--p));
+  font-family: var(--sd-condensada);
+  font-weight: 800;
+  font-size: calc(38 * var(--p));
+  line-height: calc(40 * var(--p));
+}
+
+.sd-cta__descricao {
+  width: calc(560 * var(--p));
+  font-size: calc(16 * var(--p));
+  line-height: calc(22 * var(--p));
+}
+
+/* botão de 270 x 56, grafite, raio 8 */
+.sd-cta__botao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: calc(270 * var(--p));
+  height: calc(56 * var(--p));
+  border-radius: calc(8 * var(--p));
+  background: var(--sd-titulo);
+  font-family: var(--sd-condensada);
+  font-weight: 700;
+  font-size: calc(16 * var(--p));
+  line-height: calc(19 * var(--p));
+  letter-spacing: calc(0.8 * var(--p));
+  color: #fff;
+  white-space: nowrap;
+  /* o preenchimento do hover (::before) fica entre o fundo e o texto,
+     recortado pelo raio do botão */
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: color 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  /* texto + seta formam um conjunto centrado, 12 entre eles */
+  gap: calc(12 * var(--p));
+}
+
+/* a caixa do texto é recortada na altura das maiúsculas, para que o
+   centro vertical seja o das letras (e não o da linha da fonte) e
+   coincida com o da seta */
+.sd-cta__botao > span {
+  text-box: trim-both cap alphabetic;
+}
+
+/* seta: ArrowRight do Lucide, 18 x 18, na cor do texto */
+.sd-cta__botao .sd-seta {
+  display: block;
+  flex-shrink: 0;
+  width: calc(18 * var(--p));
+  height: calc(18 * var(--p));
+}
+
+.sd-cta__botao::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #d99f00;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Seção 7 — Outros Serviços: cartões de 390 x 135, foto de 150 à esquerda
+   -------------------------------------------------------------------------- */
+
+.sd-outros {
+  padding: calc(60 * var(--p)) var(--margem);
+  background: #fff;
+}
+
+.sd-outros__rotulo {
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--p));
+  font-family: var(--sd-condensada);
+  font-weight: 600;
+  font-size: calc(14 * var(--p));
+  line-height: calc(17 * var(--p));
+  letter-spacing: calc(0.42 * var(--p));
+  color: #555856;
+  white-space: nowrap;
+}
+
+.sd-outros__traco {
+  width: calc(24 * var(--p));
+  height: calc(3 * var(--p));
+  background: var(--sd-amarelo);
+}
+
+.sd-outros__lista {
+  display: flex;
+  gap: calc(20 * var(--p));
+  margin-top: calc(24 * var(--p));
+}
+
+.sd-outro {
+  display: flex;
+  width: calc(390 * var(--p));
+  height: calc(135 * var(--p));
+  overflow: hidden;
+  border: 1px solid #dddedb;
+  border-radius: calc(10 * var(--p));
+  background: #fff;
+}
+
+.sd-outro__foto {
+  flex-shrink: 0;
+  width: calc(150 * var(--p));
+  height: 100%;
+  object-fit: cover;
+}
+
+.sd-outro__texto {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(20 * var(--p));
+  width: calc(240 * var(--p));
+  padding: 0 calc(20 * var(--p));
+  font-family: var(--sd-condensada);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Bold 20, linhas de 22 */
+.sd-outro__nome {
+  font-size: calc(20 * var(--p));
+  line-height: calc(22 * var(--p));
+  color: var(--sd-titulo);
+}
+
+/* seta: ArrowRight do Lucide, 18 x 18, no amarelo institucional */
+.sd-outro__seta {
+  display: block;
+  flex-shrink: 0;
+  width: calc(18 * var(--p));
+  height: calc(18 * var(--p));
+  color: var(--sd-amarelo);
+}
+
+/* foco por teclado visível nos links da página */
+.sd-pagina a:focus-visible {
+  outline: 2px solid var(--sd-amarelo);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   Animações (assets/js/servico-detalhe.js) e microinterações
+   O layout acima é o estado final; nada aqui muda medidas.
+   ========================================================================== */
+
+/* Abertura: o que entra primeiro nasce oculto, sem piscar no lugar final.
+   A foto do Fio já nasce visível; a do Disco e a de Furos se abrem por um
+   círculo; a da Demolição, por três faixas. */
+html.abertura-animada .sd-migalha,
+html.abertura-animada .sd-hero .sd-traco,
+html.abertura-animada .sd-hero__titulo,
+html.abertura-animada .sd-hero__descricao {
+  opacity: 0;
+}
+
+html.abertura-animada [data-servico="disco"] .sd-hero__foto,
+html.abertura-animada [data-servico="furos"] .sd-hero__foto {
+  clip-path: circle(0px at 50% 50%);
+}
+
+html.abertura-animada [data-servico="demolicao"] .sd-hero__foto {
+  opacity: 0;
+}
+
+/* títulos divididos em linhas (SplitText): cada linha numa máscara com
+   folga para acentos e descendentes, compensada pela margem. Em coluna
+   flex as margens das máscaras vizinhas não se fundem — a altura do
+   título dividido é a mesma do título inteiro (nada pula ao juntar) */
+.sd-mascarado {
+  display: flex;
+  flex-direction: column;
+}
+
+.sd-mascarado .sd-linha-mask {
+  padding: 0.22em 0.1em;
+  margin: -0.22em -0.1em;
+}
+
+/* elementos temporários, criados pelo script e removidos no fim */
+.sd-anel,
+.sd-faixa {
+  position: absolute;
+  pointer-events: none;
+}
+
+.sd-anel {
+  border: 1px solid var(--sd-amarelo);
+  border-radius: 50%;
+}
+
+.sd-faixa {
+  background: var(--hero-fundo);
+}
+
+/* as faixas da abertura ficam acima da foto e sob o texto do Hero */
+.sd-hero__texto {
+  z-index: 2;
+}
+
+.sd-diferenciais__fila,
+.sd-aplicacoes {
+  position: relative;
+}
+
+/* Hover (só com mouse): no botão de orçamento, o amarelo-escuro enche o
+   botão da esquerda para a direita, o texto passa a grafite e a seta
+   avança 6px; nos cartões de outros serviços a seta avança 6px e o seu
+   traço se alonga para trás (a ponta vai à frente), e a foto cresce o
+   mínimo, dentro do próprio quadro (o cartão não muda de tamanho). Ao
+   sair, tudo volta pelo mesmo caminho */
+.sd-seta {
+  display: inline-block;
+  transition: translate 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.sd-outro__seta {
+  transition: translate 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* o traço cresce a partir da ponta (x 19 do desenho de 24) */
+.sd-outro__haste {
+  transform-box: view-box;
+  transform-origin: 19px 12px;
+  transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.sd-outro__foto {
+  transition: scale 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sd-cta__botao:hover {
+    color: var(--sd-titulo);
+  }
+
+  .sd-cta__botao:hover::before {
+    transform: scaleX(1);
+  }
+
+  .sd-cta__botao:hover .sd-seta {
+    translate: 6px 0;
+  }
+
+  .sd-outro:hover .sd-outro__seta {
+    translate: 6px 0;
+  }
+
+  .sd-outro:hover .sd-outro__haste {
+    transform: scaleX(1.3);
+  }
+
+  .sd-outro:hover .sd-outro__foto {
+    scale: 1.04;
+  }
+}
+
+/* teclado: o mesmo estado do hover; o contorno é grafite porque o
+   amarelo dos outros links sumiria sobre a faixa amarela */
+.sd-pagina .sd-cta__botao:focus-visible {
+  color: var(--sd-titulo);
+  outline-color: var(--sd-titulo);
+}
+
+.sd-cta__botao:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.sd-cta__botao:focus-visible .sd-seta {
+  translate: 6px 0;
+}
+
+.sd-outro:focus-visible .sd-outro__seta {
+  translate: 6px 0;
+}
+
+.sd-outro:focus-visible .sd-outro__haste {
+  transform: scaleX(1.3);
+}
+
+/* movimento reduzido: o botão troca de cor sem o preenchimento correr e
+   sem a seta se mover */
+@media (prefers-reduced-motion: reduce) {
+  .sd-seta,
+  .sd-outro__seta,
+  .sd-outro__haste,
+  .sd-outro__foto,
+  .sd-cta__botao,
+  .sd-cta__botao::before {
+    transition: none;
+  }
+
+  .sd-cta__botao:hover .sd-seta,
+  .sd-outro:hover .sd-outro__seta,
+  .sd-cta__botao:focus-visible .sd-seta,
+  .sd-outro:focus-visible .sd-outro__seta {
+    translate: none;
+  }
+
+  .sd-outro:hover .sd-outro__haste,
+  .sd-outro:focus-visible .sd-outro__haste {
+    transform: none;
+  }
+
+  .sd-outro:hover .sd-outro__foto {
+    scale: none;
+  }
+}
+
+/* ==========================================================================
+   Mobile e tablet (até 1023px)
+   Não há frames mobile destas páginas no Figma: adaptação estrutural na
+   coluna dos frames mobile do site (342, --m). Mesma ordem e mesma
+   linguagem; o que era lado a lado vira coluna.
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .sd-pagina {
+    --p: var(--m);
+    --margem: var(--margem-mobile);
+  }
+
+  /* Hero: a foto em cima (sob a navbar), enquadrada no equipamento, e o
+     texto embaixo, no fundo do próprio Hero — sobre a foto inteira, na
+     coluna estreita, o texto cairia na parte carregada da imagem */
+  .sd-hero {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sd-hero__foto {
+    position: relative;
+    top: auto;
+    height: calc(var(--nav-altura) + 240 * var(--m));
+    object-position: 68% 50%;
+  }
+
+  .sd-hero__texto {
+    width: auto;
+    margin-right: var(--margem);
+    padding: calc(32 * var(--m)) 0 calc(48 * var(--m));
+  }
+
+  .sd-migalha {
+    white-space: normal;
+  }
+
+  .sd-hero__titulo {
+    font-size: calc(46 * var(--m));
+    line-height: calc(44 * var(--m));
+  }
+
+  .sd-hero__descricao {
+    width: auto;
+    max-width: calc(300 * var(--m));
+    font-size: calc(17 * var(--m));
+    line-height: calc(25 * var(--m));
+  }
+
+  /* A Técnica: texto e, abaixo, a ilustração na largura da coluna */
+  .sd-tecnica {
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(32 * var(--m));
+    height: auto;
+    padding: calc(56 * var(--m)) var(--margem);
+  }
+
+  .sd-tecnica__texto,
+  .sd-tecnica__paragrafo {
+    width: auto;
+  }
+
+  .sd-tecnica__titulo {
+    font-size: calc(36 * var(--m));
+    line-height: calc(36 * var(--m));
+  }
+
+  /* as quebras fixas do desktop deixariam palavras soltas na coluna */
+  .sd-tecnica__titulo br {
+    display: none;
+  }
+
+  .sd-tecnica__paragrafo {
+    font-size: calc(16 * var(--m));
+    line-height: calc(25 * var(--m));
+  }
+
+  .sd-tecnica__quadro {
+    width: 100%;
+  }
+
+  .sd-titulo-secao,
+  .sd-aplicacoes .sd-titulo-secao,
+  .sd-diferenciais__cabecalho .sd-titulo-secao {
+    font-size: calc(32 * var(--m));
+    line-height: calc(34 * var(--m));
+    white-space: normal;
+  }
+
+  /* Aplicações: um cartão por linha, altura do conteúdo */
+  .sd-aplicacoes {
+    padding: calc(56 * var(--m)) var(--margem);
+  }
+
+  .sd-aplicacoes__lista {
+    flex-direction: column;
+    gap: calc(16 * var(--m));
+    width: 100%;
+  }
+
+  .sd-aplicacao {
+    width: 100%;
+    height: auto;
+  }
+
+  .sd-aplicacao__titulo {
+    white-space: normal;
+  }
+
+  .sd-aplicacao__titulo br {
+    display: none;
+  }
+
+  .sd-aplicacao__texto {
+    width: auto;
+  }
+
+  /* Diferenciais: os três um embaixo do outro, divisores na horizontal */
+  .sd-diferenciais {
+    height: auto;
+    padding: calc(56 * var(--m)) var(--margem);
+  }
+
+  .sd-diferenciais__fila {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(32 * var(--m));
+    width: 100%;
+    height: auto;
+    margin-top: calc(40 * var(--m));
+  }
+
+  .sd-diferencial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(20 * var(--m));
+  }
+
+  .sd-diferenciais__divisor {
+    width: calc(120 * var(--m));
+    height: 1px;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .sd-diferenciais__divisor::before {
+    display: none;
+  }
+
+  .sd-diferencial__valor {
+    font-size: calc(44 * var(--m));
+    line-height: calc(52 * var(--m));
+  }
+
+  /* CTA: texto e botão em coluna sobre a textura */
+  .sd-cta {
+    height: auto;
+  }
+
+  .sd-cta__textura {
+    top: 0;
+    height: 100%;
+  }
+
+  .sd-cta__conteudo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(24 * var(--m));
+    height: auto;
+    padding: calc(40 * var(--m)) var(--margem);
+  }
+
+  .sd-cta__titulo,
+  .sd-cta__descricao {
+    width: auto;
+  }
+
+  .sd-cta__titulo {
+    font-size: calc(30 * var(--m));
+    line-height: calc(32 * var(--m));
+  }
+
+  .sd-cta__botao {
+    width: 100%;
+  }
+
+  /* Outros serviços: um cartão por linha, na largura da coluna */
+  .sd-outros {
+    padding: calc(48 * var(--m)) var(--margem);
+  }
+
+  .sd-outros__lista {
+    flex-direction: column;
+    gap: calc(16 * var(--m));
+  }
+
+  .sd-outro {
+    width: 100%;
+    height: calc(120 * var(--m));
+  }
+
+  .sd-outro__foto {
+    width: calc(130 * var(--m));
+  }
+
+  /* o nome pode quebrar: na coluna estreita "Corte com Disco Diamantado"
+     não cabe numa linha ao lado da foto */
+  .sd-outro__texto {
+    width: auto;
+    min-width: 0;
+    white-space: normal;
+  }
+}

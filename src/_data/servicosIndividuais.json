@@ -1,0 +1,34 @@
+{
+  "fio": {
+    "nome": ["Corte com", "Fio Diamantado"],
+    "url": "/servicos/corte-fio-diamantado/",
+    "foto": "/assets/img/servicos/fio-diamantado/foto-card.webp",
+    "fotoLargura": 600,
+    "fotoAltura": 400,
+    "alt": "Fio diamantado cortando estrutura de concreto"
+  },
+  "disco": {
+    "nome": ["Corte com", "Disco Diamantado"],
+    "url": "/servicos/corte-disco-diamantado/",
+    "foto": "/assets/img/servicos/disco-diamantado/foto-card.webp",
+    "fotoLargura": 600,
+    "fotoAltura": 338,
+    "alt": "Cortadora com disco diamantado em parede de concreto"
+  },
+  "furos": {
+    "nome": ["Furos em", "Concreto"],
+    "url": "/servicos/furos-em-concreto/",
+    "foto": "/assets/img/servicos/furos-concreto/foto-card.webp",
+    "fotoLargura": 600,
+    "fotoAltura": 338,
+    "alt": "Broca diamantada fazendo furo em concreto"
+  },
+  "demolicao": {
+    "nome": ["Demolição", "Controlada"],
+    "url": "/servicos/demolicao-controlada/",
+    "foto": "/assets/img/servicos/demolicao-controlada/foto-card.webp",
+    "fotoLargura": 600,
+    "fotoAltura": 338,
+    "alt": "Escavadeira na demolição controlada de uma estrutura"
+  }
+}

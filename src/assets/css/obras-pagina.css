@@ -1,0 +1,425 @@
+/* ==========================================================================
+   Página Obras — Figma "Obras" 83:354 (1440 x 1827) + projetos 205:2,
+   205:29 e 205:56
+
+   Prefixo ob- (a Home já tem uma seção .obras). Mesmo sistema das páginas
+   Sobre Nós e Serviços: a unidade --p é 1/1440 da largura, com teto; o texto
+   de cada projeto fica ancorado à esquerda (x 78) e a foto à direita (a 80
+   da borda), como no frame. Fontes e larguras usam a mesma unidade, então
+   as quebras de linha são as do Figma em qualquer desktop.
+
+   Ritmo vertical: título em y 220 (3 linhas de 76) · Projeto 01 em y 613 ·
+   cada projeto com 795 de altura, 129 entre eles (o espaçamento dos frames
+   205:*) · 89 do último projeto ao rodapé (o mesmo do frame 83:354).
+
+   Manrope 800 é carregado só nesta página (front matter fontesPagina).
+   Versão estática: sem animações.
+   ========================================================================== */
+
+.ob-pagina {
+  --p: clamp(0.6px, calc(100vw / 1440), 1.15px);
+  /* --q: a unidade dos projetos — as medidas do Figma (texto de 576, foto
+     de 628 x 729, título 38/41…) nesta escala. O frame tem 1440 de largura e
+     nenhuma restrição de altura: em telas de 768–900 a foto de 729 enchia a
+     tela. Aqui ela fica em até 95% da escala da página e em no máximo 92,5%
+     da altura útil sob a navbar. */
+  --q: min(
+    calc(var(--p) * 0.95),
+    calc((100svh - var(--nav-altura)) * 0.925 / 729)
+  );
+  --margem: 5.5556%; /* x 80 */
+  padding: calc(220 * var(--p)) 0 calc(89 * var(--p));
+  background: var(--branco);
+  color: #000;
+}
+
+/* Figma 88:532 — Manrope ExtraBold 56, centrado (x 433, 575 de largura),
+   3 linhas de 76; só EXPERIÊNCIA. em amarelo */
+.ob-titulo {
+  position: relative;
+  left: calc(0.5 * var(--p));
+  width: max-content;
+  margin: 0 auto;
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  font-size: calc(56 * var(--p));
+  line-height: calc(76 * var(--p));
+  text-align: center;
+  white-space: nowrap;
+}
+
+.ob-destaque {
+  color: var(--amarelo-destaque);
+}
+
+/* do fim do título (y 448) ao Projeto 01 (y 613) */
+.ob-projetos {
+  margin-top: calc(165 * var(--p));
+}
+
+/* --------------------------------------------------------------------------
+   Projeto — Figma 201:13 (1283 x 795): texto de 576 à esquerda e a foto de
+   628 x 729 à direita, ambos 19 abaixo do topo do bloco. Sem fundo, sem
+   borda: o retângulo branco do Figma é o próprio fundo da página.
+   -------------------------------------------------------------------------- */
+
+.ob-projeto {
+  position: relative;
+  height: calc(795 * var(--q));
+}
+
+.ob-projeto + .ob-projeto {
+  margin-top: calc(129 * var(--p)); /* na escala da página: o respiro cresce */
+}
+
+/* Largura: no Figma o vão entre texto e foto (78) e as margens laterais
+   (78/80) são iguais. O que sobra da largura além do texto (576) e da foto
+   (628) é dividido em três partes iguais — margem, vão, margem —, com o vão
+   limitado a 140 na escala (o resto vai para as margens). Em 1440 com a
+   escala cheia isso dá exatamente o frame: 78 · 576 · 78 · 628 · 80.
+   (Os 100% são a largura do projeto, o bloco de contenção do texto e da
+   foto.) */
+.ob-projeto__texto,
+.ob-projeto__foto,
+.ob-corte,
+.ob-indicador,
+.ob-dica {
+  --vao: min(calc((100% - 1204 * var(--q)) / 3), calc(140 * var(--q)));
+  --inicio: calc((100% - 1204 * var(--q) - var(--vao)) / 2);
+}
+
+.ob-projeto__texto {
+  position: absolute;
+  left: var(--inicio);
+  top: calc(19 * var(--q));
+  width: calc(576 * var(--q));
+}
+
+/* a foto (3:2) cobre a caixa; o enquadramento horizontal de cada projeto vem
+   do Figma (--enquadramento, no HTML) */
+.ob-projeto__foto {
+  position: absolute;
+  left: calc(var(--inicio) + 576 * var(--q) + var(--vao));
+  top: calc(19 * var(--q));
+  width: calc(628 * var(--q));
+  height: calc(729 * var(--q));
+  max-width: none;
+  object-fit: cover;
+  /* --mx: o leve deslocamento da imagem dentro do quadro sob o cursor
+     (assets/js/obras-pagina.js); sem ele, o enquadramento do Figma */
+  object-position: clamp(0%, calc(var(--enquadramento, 50%) + var(--mx, 0%)), 100%) 50%;
+}
+
+/* Figma 88:534 — Archivo Black 38, linhas de 41, 560 de largura */
+.ob-projeto__titulo {
+  width: calc(560 * var(--q));
+  margin: 0 0 calc(23 * var(--q));
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(38 * var(--q));
+  line-height: calc(41 * var(--q));
+}
+
+/* Figma 88:535 — Manrope 18, linhas de 25, 576 de largura */
+.ob-projeto__descricao {
+  margin: 0 0 calc(60 * var(--q));
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(18 * var(--q));
+  line-height: calc(25 * var(--q));
+}
+
+/* --------------------------------------------------------------------------
+   Dados da obra — Figma 88:565 (575 x 146): duas linhas, a 0 e a 101; a
+   coluna da direita em x 413 (resultado) e 415 (localização), como no frame.
+   Em grade, com a 2ª linha sempre a 101 do topo nos quatro projetos (como no
+   Figma, mesmo quando o tipo de serviço quebra em duas linhas) — e nunca a
+   menos de 70px, o bastante para esse valor de duas linhas na fonte mínima.
+   -------------------------------------------------------------------------- */
+
+.ob-projeto__dados {
+  display: grid;
+  grid-template-columns: calc(413 * var(--q)) auto;
+  grid-template-rows: max(calc(101 * var(--q)), 70px) auto;
+  align-items: start;
+  width: calc(575 * var(--q));
+  margin: 0;
+}
+
+/* o tipo de serviço quebra em 136 (no máximo em duas linhas: nunca menos
+   que 130px de largura) */
+.ob-dado--servico   { width: max(calc(136 * var(--q)), 130px); }
+.ob-dado--local     { margin-left: calc(2 * var(--q)); }
+
+/* Manrope SemiBold 13 (linhas de 18): rótulo cinza, valor preto. Na escala
+   reduzida dos projetos os 13 cairiam para 10–11px: nunca abaixo de 12. */
+.ob-dado__rotulo,
+.ob-dado__valor {
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  font-size: max(calc(13 * var(--q)), 12px);
+  line-height: max(calc(18 * var(--q)), 16.6px);
+}
+
+.ob-dado__rotulo {
+  color: var(--texto-sec); /* #8b8e8c */
+  white-space: nowrap; /* rótulos de uma linha, como no Figma */
+}
+
+.ob-dado__valor {
+  margin-top: calc(6 * var(--q));
+  color: #000;
+}
+
+/* tipo de serviço: só texto, a 5 do rótulo, quebrando em 136 */
+.ob-dado--servico .ob-dado__valor {
+  margin-top: calc(5 * var(--q));
+}
+
+/* os outros três: ícone + texto a 6 */
+.ob-dado--local .ob-dado__valor,
+.ob-dado--tempo .ob-dado__valor,
+.ob-dado--resultado .ob-dado__valor {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--q));
+  white-space: nowrap;
+}
+
+/* no tempo de execução o texto fica na base do ícone (Figma: items-end) */
+.ob-dado--tempo .ob-dado__valor {
+  align-items: flex-end;
+}
+
+.ob-dado__icone {
+  display: block;
+  flex-shrink: 0;
+  max-width: none;
+}
+
+.ob-dado--local .ob-dado__icone     { width: calc(16 * var(--q)); height: calc(20.01 * var(--q)); }
+.ob-dado--tempo .ob-dado__icone     { width: calc(18 * var(--q)); height: calc(20 * var(--q)); }
+.ob-dado--resultado .ob-dado__icone { width: calc(22 * var(--q)); height: calc(21 * var(--q)); }
+
+/* ==========================================================================
+   Animações (assets/js/obras-pagina.js)
+
+   O layout acima é o estado final. Com .ob-pagina--animada (posta pelo
+   script só no desktop, sem reduced-motion), .ob-projetos vira uma janela da
+   altura de um projeto, pinada durante o scroll, com os quatro projetos
+   sobrepostos dentro dela — cada um na mesma posição do layout. Sem
+   JavaScript ou com movimento reduzido, os quatro ficam empilhados.
+   ========================================================================== */
+
+/* abertura: o título e o Projeto 01 nascem recortados (fechados de cima para
+   baixo) até o script abrir; ver base.njk (aberturaAnimada) */
+html.abertura-animada .ob-titulo,
+html.abertura-animada .ob-projeto:first-child .ob-projeto__foto,
+html.abertura-animada .ob-projeto:first-child .ob-projeto__titulo,
+html.abertura-animada .ob-projeto:first-child .ob-projeto__descricao,
+html.abertura-animada .ob-projeto:first-child .ob-projeto__dados {
+  clip-path: inset(0% 0% 100% 0%);
+}
+
+.ob-pagina--animada .ob-projetos {
+  position: relative;
+  height: calc(795 * var(--q));
+  overflow: hidden;
+}
+
+.ob-pagina--animada .ob-projeto {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.ob-pagina--animada .ob-projeto + .ob-projeto {
+  margin-top: 0;
+}
+
+/* linha de corte: 1px amarelo na fronteira entre a foto que sai e a que
+   entra; só aparece durante a troca */
+.ob-corte {
+  position: absolute;
+  z-index: 5;
+  top: calc(19 * var(--q));
+  left: calc(var(--inicio) + 576 * var(--q) + var(--vao));
+  width: calc(628 * var(--q));
+  height: 1px;
+  background: var(--amarelo-destaque);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* indicador 01 / 04: no vão entre texto e foto, na base da foto */
+.ob-indicador {
+  position: absolute;
+  z-index: 5;
+  bottom: calc(47 * var(--q));
+  left: calc(var(--inicio) + 576 * var(--q) + var(--vao) / 2);
+  display: flex;
+  translate: -50% 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  font-size: max(calc(13 * var(--q)), 12px);
+  line-height: max(calc(18 * var(--q)), 16.6px);
+  letter-spacing: 0.04em;
+  color: var(--texto-sec);
+  white-space: pre;
+  pointer-events: none;
+}
+
+/* a janela de uma linha por onde o número passa */
+.ob-indicador__janela {
+  height: max(calc(18 * var(--q)), 16.6px);
+  overflow: hidden;
+  color: var(--titulo);
+}
+
+.ob-indicador__fita {
+  display: flex;
+  flex-direction: column;
+}
+
+/* "ROLE PARA EXPLORAR ↓": embaixo da coluna de texto, na base da foto */
+.ob-dica {
+  position: absolute;
+  z-index: 5;
+  bottom: calc(47 * var(--q));
+  left: var(--inicio);
+  font-family: var(--fonte-corpo);
+  font-weight: 300;
+  font-size: max(calc(13 * var(--q)), 12px);
+  line-height: max(calc(18 * var(--q)), 16.6px);
+  letter-spacing: 0.08em;
+  color: var(--texto-sec);
+  pointer-events: none;
+}
+
+.ob-dica__conteudo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ob-dica__seta {
+  display: block;
+  width: 10px;
+  height: 14px;
+  animation: ob-dica-seta 2.4s ease-in-out infinite;
+}
+
+@keyframes ob-dica-seta {
+  0%, 100% { translate: 0 -1px; }
+  50%      { translate: 0 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ob-dica__seta {
+    animation: none;
+  }
+}
+
+/* linha de corte do mobile: sobre a foto de cada projeto (o topo vem do
+   script, que mede a foto) */
+.ob-corte--movel {
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* ==========================================================================
+   Mobile e tablet (até 1023px)
+   Não há frame mobile desta página no Figma: adaptação estrutural, na
+   linguagem dos frames mobile da Home — coluna de 342 (--coluna, --m). Cada
+   projeto fica com o texto em cima e a foto embaixo, na proporção do Figma;
+   os quatro dados viram uma grade de duas colunas.
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .ob-pagina {
+    --p: var(--m);
+    --q: var(--m);
+    padding: calc(var(--nav-altura) + 48 * var(--m)) var(--margem-mobile) calc(64 * var(--m));
+  }
+
+  .ob-titulo {
+    left: auto;
+    width: auto;
+    font-size: calc(30 * var(--m));
+    line-height: calc(38 * var(--m));
+    white-space: normal;
+  }
+
+  /* as quebras do desktop saem: na coluna estreita o título quebra sozinho */
+  .ob-titulo br {
+    display: none;
+  }
+
+  .ob-projetos {
+    display: flex;
+    flex-direction: column;
+    gap: calc(56 * var(--m));
+    margin-top: calc(48 * var(--m));
+  }
+
+  .ob-projeto {
+    height: auto;
+  }
+
+  .ob-projeto + .ob-projeto {
+    margin-top: 0;
+  }
+
+  .ob-projeto__texto,
+  .ob-projeto__foto {
+    position: static;
+    width: auto;
+  }
+
+  .ob-projeto__titulo {
+    width: auto;
+    margin-bottom: calc(16 * var(--m));
+    font-size: calc(26 * var(--m));
+    line-height: calc(30 * var(--m));
+  }
+
+  .ob-projeto__descricao {
+    margin-bottom: calc(28 * var(--m));
+    font-size: calc(15 * var(--m));
+    line-height: calc(23 * var(--m));
+  }
+
+  .ob-projeto__dados {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: calc(24 * var(--m)) calc(16 * var(--m));
+    width: auto;
+  }
+
+  .ob-dado--servico,
+  .ob-dado--local {
+    width: auto;
+    margin-left: 0;
+  }
+
+  .ob-dado__rotulo {
+    white-space: normal;
+  }
+
+  .ob-dado--local .ob-dado__valor,
+  .ob-dado--tempo .ob-dado__valor,
+  .ob-dado--resultado .ob-dado__valor {
+    white-space: normal;
+  }
+
+  .ob-projeto__foto {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 628 / 729;
+    margin-top: calc(32 * var(--m));
+  }
+}

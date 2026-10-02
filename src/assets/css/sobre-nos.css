@@ -1,0 +1,952 @@
+/* ==========================================================================
+   Página Sobre Nós — Figma "Sobre" 66:2 (1440 x 2281)
+
+   Mesmo sistema do rodapé (footer.css): a unidade --p é 1/1440 da largura,
+   com teto, e cada grupo fica ancorado numa das margens do frame (x 80 à
+   esquerda, 1440 − 80 à direita = 5.5556%). Fontes e larguras usam a mesma
+   unidade, então as quebras de linha são as do Figma em qualquer desktop.
+   As alturas das seções são as do frame (650 · 650 · 401 · 250).
+
+   Versão estática: sem animações.
+   ========================================================================== */
+
+.sn-intro,
+.sn-principios,
+.sn-numeros,
+.sn-chamada {
+  --p: clamp(0.6px, calc(100vw / 1440), 1.15px);
+  --margem: 5.5556%; /* x 80 */
+  position: relative;
+  overflow: hidden;
+}
+
+/* traço amarelo de 85 x 2, pontas arredondadas (Line 15) */
+.sn-risco {
+  position: absolute;
+  left: var(--margem);
+  width: calc(85 * var(--p));
+  height: calc(2 * var(--p));
+  border-radius: calc(1 * var(--p));
+  background: var(--amarelo-destaque);
+}
+
+/* --------------------------------------------------------------------------
+   Placeholders de fotos
+   Cinza do Figma (#d9d9d9) até as fotos chegarem. Um <img> posto dentro da
+   figure ocupa a área toda e é recortado pela forma/raio da própria figure.
+   -------------------------------------------------------------------------- */
+
+.sn-foto {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+  background: #d9d9d9;
+}
+
+.sn-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   1. Experiência — Figma 69:114 (fundo #272a29, 650)
+   ========================================================================== */
+
+.sn-intro {
+  height: calc(650 * var(--p));
+  background: var(--cards-escuro); /* #272a29 */
+  color: var(--branco);
+}
+
+.sn-intro__risco {
+  top: calc(166 * var(--p)); /* traço em y 168, desenhado para cima */
+}
+
+/* Figma 70:119 — x 80, y 203, 612 de largura */
+.sn-intro__texto {
+  position: absolute;
+  left: var(--margem);
+  top: calc(203 * var(--p));
+  width: calc(612 * var(--p));
+}
+
+/* Figma 70:115 — Archivo Black 56, 3 linhas de 61 (592 de largura) */
+.sn-intro__titulo {
+  width: calc(592 * var(--p));
+  margin: 0 0 calc(16 * var(--p));
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(56 * var(--p));
+  line-height: calc(61 * var(--p));
+}
+
+.sn-destaque {
+  color: var(--amarelo-destaque);
+}
+
+/* Figma 70:116 / 70:117 — Manrope 16, linhas de 22, 22 entre os dois */
+.sn-intro__paragrafo {
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(16 * var(--p));
+  line-height: calc(22 * var(--p));
+}
+
+.sn-intro__paragrafo--2 {
+  width: calc(592 * var(--p));
+  margin-top: calc(22 * var(--p));
+}
+
+/* Figma 70:127–129 — composição de 628 x 444, ancorada à direita (x 732),
+   y 174. --c é a unidade da composição: no mobile ela encolhe inteira. */
+.sn-intro__fotos {
+  --c: var(--p);
+  position: absolute;
+  right: var(--margem);
+  top: calc(174 * var(--p));
+  width: calc(628 * var(--c));
+  height: calc(444 * var(--c));
+}
+
+/* 326 x 444, canto superior esquerdo chanfrado: a forma é o próprio vetor do
+   Figma (Rectangle 12), usado como máscara */
+.sn-foto--principal {
+  left: 0;
+  top: 0;
+  width: calc(326 * var(--c));
+  height: 100%;
+  -webkit-mask: url("/assets/img/sobre-nos/forma-foto-principal.svg") 0 0 / 100% 100% no-repeat;
+          mask: url("/assets/img/sobre-nos/forma-foto-principal.svg") 0 0 / 100% 100% no-repeat;
+}
+
+/* 294 x 171 e 294 x 267, raio 12, a 8 da principal e 6 entre si */
+.sn-foto--topo,
+.sn-foto--base {
+  right: 0;
+  width: calc(294 * var(--c));
+  border-radius: calc(12 * var(--c));
+}
+
+.sn-foto--topo {
+  top: 0;
+  height: calc(171 * var(--c));
+}
+
+.sn-foto--base {
+  bottom: 0;
+  height: calc(267 * var(--c));
+}
+
+/* ==========================================================================
+   2. Solidez — Figma 70:130 (fundo #fafaf8, 650)
+   ========================================================================== */
+
+.sn-principios {
+  height: calc(650 * var(--p));
+  background: var(--fundo-principal);
+  color: #000;
+}
+
+.sn-principios__risco {
+  top: calc(23 * var(--p)); /* y 25 */
+}
+
+/* Figma 70:175 — Archivo Black 48, 2 linhas de 52 */
+.sn-principios__titulo {
+  position: absolute;
+  left: var(--margem);
+  top: calc(50 * var(--p));
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(48 * var(--p));
+  line-height: calc(52 * var(--p));
+  white-space: nowrap;
+}
+
+/* Figma 70:177 — 544 de largura, ancorado à direita, centrado no título */
+.sn-principios__intro,
+.sn-numeros__intro {
+  position: absolute;
+  right: var(--margem);
+  width: calc(544 * var(--p));
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(18 * var(--p));
+  line-height: calc(25 * var(--p));
+}
+
+.sn-principios__intro {
+  top: calc(64.5 * var(--p));
+  color: var(--texto-sec); /* #8b8e8c */
+}
+
+/* --------------------------------------------------------------------------
+   Missão · Visão · Valores — Figma 196:7 / 196:2 / 196:3 (410 x 220)
+   Os três na mesma linha (y 196), com 25 entre eles: o do meio centrado.
+   Só os cantos externos de cima são arredondados (35).
+   --k é a unidade dos cards (no mobile passa a ser a do frame de 390).
+   -------------------------------------------------------------------------- */
+
+.sn-cards {
+  --k: var(--p);
+}
+
+/* --sombra dosa a sombra do Figma (1 = a sombra do frame): a entrada dos
+   cards a faz surgir de 0, e o hover a aprofunda um pouco. Registrada para
+   poder ser interpolada. */
+@property --sombra {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+.sn-card {
+  --sombra: 1;
+  position: absolute;
+  width: calc(410 * var(--k));
+  height: calc(220 * var(--k));
+  background: var(--branco);
+  box-shadow:
+    0 calc(48 * var(--k) * var(--sombra)) calc(13 * var(--k) * var(--sombra)) 0 rgba(0, 0, 0, 0),
+    0 calc(30 * var(--k) * var(--sombra)) calc(12 * var(--k) * var(--sombra)) 0 rgba(0, 0, 0, calc(0.01 * var(--sombra))),
+    0 calc(17 * var(--k) * var(--sombra)) calc(10 * var(--k) * var(--sombra)) 0 rgba(0, 0, 0, calc(0.05 * var(--sombra))),
+    0 calc(8 * var(--k) * var(--sombra)) calc(8 * var(--k) * var(--sombra)) 0 rgba(0, 0, 0, calc(0.09 * var(--sombra))),
+    0 calc(2 * var(--k) * var(--sombra)) calc(4 * var(--k) * var(--sombra)) 0 rgba(0, 0, 0, calc(0.1 * var(--sombra)));
+}
+
+/* hover (só desktop): o card sobe 4 e a sombra se aprofunda. `translate` é
+   independente do transform que a animação de entrada usa. */
+@media (hover: hover) and (pointer: fine) {
+  .sn-card {
+    transition:
+      translate var(--hover-tempo) var(--hover-curva),
+      --sombra var(--hover-tempo) var(--hover-curva);
+  }
+
+  .sn-card:hover {
+    --sombra: 1.35;
+    translate: 0 calc(-4 * var(--k));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sn-card:hover {
+    translate: none;
+  }
+}
+
+.sn-card--missao {
+  left: var(--margem);
+  top: calc(196 * var(--p));
+  border-radius: calc(35 * var(--k)) 0 0 0;
+}
+
+.sn-card--visao {
+  left: calc(50% - 205 * var(--p)); /* x 515 */
+  top: calc(196 * var(--p));
+}
+
+.sn-card--valores {
+  right: var(--margem);
+  top: calc(196 * var(--p));
+  border-radius: 0 calc(35 * var(--k)) 0 0;
+}
+
+/* ícones: cada um é o PNG quadrado do Figma recortado pela caixa do slot */
+.sn-card__icone {
+  position: absolute;
+  overflow: hidden;
+}
+
+.sn-card__icone img {
+  position: absolute;
+  max-width: none;
+}
+
+/* Figma 74:402 — 59 x 56 em (13, 47). No Figma o raio de 35 do card também
+   está no ícone e recorta de leve o anel do alvo: reproduzido aqui. */
+.sn-card--missao .sn-card__icone {
+  left: calc(13 * var(--k));
+  top: calc(47 * var(--k));
+  width: calc(59 * var(--k));
+  height: calc(56 * var(--k));
+  border-top-left-radius: calc(35 * var(--k));
+}
+
+.sn-card--missao .sn-card__icone img {
+  left: -31.23%;
+  top: -28.83%;
+  width: 143.97%;
+  height: 151.27%;
+}
+
+/* Figma 74:404 — 58 x 34 em (13, 47) */
+.sn-card--visao .sn-card__icone {
+  left: calc(13 * var(--k));
+  top: calc(47 * var(--k));
+  width: calc(58 * var(--k));
+  height: calc(34 * var(--k));
+}
+
+.sn-card--visao .sn-card__icone img {
+  left: -15.56%;
+  top: -63.46%;
+  width: 131.11%;
+  height: 226.92%;
+}
+
+/* Figma 74:405 — 58 x 47 em (13, 47), com o raio de 35 do card (idem) */
+.sn-card--valores .sn-card__icone {
+  left: calc(13 * var(--k));
+  top: calc(47 * var(--k));
+  width: calc(58 * var(--k));
+  height: calc(47 * var(--k));
+  border-top-right-radius: calc(35 * var(--k));
+}
+
+.sn-card--valores .sn-card__icone img {
+  left: -19.05%;
+  top: -35.29%;
+  width: 138.1%;
+  height: 170.59%;
+}
+
+/* Figma 70:192 / 70:193 / 70:196 — 259 de largura, título e texto a 15;
+   em (84, 43), no Visão em (83, 43) */
+.sn-card__texto {
+  position: absolute;
+  left: calc(84 * var(--k));
+  top: calc(43 * var(--k));
+  width: calc(259 * var(--k));
+}
+
+.sn-card--visao .sn-card__texto {
+  left: calc(83 * var(--k));
+}
+
+.sn-card__titulo {
+  margin: 0 0 calc(15 * var(--k));
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(22 * var(--k));
+  line-height: calc(24 * var(--k));
+}
+
+.sn-card__descricao {
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(15 * var(--k));
+  line-height: calc(20 * var(--k));
+}
+
+/* Figma 70:182 — linha de 1280, preta a 40%, em y 458 */
+.sn-principios__divisor {
+  position: absolute;
+  left: var(--margem);
+  right: var(--margem);
+  top: calc(457 * var(--p));
+  height: 1px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   Diferenciais — Figma 75:427 (1239 x 129, centrado, y 490)
+   Item: ícone + 13 + texto de 177. Entre os itens, 41 · divisor · 48.
+   -------------------------------------------------------------------------- */
+
+.sn-diferenciais {
+  position: absolute;
+  left: calc(50% + 0.5 * var(--p));
+  top: calc(490 * var(--p));
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  height: calc(129 * var(--p));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sn-diferencial {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: calc(13 * var(--p));
+}
+
+.sn-diferencial + .sn-diferencial {
+  margin-left: calc(89 * var(--p));
+}
+
+/* divisor vertical de 129, preto a 40%, 41 depois do item anterior */
+.sn-diferencial + .sn-diferencial::before {
+  content: "";
+  position: absolute;
+  left: calc(-48 * var(--p) - 1px);
+  top: 50%;
+  width: 1px;
+  height: calc(129 * var(--p));
+  translate: 0 -50%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* ícones: recortes do sprite do Figma (image 10–13) */
+.sn-diferencial__icone {
+  position: relative;
+  flex-shrink: 0;
+  height: calc(48 * var(--p));
+  overflow: hidden;
+}
+
+.sn-diferencial__icone img {
+  position: absolute;
+  max-width: none;
+}
+
+.sn-diferencial--equipe .sn-diferencial__icone { width: calc(61 * var(--p)); }
+.sn-diferencial--equipe .sn-diferencial__icone img {
+  left: -29.89%; top: -66.36%; width: 551.29%; height: 232.71%;
+}
+
+.sn-diferencial--equipamentos .sn-diferencial__icone { width: calc(47 * var(--p)); }
+.sn-diferencial--equipamentos .sn-diferencial__icone img {
+  left: -173.68%; top: -49.6%; width: 604.86%; height: 199.2%;
+}
+
+.sn-diferencial--seguranca .sn-diferencial__icone { width: calc(40 * var(--p)); }
+.sn-diferencial--seguranca .sn-diferencial__icone img {
+  left: -367.44%; top: -43.46%; width: 694.88%; height: 191.54%;
+}
+
+.sn-diferencial--atendimento .sn-diferencial__icone { width: calc(64 * var(--p)); }
+.sn-diferencial--atendimento .sn-diferencial__icone img {
+  left: -379.46%; top: -62.16%; width: 503.03%; height: 224.32%;
+}
+
+/* Figma 70:202 etc. — título Bold 16 (linhas de 22), 3, texto 14 (19) */
+.sn-diferencial__texto {
+  width: calc(177 * var(--p));
+}
+
+.sn-diferencial--atendimento .sn-diferencial__texto {
+  margin-top: calc(2 * var(--p));
+}
+
+.sn-diferencial__titulo {
+  margin: 0 0 calc(3 * var(--p));
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: calc(16 * var(--p));
+  line-height: calc(22 * var(--p));
+}
+
+.sn-diferencial--equipe .sn-diferencial__titulo {
+  width: calc(138 * var(--p));
+}
+
+.sn-diferencial__descricao {
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(14 * var(--p));
+  line-height: calc(19 * var(--p));
+}
+
+/* ==========================================================================
+   3. Números — Figma 70:212 (fundo #e5e5e5, 401)
+   ========================================================================== */
+
+.sn-numeros {
+  height: calc(401 * var(--p));
+  background: #e5e5e5;
+  color: #000;
+}
+
+/* Figma 70:244 — Archivo Black 46, 2 linhas de 50, 611 de largura */
+.sn-numeros__titulo,
+.sn-chamada__titulo {
+  position: absolute;
+  left: var(--margem);
+  width: calc(611 * var(--p));
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: calc(46 * var(--p));
+  line-height: calc(50 * var(--p));
+}
+
+.sn-numeros__titulo {
+  top: calc(50 * var(--p));
+}
+
+.sn-numeros__intro {
+  top: calc(62.5 * var(--p));
+  color: #656565;
+}
+
+/* --------------------------------------------------------------------------
+   20+ e 250+ — grupo de 516 x 187 em x 80, y 182 (--k: unidade do grupo)
+   Os cards são os SVGs do Figma, já com a sombra: a caixa do SVG passa 11
+   dos lados e 2 acima do card. O brilho amarelo (Group 12) fica por cima.
+   -------------------------------------------------------------------------- */
+
+.sn-marcas {
+  --k: var(--p);
+  position: absolute;
+  left: var(--margem);
+  top: calc(182 * var(--p));
+  width: calc(516 * var(--k));
+  height: calc(187 * var(--k));
+}
+
+.sn-marcas__card {
+  position: absolute;
+  top: calc(-2 * var(--k));
+  width: calc(277 * var(--k));
+  height: calc(228 * var(--k));
+  max-width: none;
+}
+
+.sn-marcas__card--anos  { left: calc(-11 * var(--k)); }
+.sn-marcas__card--obras { left: calc(250 * var(--k)); }
+
+.sn-marcas__brilho {
+  position: absolute;
+  left: calc(-33 * var(--k));
+  top: calc(-227 * var(--k));
+  width: calc(501 * var(--k));
+  height: calc(610 * var(--k));
+  max-width: none;
+  pointer-events: none;
+}
+
+.sn-marca {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.sn-marca__numero {
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+}
+
+.sn-marca__rotulo {
+  width: calc(106 * var(--k));
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: calc(16 * var(--k));
+  line-height: calc(22 * var(--k));
+}
+
+/* Figma 72:392 — em (118, 215): 72 branco (78) + rótulo */
+.sn-marca--anos {
+  left: calc(38 * var(--k));
+  top: calc(33 * var(--k));
+  color: var(--branco);
+}
+
+.sn-marca--anos .sn-marca__numero {
+  font-size: calc(72 * var(--k));
+  line-height: calc(78 * var(--k));
+}
+
+/* Figma 72:393 — em (384, 219): 64 grafite (70) + rótulo #272a29 */
+.sn-marca--obras {
+  left: calc(304 * var(--k));
+  top: calc(37 * var(--k));
+}
+
+.sn-marca--obras .sn-marca__numero {
+  font-size: calc(64 * var(--k));
+  line-height: calc(70 * var(--k));
+  color: var(--titulo);
+}
+
+.sn-marca--obras .sn-marca__rotulo {
+  color: var(--cards-escuro);
+}
+
+/* --------------------------------------------------------------------------
+   Depoimento — Figma 70:252 (366 x 153, raio 10) em x 817, y 186
+   Alinhado à coluna de texto da direita (que começa em x 816).
+   -------------------------------------------------------------------------- */
+
+.sn-depoimento {
+  --k: var(--p);
+  position: absolute;
+  left: calc(100% - var(--margem) - 543 * var(--p));
+  top: calc(186 * var(--p));
+  width: calc(366 * var(--k));
+  height: calc(175 * var(--k));
+}
+
+.sn-depoimento__card {
+  position: relative;
+  height: calc(153 * var(--k));
+  border-radius: calc(10 * var(--k));
+  background: var(--branco);
+}
+
+/* Figma 70:262 — foto do cliente, 126 x 137 em (8, 8), raio 10 */
+.sn-foto--cliente {
+  left: calc(8 * var(--k));
+  top: calc(8 * var(--k));
+  width: calc(126 * var(--k));
+  height: calc(137 * var(--k));
+  border-radius: calc(10 * var(--k));
+}
+
+.sn-depoimento__estrelas {
+  position: absolute;
+  left: calc(171 * var(--k));
+  top: calc(15 * var(--k));
+  width: calc(100 * var(--k));
+  height: calc(20 * var(--k));
+}
+
+.sn-depoimento__nome,
+.sn-depoimento__descricao {
+  position: absolute;
+  left: calc(171 * var(--k));
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  white-space: nowrap;
+}
+
+.sn-depoimento__nome {
+  top: calc(109 * var(--k));
+  font-weight: 700;
+  font-size: calc(14 * var(--k));
+  line-height: calc(19 * var(--k));
+  color: #000;
+}
+
+.sn-depoimento__descricao {
+  top: calc(128 * var(--k));
+  font-weight: 400;
+  font-size: calc(10 * var(--k));
+  line-height: calc(14 * var(--k));
+  color: #726d6d;
+}
+
+/* Figma 70:259–261 — três pontos de 12, a cada 22, em (155, 163) */
+.sn-depoimento__pontos {
+  display: flex;
+  gap: calc(10 * var(--k));
+  margin: calc(10 * var(--k)) 0 0 calc(155 * var(--k));
+}
+
+.sn-depoimento__pontos img {
+  display: block;
+  width: calc(12 * var(--k));
+  height: calc(12 * var(--k));
+}
+
+/* ==========================================================================
+   4. Chamada — Figma 70:273 (fundo #d8bc59 + textura, 250)
+   ========================================================================== */
+
+.sn-chamada {
+  height: calc(250 * var(--p));
+  background: #d8bc59;
+  color: #000;
+}
+
+/* Figma 71:302 — a textura no tamanho natural (2103 x 748 em 1440), 35,9%
+   para a esquerda e 294 acima do topo */
+.sn-chamada__textura {
+  position: absolute;
+  left: -35.9%;
+  top: calc(-294 * var(--p));
+  width: 146.04%;
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+}
+
+.sn-chamada__titulo {
+  top: calc(72 * var(--p));
+}
+
+/* Figma 71:299 — 544 de largura, ancorada à direita, y 50 */
+.sn-chamada__coluna {
+  position: absolute;
+  right: var(--margem);
+  top: calc(50 * var(--p));
+  width: calc(544 * var(--p));
+}
+
+.sn-chamada__texto {
+  margin: 0 0 calc(20 * var(--p));
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: calc(18 * var(--p));
+  line-height: calc(25 * var(--p));
+  color: #3f3d3d;
+}
+
+/* Figma 71:298 — amarelo, raio 15, 12/15, texto e seta a 25. As cores (o
+   amarelo e o texto preto) vêm de interacoes.css, que as faz mudar no hover,
+   igual ao .obras__botao: definidas aqui, este arquivo (carregado depois)
+   travaria o hover. */
+.sn-chamada__botao {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(25 * var(--p));
+  padding: calc(12 * var(--p)) calc(15 * var(--p));
+  border-radius: calc(15 * var(--p));
+}
+
+.sn-chamada__botao-texto {
+  font-family: var(--fonte-corpo);
+  font-weight: 800;
+  font-size: calc(18 * var(--p));
+  line-height: calc(25 * var(--p));
+  letter-spacing: calc(1 * var(--p));
+  white-space: nowrap;
+}
+
+/* seta de 12 x 9; o SVG passa 0.75 de cada lado (o traço) */
+.sn-chamada__botao-seta {
+  display: block;
+  width: calc(13.5 * var(--p));
+  height: calc(10.5 * var(--p));
+  margin: calc(-0.75 * var(--p));
+}
+
+/* ==========================================================================
+   Animações (assets/js/sobre-nos.js)
+
+   Estados temporários. .abertura-animada é posta no <html> antes do primeiro
+   paint (base.njk): o que entra na abertura nasce oculto, sem piscar na
+   posição final. Os placeholders das fotos não entram aqui — ficam parados.
+   ========================================================================== */
+
+html.abertura-animada .sn-intro__risco,
+html.abertura-animada .sn-intro__titulo,
+html.abertura-animada .sn-intro__paragrafo {
+  opacity: 0;
+}
+
+/* títulos divididos em linhas (SplitText): cada linha dentro de uma máscara.
+   A folga da máscara (compensada pela margem) não corta os acentos nem a
+   base das letras; o layout das linhas continua o mesmo. */
+.sn-mascarado {
+  display: flex;
+  flex-direction: column;
+}
+
+.sn-mascarado .sn-linha-mask {
+  padding: 0.22em 0.1em;
+  margin: -0.22em -0.1em;
+}
+
+/* ==========================================================================
+   Mobile e tablet (até 1023px)
+   Não há frame mobile desta página no Figma: é uma adaptação estrutural, na
+   linguagem dos frames mobile da Home — coluna de 342 (--coluna, --m), as
+   mesmas peças em fluxo, na ordem do desktop. As composições (fotos, 20+ e
+   250+, depoimento) encolhem inteiras, com as proporções do Figma.
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .sn-intro,
+  .sn-principios,
+  .sn-numeros,
+  .sn-chamada {
+    height: auto;
+    padding: calc(56 * var(--m)) var(--margem-mobile);
+  }
+
+  .sn-intro__texto,
+  .sn-intro__fotos,
+  .sn-principios__titulo,
+  .sn-principios__intro,
+  .sn-principios__divisor,
+  .sn-diferenciais,
+  .sn-numeros__titulo,
+  .sn-numeros__intro,
+  .sn-marcas,
+  .sn-depoimento,
+  .sn-chamada__titulo,
+  .sn-chamada__coluna {
+    position: relative;
+    inset: auto;
+    translate: none;
+  }
+
+  .sn-risco {
+    position: static;
+    display: block;
+    width: calc(50 * var(--m));
+    height: 2px;
+    margin-bottom: calc(24 * var(--m));
+  }
+
+  /* --- 1. Experiência --------------------------------------------------- */
+
+  .sn-intro {
+    padding-top: calc(var(--nav-altura) + 48 * var(--m));
+  }
+
+  .sn-intro__texto,
+  .sn-intro__titulo,
+  .sn-intro__paragrafo--2 {
+    width: auto;
+  }
+
+  .sn-intro__titulo {
+    margin-bottom: calc(20 * var(--m));
+    font-size: calc(34 * var(--m));
+    line-height: calc(38 * var(--m));
+  }
+
+  .sn-intro__paragrafo {
+    font-size: calc(15 * var(--m));
+    line-height: calc(23 * var(--m));
+  }
+
+  .sn-intro__paragrafo--2 {
+    margin-top: calc(16 * var(--m));
+  }
+
+  /* a composição inteira na largura da coluna (628 → 342) */
+  .sn-intro__fotos {
+    --c: calc(var(--m) * 342 / 628);
+    margin-top: calc(40 * var(--m));
+  }
+
+  /* --- 2. Solidez ------------------------------------------------------- */
+
+  .sn-principios__titulo,
+  .sn-numeros__titulo,
+  .sn-chamada__titulo {
+    width: auto;
+    font-size: calc(30 * var(--m));
+    line-height: calc(35 * var(--m));
+    white-space: normal;
+  }
+
+  .sn-principios__intro,
+  .sn-numeros__intro {
+    width: auto;
+    margin-top: calc(16 * var(--m));
+    font-size: calc(15 * var(--m));
+    line-height: calc(23 * var(--m));
+  }
+
+  .sn-cards {
+    --k: var(--m);
+    display: flex;
+    flex-direction: column;
+    gap: calc(20 * var(--m));
+    margin-top: calc(36 * var(--m));
+  }
+
+  /* o card vira ícone + texto em fluxo, com a altura do conteúdo */
+  .sn-card,
+  .sn-card--missao,
+  .sn-card--visao,
+  .sn-card--valores {
+    position: relative;
+    inset: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: calc(16 * var(--k));
+    width: auto;
+    height: auto;
+    padding: calc(28 * var(--k)) calc(24 * var(--k)) calc(28 * var(--k)) calc(16 * var(--k));
+  }
+
+  /* mesma especificidade das posições de cada card no desktop */
+  .sn-card .sn-card__icone,
+  .sn-card .sn-card__texto {
+    position: relative;
+    inset: auto;
+  }
+
+  .sn-card__icone {
+    flex-shrink: 0;
+    margin-top: calc(4 * var(--k)); /* alinhado ao título */
+  }
+
+  .sn-card__texto,
+  .sn-card--visao .sn-card__texto {
+    flex: 1;
+    width: auto;
+  }
+
+  .sn-principios__divisor {
+    display: block;
+    height: 1px;
+    margin: calc(36 * var(--m)) 0;
+  }
+
+  /* diferenciais: uma coluna, sem os divisores verticais */
+  .sn-diferenciais {
+    --p: var(--m);
+    display: grid;
+    gap: calc(24 * var(--m));
+    height: auto;
+  }
+
+  .sn-diferencial + .sn-diferencial {
+    margin-left: 0;
+  }
+
+  .sn-diferencial + .sn-diferencial::before {
+    content: none;
+  }
+
+  .sn-diferencial__texto {
+    flex: 1;
+    width: auto;
+  }
+
+  /* --- 3. Números ------------------------------------------------------- */
+
+  /* 20+ e 250+: o grupo de 516 na largura da coluna */
+  .sn-marcas {
+    --k: calc(var(--m) * 342 / 516);
+    margin-top: calc(40 * var(--m));
+  }
+
+  /* depoimento: 366 na largura da coluna */
+  .sn-depoimento {
+    --k: calc(var(--m) * 342 / 366);
+    margin-top: calc(36 * var(--m));
+  }
+
+  /* --- 4. Chamada ------------------------------------------------------- */
+
+  .sn-chamada__textura {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% 50%;
+  }
+
+  .sn-chamada__coluna {
+    width: auto;
+    margin-top: calc(20 * var(--m));
+  }
+
+  .sn-chamada__texto {
+    margin-bottom: calc(24 * var(--m));
+    font-size: calc(15 * var(--m));
+    line-height: calc(23 * var(--m));
+  }
+
+  .sn-chamada__botao {
+    --p: var(--m);
+  }
+}

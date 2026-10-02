@@ -1,0 +1,96 @@
+---
+layout: base.njk
+tomTopo: "#ffffff"
+title: Obras
+activeNav: obras
+navSobreposta: true
+navTema: claro
+estilosPagina: [obras-pagina]
+fontesPagina: "family=Manrope:wght@800"
+animacoesPagina: obras-pagina
+aberturaAnimada: true
+# Os quatro projetos — Figma 201:14 (Guarulhos) e 205:2 / 205:29 / 205:56.
+# Todos usam o mesmo bloco (.ob-projeto); só o conteúdo muda. `enquadramento`
+# é o object-position horizontal da foto no Figma (a foto, 3:2, cobre a caixa
+# de 628 x 729 e sobra largura).
+projetos:
+  - titulo: "Demolição controlada — Galpão industrial, Guarulhos"
+    descricao: "Execução de demolição controlada em galpão industrial, com planejamento técnico, equipamentos de alta precisão e foco total em segurança, minimizando impactos na estrutura remanescente."
+    servico: "Demolição controlada"
+    local: "Guarulhos - SP"
+    tempo: "45 Dias"
+    resultado: "Segurança e precisão"
+    foto: projeto-guarulhos.webp
+    alt: "Escavadeira fazendo a demolição controlada de um galpão industrial"
+    enquadramento: "50%"
+  - titulo: "Corte com fio diamantado — Estrutura de concreto, São Paulo"
+    descricao: "Execução de corte técnico em estrutura de concreto de grande espessura, utilizando fio diamantado para obter precisão e menor impacto sobre os elementos adjacentes."
+    servico: "Corte com fio diamantado"
+    local: "São Paulo - SP"
+    tempo: "3 dias"
+    resultado: "Precisão e controle"
+    foto: projeto-sao-paulo.webp
+    alt: "Operador da GVT acompanhando o corte com fio diamantado em estrutura de concreto"
+    enquadramento: "0%"
+  - titulo: "Furos em concreto — Adequação de instalações, Campinas"
+    descricao: "Perfurações técnicas em concreto para adequação e passagem de novas instalações, executadas com equipamentos diamantados e controle preciso dos pontos de intervenção."
+    servico: "Furos em concreto"
+    local: "Campinas - SP"
+    tempo: "2 dias"
+    resultado: "Agilidade e acabamento"
+    foto: projeto-campinas.webp
+    alt: "Perfuratriz com coroa diamantada fazendo furos em parede de concreto"
+    enquadramento: "90%"
+  - titulo: "Corte com disco diamantado — Piso industrial, Jundiaí"
+    descricao: "Execução de cortes controlados em piso de concreto para adequação da estrutura, utilizando disco diamantado para garantir precisão, acabamento e eficiência durante a intervenção."
+    servico: "Corte com disco diamantado"
+    local: "Jundiaí - SP"
+    tempo: "2 dias"
+    resultado: "Precisão e eficiência"
+    foto: projeto-jundiai.webp
+    alt: "Operador da GVT cortando piso industrial com cortadora de disco diamantado"
+    enquadramento: "50%"
+---
+{#- Página Obras — Figma node 83:354 (frame 1440 x 1827, com o Projeto 01) e os
+    projetos 02–04 nos frames 205:2, 205:29 e 205:56 (1283 x 795 cada, a 129
+    um do outro). Navbar e rodapé são os componentes do site (base.njk).
+    Estilos em assets/css/obras-pagina.css (prefixo ob-; a Home já tem uma
+    seção .obras). Animações em assets/js/obras-pagina.js. #}
+
+<section class="ob-pagina" id="obras-projetos" data-nav-tema="claro">
+
+  {# Figma 88:532 — Manrope ExtraBold 56, centrado, y 220 #}
+  <h1 class="ob-titulo">PROJETOS QUE <br>COMPROVAM NOSSA <br><span class="ob-destaque">EXPERIÊNCIA.</span></h1>
+
+  <div class="ob-projetos">
+    {%- for projeto in projetos %}
+    <article class="ob-projeto">
+      <div class="ob-projeto__texto">
+        <h2 class="ob-projeto__titulo">{{ projeto.titulo }}</h2>
+        <p class="ob-projeto__descricao">{{ projeto.descricao }}</p>
+
+        <dl class="ob-projeto__dados">
+          <div class="ob-dado ob-dado--servico">
+            <dt class="ob-dado__rotulo">TIPO DE SERVIÇO</dt>
+            <dd class="ob-dado__valor">{{ projeto.servico }}</dd>
+          </div>
+          <div class="ob-dado ob-dado--local">
+            <dt class="ob-dado__rotulo">LOCALIZAÇÃO</dt>
+            <dd class="ob-dado__valor"><img class="ob-dado__icone" src="/assets/img/obras/icone-localizacao.svg" width="16" height="20.01" alt="" aria-hidden="true">{{ projeto.local }}</dd>
+          </div>
+          <div class="ob-dado ob-dado--tempo">
+            <dt class="ob-dado__rotulo">TEMPO DE EXECUÇÃO</dt>
+            <dd class="ob-dado__valor"><img class="ob-dado__icone" src="/assets/img/obras/icone-tempo.svg" width="18" height="20" alt="" aria-hidden="true">{{ projeto.tempo }}</dd>
+          </div>
+          <div class="ob-dado ob-dado--resultado">
+            <dt class="ob-dado__rotulo">RESULTADO</dt>
+            <dd class="ob-dado__valor"><img class="ob-dado__icone" src="/assets/img/obras/icone-resultado.svg" width="22" height="21" alt="" aria-hidden="true">{{ projeto.resultado }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <img class="ob-projeto__foto" src="/assets/img/obras/{{ projeto.foto }}" width="1536" height="1024" alt="{{ projeto.alt }}" style="--enquadramento: {{ projeto.enquadramento }}"{% if not loop.first %} loading="lazy"{% endif %}>
+    </article>
+    {%- endfor %}
+  </div>
+</section>
