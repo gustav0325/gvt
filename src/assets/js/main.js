@@ -96,9 +96,10 @@
     return Math.max(0, alvo.getBoundingClientRect().top + scrollY - margem);
   }
 
-  // Escolher um item: 1. fecha o menu, 2. a trava de rolagem sai junto,
-  // 3. a página rola suavemente até a seção. Em outra página que não a Home
-  // o link segue normal, para /#seção.
+  // Escolher um item: o menu fecha (e a trava de rolagem sai junto). Os
+  // itens levam às páginas (/sobre-nos/, /servicos/...): a navegação segue
+  // normal, com a transição de transicao.js. Só um link com #seção da
+  // própria página é trocado por uma rolagem suave até ela.
   for (var i = 0; i < links.length; i++) {
     links[i].addEventListener("click", function (e) {
       definir(false);
