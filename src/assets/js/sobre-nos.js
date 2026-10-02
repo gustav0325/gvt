@@ -18,8 +18,60 @@
 //   rodapé      eco da abertura, mais discreto: logo por máscara → texto →
 //               colunas → contatos e redes → copyright e o traço dourado
 //
-// Os placeholders das fotos não são animados (as fotos terão a sua própria
-// animação quando chegarem). A navbar não é tocada.
+// Os placeholders das fotos não são animados no desktop (as fotos terão a
+// sua própria animação quando chegarem). A navbar não é tocada.
+//
+// Mobile (até 1023px): um ramo próprio (montarMobile), elemento a elemento
+// — a página vira uma coluna bem mais alta que a tela, então cada peça entra
+// quando ela própria chega à vista: os placeholders surgem com um fade
+// curto, os cards de Missão/Visão/Valores um a um, os diferenciais na ordem
+// da grade 2 x 2. O ramo do desktop continua o mesmo.
+
+// --- Carrossel de depoimentos (só aparece no mobile) ------------------------
+// Deslizar é rolagem nativa com scroll-snap (toque); os indicadores levam ao
+// card e acompanham o card visível. Independente do GSAP e do reduced-motion.
+(function () {
+  "use strict";
+
+  var trilho = document.querySelector(".sn-depoimento__trilho");
+  var indicadores = Array.prototype.slice.call(document.querySelectorAll(".sn-depoimento__indicador"));
+  if (!trilho || !indicadores.length) return;
+
+  var cards = Array.prototype.slice.call(trilho.querySelectorAll(".sn-depoimento__card"));
+  var reduzido = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function deslocamento(card) {
+    return trilho.scrollLeft + card.getBoundingClientRect().left - trilho.getBoundingClientRect().left;
+  }
+
+  function marcar(indice) {
+    indicadores.forEach(function (botao, i) {
+      if (i === indice) botao.setAttribute("aria-current", "true");
+      else botao.removeAttribute("aria-current");
+    });
+  }
+
+  var quadro = 0;
+  trilho.addEventListener(
+    "scroll",
+    function () {
+      cancelAnimationFrame(quadro);
+      quadro = requestAnimationFrame(function () {
+        var passo = cards.length > 1 ? deslocamento(cards[1]) - deslocamento(cards[0]) : 1;
+        marcar(Math.max(0, Math.min(cards.length - 1, Math.round(trilho.scrollLeft / passo))));
+      });
+    },
+    { passive: true }
+  );
+
+  indicadores.forEach(function (botao, i) {
+    botao.addEventListener("click", function () {
+      if (!cards[i]) return;
+      trilho.scrollTo({ left: deslocamento(cards[i]), behavior: reduzido.matches ? "auto" : "smooth" });
+      marcar(i);
+    });
+  });
+})();
 
 (function () {
   "use strict";
@@ -68,11 +120,19 @@
   var divisoes = [];
 
   function dividir(titulo) {
+    // quebras escondidas pelo CSS (a do título de Números só vale no
+    // mobile) sairiam como linhas a mais: saem durante a divisão e voltam
+    // ao juntar
+    var original = titulo.innerHTML;
+    qa("br", titulo).forEach(function (br) {
+      if (getComputedStyle(br).display === "none") br.remove();
+    });
     var divisao = SplitText.create(titulo, {
       type: "lines",
       mask: "lines",
       linesClass: "sn-linha",
     });
+    divisao.htmlOriginal = original;
     titulo.classList.add("sn-mascarado");
     // 125%: a própria altura mais a folga da máscara (ver sobre-nos.css)
     gsap.set(divisao.lines, { yPercent: 125 });
@@ -85,6 +145,7 @@
     divisoes = divisoes.filter(function (item) {
       if (item.titulo !== titulo) return true;
       item.divisao.revert();
+      titulo.innerHTML = item.divisao.htmlOriginal;
       titulo.classList.remove("sn-mascarado");
       return false;
     });
@@ -135,6 +196,292 @@
     ScrollTrigger.create({ trigger: gatilho, start: inicio, once: true, onEnter: montar });
   }
 
+  // espera as fontes (quebras de linha finais; teto de 1,5s) e, chegando de
+  // outra página, o conteúdo terminar de assentar (transicao.js)
+  function quandoPronto(abrir) {
+    var espera = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    var teto = new Promise(function (ok) {
+      setTimeout(ok, 1500);
+    });
+    Promise.all([Promise.race([espera, teto]), window.gvtEntradaPronta]).then(function () {
+      try {
+        if (raiz.classList.contains("abertura-animada")) abrir();
+      } catch (erro) {
+        liberarAbertura();
+      }
+    });
+  }
+
+  // ==========================================================================
+  // Mobile — elemento a elemento, deslocamentos curtos
+  // ==========================================================================
+  function montarMobile() {
+    var curva = "power3.out";
+
+    // um elemento (ou grupo) que sobe alguns pixels e aparece quando chega
+    // à tela; `fila` evita que vários estourem juntos numa rolagem rápida
+    function revelar(elementos, gatilho, opcoes) {
+      opcoes = opcoes || {};
+      var lista = [].concat(elementos).filter(Boolean);
+      if (!lista.length) return;
+      gsap.set(lista, { y: opcoes.y != null ? opcoes.y : 16, opacity: 0 });
+      aoEntrar(gatilho || lista[0], opcoes.inicio || "top 90%", function () {
+        gsap.to(lista, {
+          y: 0,
+          opacity: 1,
+          duration: opcoes.duracao || 0.8,
+          ease: opcoes.ease || curva,
+          stagger: opcoes.stagger || 0,
+          delay: opcoes.fila ? opcoes.fila(opcoes.intervalo || 0.15) : 0,
+          onComplete: function () {
+            limpar(lista);
+          },
+        });
+      });
+    }
+
+    // --- 1. Experiência: traço e SOBRE A GVT → título → textos → fotos -----
+    var intro = q(".sn-intro");
+    var introRisco = q(".sn-intro__risco", intro);
+    var introRotulo = q(".sn-intro__rotulo", intro);
+    var introTitulo = q(".sn-intro__titulo", intro);
+    var introTextos = qa(".sn-intro__paragrafo", intro);
+    var fotos = qa(".sn-intro__fotos .sn-foto", intro);
+
+    gsap.set(fotos, { y: 14, opacity: 0 });
+
+    function abrir() {
+      gsap.set(introRisco, { scaleX: 0, opacity: 1, transformOrigin: "0% 50%" });
+      gsap.set(introRotulo, { x: -8, opacity: 0 });
+      gsap.set(introTextos, { y: 14, opacity: 0 });
+      liberarAbertura();
+
+      var tl = gsap.timeline({
+        defaults: { ease: curva },
+        onComplete: function () {
+          juntar(introTitulo);
+          limpar([introRisco, introRotulo].concat(introTextos));
+        },
+      });
+      traco(tl, introRisco, 0.1, 0.7);
+      tl.to(introRotulo, { x: 0, opacity: 1, duration: 0.6, ease: "power2.out" }, 0.35);
+      var fim = linhas(tl, introTitulo, 0.3, {
+        destaque: ".sn-destaque",
+        atrasoDestaque: 0.18,
+        duracao: 1.1,
+        passo: 0.1,
+      });
+      tl.to(introTextos, { y: 0, opacity: 1, duration: 0.9, ease: "power2.out", stagger: 0.14 }, fim);
+
+      // fotos: as que já estão à vista entram logo depois dos textos; as de
+      // baixo, quando chegarem
+      fotos.forEach(function (foto, i) {
+        if (foto.getBoundingClientRect().top < window.innerHeight) {
+          tl.to(foto, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", onComplete: function () { limpar([foto]); } }, fim + 0.3 + i * 0.1);
+        } else {
+          aoEntrar(foto, "top 94%", function () {
+            gsap.to(foto, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", onComplete: function () { limpar([foto]); } });
+          });
+        }
+      });
+    }
+
+    quandoPronto(abrir);
+
+    // --- 2. Solidez --------------------------------------------------------
+    var principios = q(".sn-principios");
+    var solidezRisco = q(".sn-principios__risco", principios);
+    var solidezTitulo = q(".sn-principios__titulo", principios);
+    var solidezTexto = q(".sn-principios__intro", principios);
+    var cards = qa(".sn-card", principios);
+    var divisor = q(".sn-principios__divisor", principios);
+    var diferenciais = qa(".sn-diferencial", principios);
+    var filaSolidez = fila();
+
+    gsap.set(solidezRisco, { scaleX: 0, transformOrigin: "0% 50%" });
+    gsap.set(solidezTitulo, { opacity: 0 });
+    gsap.set(solidezTexto, { y: 14, opacity: 0 });
+
+    aoEntrar(principios, "top 82%", function () {
+      var tl = gsap.timeline({
+        delay: filaSolidez(0.4),
+        defaults: { ease: curva },
+        onComplete: function () {
+          juntar(solidezTitulo);
+          limpar([solidezRisco, solidezTexto]);
+        },
+      });
+      traco(tl, solidezRisco, 0, 0.7);
+      var fim = linhas(tl, solidezTitulo, 0.1, { duracao: 1.1, passo: 0.1 });
+      tl.to(solidezTexto, { y: 0, opacity: 1, duration: 0.9, ease: "power2.out" }, fim - 0.1);
+    });
+
+    // Missão, Visão e Valores: cada um quando chega
+    cards.forEach(function (card) {
+      revelar(card, card, { y: 18, fila: filaSolidez, intervalo: 0.12 });
+    });
+
+    // a linha é traçada; os diferenciais entram na ordem da grade (linha a
+    // linha, da esquerda para a direita)
+    gsap.set(divisor, { scaleX: 0, transformOrigin: "0% 50%" });
+    aoEntrar(divisor, "top 92%", function () {
+      gsap.to(divisor, {
+        scaleX: 1,
+        duration: 0.9,
+        ease: "power2.inOut",
+        delay: filaSolidez(0.2),
+        onComplete: function () {
+          limpar([divisor]);
+        },
+      });
+    });
+    for (var linha = 0; linha < diferenciais.length; linha += 2) {
+      revelar(diferenciais.slice(linha, linha + 2), diferenciais[linha], {
+        y: 16,
+        stagger: 0.1,
+        fila: filaSolidez,
+        intervalo: 0.18,
+        inicio: "top 92%",
+      });
+    }
+
+    // --- 3. Números ----------------------------------------------------------
+    var numeros = q(".sn-numeros");
+    var numerosRisco = q(".sn-numeros__risco", numeros);
+    var numerosTitulo = q(".sn-numeros__titulo", numeros);
+    var numerosTexto = q(".sn-numeros__intro", numeros);
+    var marcas = q(".sn-marcas", numeros);
+    var brilho = q(".sn-marcas__brilho", marcas);
+    var cartoes = [
+      [q(".sn-marcas__card--anos", marcas), q(".sn-marca--anos", marcas)],
+      [q(".sn-marcas__card--obras-mobile", marcas), q(".sn-marca--obras", marcas)],
+    ];
+    var contadores = qa(".sn-marca__numero", marcas);
+    var finais = contadores.map(function (el) {
+      return el.textContent.trim();
+    });
+    var depoimento = q(".sn-depoimento", numeros);
+    var filaNumeros = fila();
+
+    gsap.set(numerosRisco, { scaleX: 0, transformOrigin: "0% 50%" });
+    gsap.set(numerosTitulo, { opacity: 0 });
+    gsap.set(numerosTexto, { y: 14, opacity: 0 });
+    cartoes.forEach(function (par) {
+      gsap.set(par, { y: 18, opacity: 0 });
+    });
+    gsap.set(brilho, { opacity: 0 });
+
+    aoEntrar(numeros, "top 82%", function () {
+      var tl = gsap.timeline({
+        delay: filaNumeros(0.3),
+        defaults: { ease: curva },
+        onComplete: function () {
+          juntar(numerosTitulo);
+          limpar([numerosRisco, numerosTexto]);
+        },
+      });
+      traco(tl, numerosRisco, 0, 0.7);
+      var fim = linhas(tl, numerosTitulo, 0.1, { duracao: 1.1, passo: 0.1 });
+      tl.to(numerosTexto, { y: 0, opacity: 1, duration: 0.9, ease: "power2.out" }, fim - 0.1);
+    });
+
+    // 20+ e 250+: entram, contam uma vez e o brilho do 20+ acende
+    aoEntrar(marcas, "top 90%", function () {
+      var tl = gsap.timeline({
+        delay: filaNumeros(0.3),
+        onComplete: function () {
+          contadores.forEach(function (el, i) {
+            el.textContent = finais[i];
+          });
+          limpar([brilho].concat(cartoes[0], cartoes[1], contadores.map(function (el) {
+            return el.parentNode;
+          })));
+        },
+      });
+      cartoes.forEach(function (par, i) {
+        var t = i * 0.15;
+        tl.to(par, { y: 0, opacity: 1, duration: 0.9, ease: curva }, t);
+        var el = contadores[i];
+        var alvo = parseInt(finais[i], 10) || 0;
+        var sufixo = finais[i].replace(/^\d+/, "");
+        var bloco = el.parentNode;
+        var contagem = { valor: 0 };
+        gsap.set(bloco, { minWidth: bloco.getBoundingClientRect().width });
+        el.textContent = "0" + sufixo;
+        tl.to(
+          contagem,
+          {
+            valor: alvo,
+            duration: 1.1,
+            ease: "power2.out",
+            onUpdate: function () {
+              el.textContent = Math.round(contagem.valor) + sufixo;
+            },
+            onComplete: function () {
+              el.textContent = finais[i];
+            },
+          },
+          t + 0.1
+        );
+      });
+      tl.to(brilho, { opacity: 1, duration: 1.1, ease: "power1.inOut" }, 0.6);
+    });
+
+    // depoimento: a caixa inteira, como um bloco
+    revelar(depoimento, depoimento, { y: 18, fila: filaNumeros, intervalo: 0.2 });
+
+    // --- 4. Chamada -----------------------------------------------------------
+    var chamada = q(".sn-chamada");
+    var textura = q(".sn-chamada__textura", chamada);
+    var chamadaRisco = q(".sn-chamada__risco", chamada);
+    var chamadaTitulo = q(".sn-chamada__titulo", chamada);
+    var chamadaTexto = q(".sn-chamada__texto", chamada);
+    var botao = q(".sn-chamada__botao", chamada);
+
+    gsap.set(textura, { opacity: 0.55 });
+    gsap.set(chamadaRisco, { scaleX: 0, transformOrigin: "0% 50%" });
+    gsap.set(chamadaTitulo, { opacity: 0 });
+    gsap.set(chamadaTexto, { y: 14, opacity: 0 });
+    gsap.set(botao, { y: 10, opacity: 0 });
+
+    aoEntrar(chamada, "top 80%", function () {
+      var tl = gsap.timeline({
+        defaults: { ease: curva },
+        onComplete: function () {
+          juntar(chamadaTitulo);
+          limpar([textura, chamadaRisco, chamadaTexto, botao]);
+        },
+      });
+      tl.to(textura, { opacity: 1, duration: 1.6, ease: "power2.out" }, 0);
+      traco(tl, chamadaRisco, 0.05, 0.7);
+      var fim = linhas(tl, chamadaTitulo, 0.15, { duracao: 1.1, passo: 0.1 });
+      tl.to(chamadaTexto, { y: 0, opacity: 1, duration: 0.9, ease: "power2.out" }, fim - 0.1);
+      tl.to(botao, { y: 0, opacity: 1, duration: 0.8 }, fim + 0.1);
+    });
+
+    // --- 5. Rodapé (o mesmo da Home): cada parte quando chega ----------------
+    var rodape = q(".rodape");
+    var filaRodape = fila();
+    revelar(q(".rodape__logo", rodape), null, { y: 12, fila: filaRodape });
+    revelar(q(".rodape__sobre", rodape), null, { y: 12, fila: filaRodape });
+    revelar(q(".rodape__sociais", rodape), null, { y: 12, fila: filaRodape });
+    revelar([q(".rodape__coluna--servicos", rodape), q(".rodape__coluna--contato", rodape)], q(".rodape__coluna--servicos", rodape), {
+      y: 12,
+      stagger: 0.1,
+      fila: filaRodape,
+    });
+    revelar(q(".rodape__copyright", rodape), null, { y: 8, fila: filaRodape, inicio: "top 99%" });
+
+    return function () {
+      divisoes.slice().forEach(function (item) {
+        juntar(item.titulo);
+      });
+      contadores.forEach(function (el, i) {
+        el.textContent = finais[i];
+      });
+    };
+  }
+
   var mm = gsap.matchMedia();
 
   mm.add(
@@ -149,10 +496,11 @@
         return;
       }
 
-      // no mobile os deslocamentos e os intervalos encolhem
+      // no mobile, o ramo próprio (abaixo)
       var desktop = contexto.conditions.desktop;
-      var k = desktop ? 1 : 0.6;
-      var ritmo = desktop ? 1 : 0.8;
+      if (!desktop) return montarMobile();
+      var k = 1;
+      var ritmo = 1;
 
       // ======================================================================
       // 1. Abertura — Experiência que constrói novos caminhos

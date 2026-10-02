@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {#- --tom-topo: a cor do topo desta página (front matter tomTopo), o fundo
     que aparece atrás do conteúdo na transição entre páginas #}
-<html lang="pt-BR"{% if tomTopo %} style="--tom-topo: {{ tomTopo }}"{% endif %}>
+<html lang="pt-BR"{% if tomTopo %} style="--tom-topo: {{ tomTopo }}{% if tomTopoMobile %}; --tom-topo-mobile: {{ tomTopoMobile }}{% endif %}"{% endif %}>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -214,7 +214,7 @@
       para a saída (transicao.js) já deixar a navbar e o fundo como os do
       destino #}
   <script type="application/json" id="gvt-paginas">{
-    {%- for item in collections.all %}"{{ item.url }}": {"nav": "{{ item.data.navTema }}", "tom": "{{ item.data.tomTopo }}"}
+    {%- for item in collections.all %}"{{ item.url }}": {"nav": "{{ item.data.navTema }}", "tom": "{{ item.data.tomTopo }}", "navMobile": "{{ item.data.navTemaMobile }}", "tomMobile": "{{ item.data.tomTopoMobile }}"}
       {%- for nome, tema in item.data.ancoras %}, "{{ item.url }}#{{ nome }}": {"nav": "{{ tema }}", "tom": "{{ '#ffffff' if tema == 'claro' else item.data.tomTopo }}"}{% endfor %}
       {%- if not loop.last %}, {% endif %}{% endfor -%}
   }</script>

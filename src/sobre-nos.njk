@@ -1,6 +1,9 @@
 ---
 layout: base.njk
 tomTopo: "#272a29"
+# no celular a navbar abre clara, sobre a faixa branca antes do hero (.sn-topo)
+navTemaMobile: claro
+tomTopoMobile: "#ffffff"
 title: Sobre Nós
 activeNav: sobre-nos
 navSobreposta: true
@@ -10,7 +13,11 @@ aberturaAnimada: true
 ---
 {#- Página Sobre Nós — Figma node 66:2 (frame 1440 x 2281)
     Navbar e rodapé são os componentes do site (base.njk). Estilos em
-    assets/css/sobre-nos.css. Versão estática: sem animações.
+    assets/css/sobre-nos.css; animações em assets/js/sobre-nos.js.
+
+    MOBILE (até 1023px): composição própria, do mockup aprovado. Os
+    elementos marcados "só no mobile" ficam ocultos no desktop (display:
+    none), que continua exatamente como antes.
 
     FOTOS: as áreas cinzas (.sn-foto) são placeholders das fotografias que
     ainda serão enviadas. Para cada uma, basta pôr um <img> dentro da figure —
@@ -19,12 +26,16 @@ aberturaAnimada: true
         <img src="/assets/img/sobre-nos/....webp" width="…" height="…" alt="…">
       </figure> #}
 
+{# só no mobile: a faixa branca sob a navbar (que ali abre clara) #}
+<div class="sn-topo" data-nav-tema="claro" aria-hidden="true"></div>
+
 {# 1. Experiência — Figma 69:114 (1440 x 650) #}
 <section class="sn-intro" id="quem-somos">
   <span class="sn-risco sn-intro__risco" aria-hidden="true"></span>
+  <p class="sn-intro__rotulo">SOBRE A GVT</p>{# só no mobile #}
 
   <div class="sn-intro__texto">
-    <h1 class="sn-intro__titulo">EXPERIÊNCIA QUE CONSTRÓI NOVOS <span class="sn-destaque">CAMINHOS</span>.</h1>
+    <h1 class="sn-intro__titulo">EXPERIÊNCIA QUE CONSTRÓI NOVOS <span class="sn-destaque">CAMINHOS</span><span class="sn-intro__ponto">.</span></h1>
     <p class="sn-intro__paragrafo sn-intro__paragrafo--1">A GVT Cortes e Furos é especializada em soluções de cortes com fio e disco diamantado, furos com coroa diamantada e demolição controlada. Atuamos com segurança, precisão e planejamento, atendendo obras de diferentes portes e complexidades.</p>
     <p class="sn-intro__paragrafo sn-intro__paragrafo--2">Nossa trajetória é conduzida por Valmir Sabino, que acumula mais de 20 anos de experiência no setor e participação em grandes projetos da construção civil, indústrias e usinas.</p>
   </div>
@@ -50,6 +61,7 @@ aberturaAnimada: true
       <div class="sn-card__texto">
         <h3 class="sn-card__titulo">MISSÃO</h3>
         <p class="sn-card__descricao">Executar serviços de cortes, furos diamantados e demolição controlada com pontualidade, segurança, responsabilidade e sustentabilidade.</p>
+        <p class="sn-card__descricao sn-card__descricao--curta">Executar com segurança e responsabilidade.</p>{# só no mobile #}
       </div>
     </article>
 
@@ -58,6 +70,7 @@ aberturaAnimada: true
       <div class="sn-card__texto">
         <h3 class="sn-card__titulo">VISÃO</h3>
         <p class="sn-card__descricao">Ser referência em soluções de corte e demolição controlada, reconhecida pela capacidade técnica, inovação e compromisso com a qualidade.</p>
+        <p class="sn-card__descricao sn-card__descricao--curta">Ser referência em soluções e inovação.</p>{# só no mobile #}
       </div>
     </article>
 
@@ -66,6 +79,7 @@ aberturaAnimada: true
       <div class="sn-card__texto">
         <h3 class="sn-card__titulo">VALORES</h3>
         <p class="sn-card__descricao">Ética, responsabilidade, aprendizado contínuo e valorização da equipe, promovendo um ambiente de trabalho saudável e comprometido com os resultados.</p>
+        <p class="sn-card__descricao sn-card__descricao--curta">Ética, aprendizado contínuo e valorização da equipe.</p>{# só no mobile #}
       </div>
     </article>
   </div>
@@ -80,6 +94,7 @@ aberturaAnimada: true
       <div class="sn-diferencial__texto">
         <p class="sn-diferencial__titulo">Equipe capacitada</p>
         <p class="sn-diferencial__descricao">Profissionais experientes e em constante treinamento.</p>
+        <p class="sn-diferencial__titulo sn-diferencial__titulo--mobile">Equipe<br>capacitada</p>{# só no mobile #}
       </div>
     </li>
     <li class="sn-diferencial sn-diferencial--equipamentos">
@@ -87,6 +102,7 @@ aberturaAnimada: true
       <div class="sn-diferencial__texto">
         <p class="sn-diferencial__titulo">Equipamentos<br>de alta performance</p>
         <p class="sn-diferencial__descricao">Tecnologia para precisão e eficiência.</p>
+        <p class="sn-diferencial__titulo sn-diferencial__titulo--mobile">Alta<br>performance</p>{# só no mobile #}
       </div>
     </li>
     <li class="sn-diferencial sn-diferencial--seguranca">
@@ -94,6 +110,7 @@ aberturaAnimada: true
       <div class="sn-diferencial__texto">
         <p class="sn-diferencial__titulo">Segurança<br>em primeiro lugar</p>
         <p class="sn-diferencial__descricao">Planejamento e execução com foco na segurança.</p>
+        <p class="sn-diferencial__titulo sn-diferencial__titulo--mobile">Segurança<br>em primeiro lugar</p>{# só no mobile #}
       </div>
     </li>
     <li class="sn-diferencial sn-diferencial--atendimento">
@@ -101,6 +118,7 @@ aberturaAnimada: true
       <div class="sn-diferencial__texto">
         <p class="sn-diferencial__titulo">Atendimento especializado</p>
         <p class="sn-diferencial__descricao">Soluções sob medida para cada projeto.</p>
+        <p class="sn-diferencial__titulo sn-diferencial__titulo--mobile">Atendimento<br>especializado</p>{# só no mobile #}
       </div>
     </li>
   </ul>
@@ -108,26 +126,42 @@ aberturaAnimada: true
 
 {# 3. Números — Figma 70:212 (1440 x 401) #}
 <section class="sn-numeros" id="numeros" data-nav-tema="claro">
-  <h2 class="sn-numeros__titulo">NÚMEROS QUE REFLETEM CONFIANÇA.</h2>
+  <span class="sn-risco sn-numeros__risco" aria-hidden="true"></span>{# só no mobile #}
+  {#- a quebra só vale no mobile (no desktop o <br> fica oculto) #}
+  <h2 class="sn-numeros__titulo">NÚMEROS QUE <br class="sn-quebra-mobile">REFLETEM CONFIANÇA.</h2>
   <p class="sn-numeros__intro">Cada obra é um novo desafio e uma oportunidade de entregar soluções seguras e eficientes. Esses resultados representam a confiança dos nossos clientes e o compromisso da nossa equipe.</p>
 
   {# Figma 70:254 / 70:258 — os cards são SVGs com a sombra; 73:399 é o brilho #}
   <div class="sn-marcas">
     <img class="sn-marcas__card sn-marcas__card--anos" src="/assets/img/sobre-nos/card-anos.svg" width="277" height="228" alt="">
     <img class="sn-marcas__card sn-marcas__card--obras" src="/assets/img/sobre-nos/card-obras.svg" width="277" height="228" alt="">
+    <span class="sn-marcas__card sn-marcas__card--obras-mobile" aria-hidden="true"></span>{# só no mobile: o 250+ cinza-claro #}
     <p class="sn-marca sn-marca--anos"><span class="sn-marca__numero">20+</span> <span class="sn-marca__rotulo">ANOS DE EXPERIÊNCIA</span></p>
     <p class="sn-marca sn-marca--obras"><span class="sn-marca__numero">250+</span> <span class="sn-marca__rotulo">OBRAS REALIZADAS</span></p>
     <img class="sn-marcas__brilho" src="/assets/img/sobre-nos/brilho-anos.svg" width="501" height="610" alt="" aria-hidden="true">
   </div>
 
   {# Figma 70:252 — depoimento. A foto do cliente é um placeholder: basta pôr
-     o <img> dentro de .sn-foto--cliente. #}
-  <article class="sn-depoimento" aria-label="Depoimento de cliente">
-    <div class="sn-depoimento__card">
-      <figure class="sn-foto sn-foto--cliente"></figure>
-      <img class="sn-depoimento__estrelas" src="/assets/img/sobre-nos/estrelas.svg" width="100" height="20" alt="Avaliação: 5 de 5 estrelas">
-      <p class="sn-depoimento__nome">Nome do cliente</p>
-      <p class="sn-depoimento__descricao">Descrição</p>
+     o <img> dentro de .sn-foto--cliente.
+     No mobile os três pontos viram um carrossel de verdade (deslize ou toque
+     nos indicadores): os dois cards extras repetem o MESMO placeholder, até
+     chegarem os depoimentos reais. No desktop só o primeiro aparece. #}
+  <article class="sn-depoimento" aria-label="Depoimentos de clientes">
+    <div class="sn-depoimento__trilho">
+      {%- for n in [1, 2, 3] %}
+      <div class="sn-depoimento__card{% if n > 1 %} sn-depoimento__card--extra{% endif %}" role="group" aria-label="Depoimento {{ n }} de 3">
+        <figure class="sn-foto sn-foto--cliente"></figure>
+        <img class="sn-depoimento__estrelas" src="/assets/img/sobre-nos/estrelas.svg" width="100" height="20" alt="Avaliação: 5 de 5 estrelas">
+        <p class="sn-depoimento__nome">Nome do cliente</p>
+        <p class="sn-depoimento__descricao">Descrição</p>
+      </div>
+      {%- endfor %}
+    </div>
+    {# só no mobile: indicadores do carrossel #}
+    <div class="sn-depoimento__indicadores">
+      {%- for n in [1, 2, 3] %}
+      <button class="sn-depoimento__indicador" type="button" aria-label="Ver depoimento {{ n }}"{% if n == 1 %} aria-current="true"{% endif %}></button>
+      {%- endfor %}
     </div>
     <div class="sn-depoimento__pontos" aria-hidden="true">
       <img src="/assets/img/sobre-nos/ponto.svg" width="12" height="12" alt="">
@@ -140,6 +174,7 @@ aberturaAnimada: true
 {# 4. Chamada — Figma 70:273 (1440 x 250) #}
 <section class="sn-chamada" id="chamada" data-nav-tema="claro">
   <img class="sn-chamada__textura" src="/assets/img/sobre-nos/textura-chamada.webp" width="2103" height="748" alt="" aria-hidden="true" loading="lazy">
+  <span class="sn-risco sn-chamada__risco" aria-hidden="true"></span>{# só no mobile #}
 
   <h2 class="sn-chamada__titulo">O SEU PROJETO<br>EM BOAS MÃOS.</h2>
 

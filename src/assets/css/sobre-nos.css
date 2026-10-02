@@ -731,6 +731,7 @@
    ========================================================================== */
 
 html.abertura-animada .sn-intro__risco,
+html.abertura-animada .sn-intro__rotulo,
 html.abertura-animada .sn-intro__titulo,
 html.abertura-animada .sn-intro__paragrafo {
   opacity: 0;
@@ -749,12 +750,39 @@ html.abertura-animada .sn-intro__paragrafo {
   margin: -0.22em -0.1em;
 }
 
+/* --------------------------------------------------------------------------
+   Peças só do mobile (ver abaixo): no desktop não existem
+   -------------------------------------------------------------------------- */
+
+.sn-topo,
+.sn-intro__rotulo,
+.sn-card__descricao--curta,
+.sn-diferencial__titulo--mobile,
+.sn-numeros__risco,
+.sn-chamada__risco,
+.sn-marcas__card--obras-mobile,
+.sn-depoimento__card--extra,
+.sn-depoimento__indicadores,
+.sn-quebra-mobile {
+  display: none;
+}
+
+/* no desktop o trilho do carrossel não forma caixa: o card fica onde estava */
+.sn-depoimento__trilho {
+  display: contents;
+}
+
 /* ==========================================================================
-   Mobile e tablet (até 1023px)
-   Não há frame mobile desta página no Figma: é uma adaptação estrutural, na
-   linguagem dos frames mobile da Home — coluna de 342 (--coluna, --m), as
-   mesmas peças em fluxo, na ordem do desktop. As composições (fotos, 20+ e
-   250+, depoimento) encolhem inteiras, com as proporções do Figma.
+   Mobile e tablet (até 1023px) — mockup mobile aprovado da Sobre Nós
+
+   Coluna de 342 no frame de 390 (--m, --margem-mobile), tudo em fluxo:
+     faixa branca sob a navbar (que ali abre clara) → Experiência em
+     grafite (traço + SOBRE A GVT, título, textos, três fotos) → Solidez em
+     branco (Missão, Visão e Valores em cards cinza-claro compactos, linha,
+     diferenciais em grade 2 x 2) → Números em branco (20+ e 250+ lado a
+     lado, depoimento em carrossel) → Chamada sobre a textura.
+   Os textos curtos dos cards e os títulos dos diferenciais são os do
+   mockup; no desktop continuam os originais.
    ========================================================================== */
 
 @media (max-width: 1023px) {
@@ -763,7 +791,8 @@ html.abertura-animada .sn-intro__paragrafo {
   .sn-numeros,
   .sn-chamada {
     height: auto;
-    padding: calc(56 * var(--m)) var(--margem-mobile);
+    padding-left: var(--margem-mobile);
+    padding-right: var(--margem-mobile);
   }
 
   .sn-intro__texto,
@@ -783,18 +812,75 @@ html.abertura-animada .sn-intro__paragrafo {
     translate: none;
   }
 
-  .sn-risco {
+  /* traço amarelo de 56 x 2 acima de cada título */
+  .sn-risco,
+  .sn-numeros__risco,
+  .sn-chamada__risco {
     position: static;
     display: block;
-    width: calc(50 * var(--m));
+    width: calc(56 * var(--m));
     height: 2px;
-    margin-bottom: calc(24 * var(--m));
+    margin-bottom: calc(18 * var(--m));
+  }
+
+  .sn-quebra-mobile {
+    display: inline;
+  }
+
+  /* títulos em Archivo Black: as quebras do mockup em qualquer celular */
+  .sn-principios__titulo,
+  .sn-numeros__titulo,
+  .sn-chamada__titulo {
+    width: auto;
+    white-space: normal;
+  }
+
+  .sn-principios__intro,
+  .sn-numeros__intro,
+  .sn-chamada__texto {
+    width: auto;
+    font-size: max(15px, calc(16 * var(--m)));
+    line-height: 1.5;
+  }
+
+  /* --- faixa sob a navbar ----------------------------------------------- */
+
+  .sn-topo {
+    display: block;
+    height: var(--nav-altura);
+    background: var(--branco);
   }
 
   /* --- 1. Experiência --------------------------------------------------- */
 
+  /* traço e SOBRE A GVT na mesma linha; o resto em coluna */
   .sn-intro {
-    padding-top: calc(var(--nav-altura) + 48 * var(--m));
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    align-items: center;
+    column-gap: calc(20 * var(--m));
+    padding-top: calc(44 * var(--m));
+    padding-bottom: calc(20 * var(--m));
+  }
+
+  .sn-intro__risco {
+    margin: 0;
+  }
+
+  .sn-intro__rotulo {
+    display: block;
+    margin: 0;
+    font-family: var(--fonte-corpo);
+    font-weight: 700;
+    font-size: calc(11 * var(--m));
+    line-height: calc(16 * var(--m));
+    letter-spacing: calc(0.4 * var(--m));
+    color: var(--amarelo-destaque);
+  }
+
+  .sn-intro__texto,
+  .sn-intro__fotos {
+    grid-column: 1 / -1;
   }
 
   .sn-intro__texto,
@@ -803,55 +889,87 @@ html.abertura-animada .sn-intro__paragrafo {
     width: auto;
   }
 
+  .sn-intro__texto {
+    margin-top: calc(22 * var(--m));
+  }
+
+  /* 4 linhas: EXPERIÊNCIA / QUE CONSTRÓI / NOVOS / CAMINHOS. */
   .sn-intro__titulo {
-    margin-bottom: calc(20 * var(--m));
+    margin-bottom: calc(18 * var(--m));
     font-size: calc(34 * var(--m));
     line-height: calc(38 * var(--m));
   }
 
+  /* o ponto final entra no amarelo de CAMINHOS. */
+  .sn-intro__ponto {
+    color: var(--amarelo-destaque);
+  }
+
   .sn-intro__paragrafo {
-    font-size: calc(15 * var(--m));
-    line-height: calc(23 * var(--m));
+    font-size: max(15px, calc(16 * var(--m)));
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.86);
   }
 
   .sn-intro__paragrafo--2 {
     margin-top: calc(16 * var(--m));
   }
 
-  /* a composição inteira na largura da coluna (628 → 342) */
+  /* fotos: uma larga em cima, duas lado a lado embaixo */
   .sn-intro__fotos {
-    --c: calc(var(--m) * 342 / 628);
-    margin-top: calc(40 * var(--m));
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(10 * var(--m));
+    width: auto;
+    height: auto;
+    margin-top: calc(28 * var(--m));
+  }
+
+  .sn-intro__fotos .sn-foto {
+    position: relative;
+    inset: auto;
+    width: auto;
+    border-radius: calc(8 * var(--m));
+  }
+
+  .sn-intro__fotos .sn-foto--principal {
+    grid-column: 1 / -1;
+    height: calc(127 * var(--m));
+    -webkit-mask: none;
+            mask: none;
+  }
+
+  .sn-intro__fotos .sn-foto--topo,
+  .sn-intro__fotos .sn-foto--base {
+    height: calc(121 * var(--m));
   }
 
   /* --- 2. Solidez ------------------------------------------------------- */
 
-  .sn-principios__titulo,
-  .sn-numeros__titulo,
-  .sn-chamada__titulo {
-    width: auto;
+  .sn-principios {
+    padding-top: calc(40 * var(--m));
+    padding-bottom: calc(48 * var(--m));
+    background: var(--branco);
+  }
+
+  .sn-principios__titulo {
     font-size: calc(30 * var(--m));
     line-height: calc(35 * var(--m));
-    white-space: normal;
   }
 
-  .sn-principios__intro,
-  .sn-numeros__intro {
-    width: auto;
-    margin-top: calc(16 * var(--m));
-    font-size: calc(15 * var(--m));
-    line-height: calc(23 * var(--m));
+  .sn-principios__intro {
+    margin-top: calc(14 * var(--m));
   }
 
+  /* Missão · Visão · Valores: cinza-claro, ícone à esquerda, compactos */
   .sn-cards {
     --k: var(--m);
     display: flex;
     flex-direction: column;
-    gap: calc(20 * var(--m));
-    margin-top: calc(36 * var(--m));
+    gap: calc(15 * var(--m));
+    margin-top: calc(28 * var(--m));
   }
 
-  /* o card vira ícone + texto em fluxo, com a altura do conteúdo */
   .sn-card,
   .sn-card--missao,
   .sn-card--visao,
@@ -859,11 +977,14 @@ html.abertura-animada .sn-intro__paragrafo {
     position: relative;
     inset: auto;
     display: flex;
-    align-items: flex-start;
-    gap: calc(16 * var(--k));
+    align-items: center;
+    gap: calc(22 * var(--m));
     width: auto;
     height: auto;
-    padding: calc(28 * var(--k)) calc(24 * var(--k)) calc(28 * var(--k)) calc(16 * var(--k));
+    padding: calc(20 * var(--m)) calc(20 * var(--m)) calc(20 * var(--m)) calc(24 * var(--m));
+    border-radius: calc(10 * var(--m));
+    background: var(--cards);
+    box-shadow: none;
   }
 
   /* mesma especificidade das posições de cada card no desktop */
@@ -873,9 +994,10 @@ html.abertura-animada .sn-intro__paragrafo {
     inset: auto;
   }
 
-  .sn-card__icone {
+  /* o ícone inteiro (no desktop o raio do card o recorta) */
+  .sn-card .sn-card__icone {
     flex-shrink: 0;
-    margin-top: calc(4 * var(--k)); /* alinhado ao título */
+    border-radius: 0;
   }
 
   .sn-card__texto,
@@ -884,18 +1006,53 @@ html.abertura-animada .sn-intro__paragrafo {
     width: auto;
   }
 
+  .sn-card__titulo {
+    margin: 0 0 calc(4 * var(--m));
+    font-family: var(--fonte-corpo);
+    font-weight: 700;
+    font-size: calc(17 * var(--m));
+    line-height: calc(22 * var(--m));
+    letter-spacing: calc(0.2 * var(--m));
+    color: #000;
+  }
+
+  .sn-card__descricao {
+    display: none;
+  }
+
+  .sn-card__descricao--curta {
+    display: block;
+    font-size: calc(15 * var(--m));
+    line-height: calc(20 * var(--m));
+    color: #5f6260;
+  }
+
   .sn-principios__divisor {
     display: block;
     height: 1px;
-    margin: calc(36 * var(--m)) 0;
+    margin: calc(26 * var(--m)) 0 calc(20 * var(--m));
+    background: rgba(0, 0, 0, 0.14);
   }
 
-  /* diferenciais: uma coluna, sem os divisores verticais */
+  /* diferenciais: grade 2 x 2, ícone em cima e título centrados, sem as
+     descrições */
   .sn-diferenciais {
-    --p: var(--m);
+    --p: calc(var(--m) * 0.92); /* ícones de 44 de altura */
     display: grid;
-    gap: calc(24 * var(--m));
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 1fr;
+    gap: calc(13 * var(--m));
     height: auto;
+  }
+
+  .sn-diferencial {
+    flex-direction: column;
+    align-items: center;
+    gap: calc(12 * var(--m));
+    padding: calc(18 * var(--m)) calc(10 * var(--m)) calc(20 * var(--m));
+    border-radius: calc(10 * var(--m));
+    background: var(--cards);
+    text-align: center;
   }
 
   .sn-diferencial + .sn-diferencial {
@@ -906,26 +1063,175 @@ html.abertura-animada .sn-intro__paragrafo {
     content: none;
   }
 
-  .sn-diferencial__texto {
-    flex: 1;
+  .sn-diferencial__texto,
+  .sn-diferencial--atendimento .sn-diferencial__texto {
     width: auto;
+    margin: 0;
+  }
+
+  .sn-diferencial__titulo,
+  .sn-diferencial__descricao {
+    display: none;
+  }
+
+  .sn-diferencial .sn-diferencial__titulo--mobile {
+    display: block;
+    width: auto;
+    margin: 0;
+    font-size: calc(15 * var(--m));
+    line-height: calc(20 * var(--m));
+    color: #000;
   }
 
   /* --- 3. Números ------------------------------------------------------- */
 
-  /* 20+ e 250+: o grupo de 516 na largura da coluna */
-  .sn-marcas {
-    --k: calc(var(--m) * 342 / 516);
-    margin-top: calc(40 * var(--m));
+  .sn-numeros {
+    padding-top: calc(44 * var(--m));
+    padding-bottom: calc(20 * var(--m));
+    background: var(--branco);
   }
 
-  /* depoimento: 366 na largura da coluna */
+  /* 2 linhas: NÚMEROS QUE / REFLETEM CONFIANÇA. (25.5 é o maior corpo em
+     que a segunda cabe na coluna) */
+  .sn-numeros__titulo {
+    font-size: calc(25.5 * var(--m));
+    line-height: calc(30 * var(--m));
+  }
+
+  .sn-numeros__intro {
+    margin-top: calc(12 * var(--m));
+  }
+
+  /* 20+ e 250+: o grupo de 516 na largura da coluna (o 20+ é o card do
+     desktop, com o brilho; o 250+ vira o card cinza-claro) */
+  .sn-marcas {
+    --k: calc(var(--m) * 342 / 516);
+    margin-top: calc(24 * var(--m));
+  }
+
+  .sn-marcas__card--obras {
+    display: none;
+  }
+
+  .sn-marcas__card--obras-mobile {
+    display: block;
+    left: calc(261 * var(--k));
+    top: 0;
+    width: calc(255 * var(--k));
+    height: calc(187 * var(--k));
+    border-radius: calc(15 * var(--k));
+    background: var(--cards);
+  }
+
+  .sn-marca__numero,
+  .sn-marca--obras .sn-marca__numero {
+    color: var(--amarelo-destaque);
+  }
+
+  .sn-marca--anos .sn-marca__numero {
+    font-size: calc(44 * var(--m));
+    line-height: calc(48 * var(--m));
+  }
+
+  .sn-marca--obras .sn-marca__numero {
+    font-size: calc(40 * var(--m));
+    line-height: calc(48 * var(--m));
+  }
+
+  .sn-marca--obras {
+    top: calc(33 * var(--k));
+  }
+
+  .sn-marca__rotulo {
+    width: calc(90 * var(--m));
+    margin-top: calc(4 * var(--m));
+    font-size: calc(12 * var(--m));
+    line-height: calc(15 * var(--m));
+  }
+
+  /* depoimento: caixa cinza-claro, card branco em carrossel (deslizar) e
+     os indicadores embaixo */
   .sn-depoimento {
-    --k: calc(var(--m) * 342 / 366);
-    margin-top: calc(36 * var(--m));
+    --k: calc(var(--m) * 318 / 366);
+    width: auto;
+    height: auto;
+    margin-top: calc(28 * var(--m));
+    padding: calc(12 * var(--m)) calc(12 * var(--m)) calc(10 * var(--m));
+    border-radius: calc(12 * var(--m));
+    background: var(--cards);
+  }
+
+  .sn-depoimento__trilho {
+    display: flex;
+    gap: calc(12 * var(--m));
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    border-radius: calc(8 * var(--m));
+  }
+
+  .sn-depoimento__trilho::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sn-depoimento__card,
+  .sn-depoimento__card--extra {
+    display: block;
+    flex: 0 0 100%;
+    border-radius: calc(8 * var(--m));
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .sn-depoimento__pontos {
+    display: none;
+  }
+
+  .sn-depoimento__indicadores {
+    display: flex;
+    justify-content: center;
+    margin-top: calc(8 * var(--m));
+  }
+
+  /* área de toque de 28; o ponto visível tem 11 */
+  .sn-depoimento__indicador {
+    display: grid;
+    place-items: center;
+    width: calc(23 * var(--m));
+    height: 28px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sn-depoimento__indicador::before {
+    content: "";
+    width: calc(11 * var(--m));
+    height: calc(11 * var(--m));
+    border-radius: 50%;
+    background: #d9dad8;
+    transition: background-color 0.3s ease;
+  }
+
+  .sn-depoimento__indicador[aria-current="true"]::before {
+    background: var(--amarelo-destaque);
+  }
+
+  .sn-depoimento__indicador:focus-visible {
+    outline: 2px solid var(--titulo);
+    outline-offset: -2px;
+    border-radius: 6px;
   }
 
   /* --- 4. Chamada ------------------------------------------------------- */
+
+  .sn-chamada {
+    padding-top: calc(54 * var(--m));
+    padding-bottom: calc(38 * var(--m));
+  }
 
   .sn-chamada__textura {
     inset: 0;
@@ -935,18 +1241,39 @@ html.abertura-animada .sn-intro__paragrafo {
     object-position: 70% 50%;
   }
 
+  .sn-chamada__risco {
+    position: relative; /* acima da textura */
+    left: auto;
+  }
+
+  .sn-chamada__titulo {
+    font-size: calc(33 * var(--m));
+    line-height: calc(37 * var(--m));
+  }
+
   .sn-chamada__coluna {
     width: auto;
-    margin-top: calc(20 * var(--m));
+    margin-top: calc(18 * var(--m));
   }
 
   .sn-chamada__texto {
-    margin-bottom: calc(24 * var(--m));
-    font-size: calc(15 * var(--m));
-    line-height: calc(23 * var(--m));
+    margin-bottom: calc(20 * var(--m));
   }
 
+  /* botão na largura da coluna, em pílula, altura de toque confortável */
   .sn-chamada__botao {
     --p: var(--m);
+    display: flex;
+    justify-content: center;
+    gap: calc(16 * var(--m));
+    width: 100%;
+    min-height: calc(52 * var(--m));
+    padding: calc(12 * var(--m)) calc(20 * var(--m));
+    border-radius: calc(26 * var(--m));
+  }
+
+  .sn-chamada__botao-texto {
+    font-size: calc(17 * var(--m));
+    line-height: calc(24 * var(--m));
   }
 }

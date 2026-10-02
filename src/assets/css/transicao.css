@@ -33,6 +33,11 @@ html.pagina-chegada body {
   html.pagina-chegada .rodape {
     transform: translateY(6px);
   }
+
+  /* página com um topo próprio no celular (front matter tomTopoMobile) */
+  html.pagina-chegada body {
+    background-color: var(--tom-topo-mobile, var(--tom-topo, var(--fundo-principal)));
+  }
 }
 
 /* numa #âncora a entrada é só de opacidade (o salto à seção é medido com o

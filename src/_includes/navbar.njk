@@ -28,6 +28,17 @@
     </button>
   </div>
 </header>
+{% if navTemaMobile %}
+{#- Tema inicial só do celular (front matter navTemaMobile): a Sobre Nós abre
+    com a barra clara sobre a faixa branca antes do hero, no desktop não.
+    Aplicado aqui, antes do primeiro paint; depois o main.js segue as seções. #}
+<script>
+  (function () {
+    if (!window.matchMedia("(max-width: 1023px)").matches) return;
+    document.querySelector(".navbar").classList.add("navbar--{{ navTemaMobile }}");
+  })();
+</script>
+{% endif %}
 {% if ancoras %}
 {#- Tema calculado no <head> para a #âncora (base.njk): aplicado aqui, antes
     do primeiro paint e sem transição #}

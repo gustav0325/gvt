@@ -157,6 +157,11 @@
     // numa #âncora, o tema e o tom são os da seção (front matter ancoras);
     // âncora desconhecida: nada muda antes da página nova
     var pagina = url.hash ? paginas[normalizar(url.pathname) + url.hash] : paginas[normalizar(url.pathname)];
+    // no celular, o tema e o tom próprios da página, se ela tiver
+    // (navTemaMobile / tomTopoMobile no front matter)
+    if (pagina && estreita.matches) {
+      pagina = { nav: pagina.navMobile || pagina.nav, tom: pagina.tomMobile || pagina.tom };
+    }
     var dy = estreita.matches ? 6 : 10;
     // com um trecho pinado na tela (Obras, Serviços da Home), um transform no
     // conteúdo deslocaria o que está fixo: aí só a opacidade
