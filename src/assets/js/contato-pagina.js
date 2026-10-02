@@ -11,11 +11,12 @@
 //              máscara vertical; por dentro, ícone → título → informações →
 //              ação seguem a máscara, como uma apresentação só. No mobile
 //              cada cartão entra quando chega à tela.
-//   mapa       a animação principal: o mapa é descoberto de cima para baixo
+//   mapa       desktop: a animação principal: o mapa é descoberto de cima para baixo
 //              (uma cortina da cor da página recolhe; o iframe não é
 //              tocado), com uma linha amarela de 1px na fronteira; no fim a
 //              linha some e cortina e linha são removidas — nada fica
-//              sobre o mapa.
+//              sobre o mapa. Mobile: ONDE ESTAMOS., o traço, o mapa e o
+//              link "Abrir no Google Maps" surgem num fade sutil.
 //   rodapé     o eco discreto das outras páginas: logo → texto → colunas →
 //              contatos e redes → copyright e o traço.
 //
@@ -74,6 +75,8 @@
   var selo = qa(".ct-selo span", pagina);
   var cartoes = qa(".ct-cartao", pagina);
   var mapa = q(".ct-mapa", pagina);
+  // só no mobile: o título, o traço e o link do mapa
+  var mapaExtras = [q(".ct-mapa-titulo", pagina), q(".ct-mapa-traco", pagina), q(".ct-mapa-link", pagina)];
 
   var rodape = q(".rodape");
   var logo = q(".rodape__logo", rodape);
@@ -87,8 +90,10 @@
   // conteúdo de cada cartão na ordem de leitura: ícone, título,
   // informações (rótulo, valor…) e a ação, quando existe
   function itensDe(cartao) {
+    // (a seta de ação só existe no mobile)
+    var seta = window.matchMedia("(max-width: 1023px)").matches ? ", .ct-cartao__seta" : "";
     return qa(
-      ".ct-cartao__icone, .ct-cartao__titulo, .ct-cartao__rotulo, .ct-cartao__valor, .ct-cartao__acao",
+      ".ct-cartao__icone, .ct-cartao__titulo, .ct-cartao__rotulo, .ct-cartao__valor, .ct-cartao__acao" + seta,
       cartao
     );
   }
@@ -159,7 +164,11 @@
         gsap.set(cartao, { clipPath: FECHADA });
         gsap.set(itensDe(cartao), { y: 10 * k, opacity: 0 });
       });
-      var cortina = revelados.has(mapa) ? null : cobrirMapa();
+      var cortina = null;
+      if (!revelados.has(mapa)) {
+        if (desktop) cortina = cobrirMapa();
+        else gsap.set([mapa].concat(mapaExtras), { opacity: 0, y: 10 * k });
+      }
       if (rodape && !revelados.has(rodape)) {
         // o logo sobe por trás de uma máscara parada, como nas outras páginas
         gsap.set(logo, { yPercent: 100, clipPath: FECHADA });
@@ -204,7 +213,24 @@
         return cortina;
       }
 
+      // mobile: título, traço, mapa e link num fade curto, em sequência
+      function revelarMapaMovel(atraso) {
+        revelados.add(mapa);
+        gsap.to(mapaExtras.slice(0, 2).concat(mapa, mapaExtras[2]), {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          stagger: 0.1,
+          delay: atraso,
+          onComplete: function () {
+            limpar([mapa].concat(mapaExtras));
+          },
+        });
+      }
+
       function revelarMapa(atraso) {
+        if (!desktop) return revelarMapaMovel(atraso);
         revelados.add(mapa);
         var corte = document.createElement("span");
         corte.className = "ct-mapa__corte";
@@ -304,7 +330,7 @@
           });
         });
         if (!revelados.has(mapa)) {
-          aoEntrar(mapa, desktop ? "top 85%" : "top 88%", function () {
+          aoEntrar(desktop ? mapa : mapaExtras[0], desktop ? "top 85%" : "top 90%", function () {
             revelarMapa(proxima(0.3));
           });
         }

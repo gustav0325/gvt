@@ -6,6 +6,9 @@ estilosPagina: [servico-detalhe]
 fontesPagina: "family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400"
 animacoesPagina: servico-detalhe
 aberturaAnimada: true
+# no celular a navbar abre clara, sobre a faixa branca antes do Hero (.sd-abertura)
+navTemaMobile: claro
+tomTopoMobile: "#ffffff"
 ---
 {#- Página individual de serviço — Figma 114:2 (Fio), 123:2 (Disco), 126:2
     (Furos) e 131:2 (Demolição), 1440 de largura. Os quatro frames têm o
@@ -36,9 +39,13 @@ aberturaAnimada: true
     as revelações circulares #}
 <div class="sd-pagina" data-servico="{{ servico }}">
 
-  {# Seção 1 — Abertura (Figma "Seção 1 - Abertura") #}
+  {# Seção 1 — Abertura (Figma "Seção 1 - Abertura"). O invólucro só tem caixa
+     no celular: ali é a faixa branca sob a navbar e, com o Hero claro dos
+     quatro serviços, mantém a barra clara sobre ele (no desktop, display:
+     contents — o tema vem do próprio Hero) #}
+  <div class="sd-abertura" data-nav-tema="claro">
   <section class="sd-hero{% if hero.telaCheia %} sd-hero--tela-cheia{% endif %}" data-nav-tema="{{ navTema or '' }}"
-    style="--hero-altura: {{ hero.altura }}; --foto-topo: {{ hero.fotoTopo }}; --hero-fundo: {{ hero.fundo }};{% if hero.enquadramento %} --foto-enquadramento: {{ hero.enquadramento }};{% endif %} --cor-migalha: {{ hero.cores.migalha }}; --cor-titulo: {{ hero.cores.titulo }}; --cor-descricao: {{ hero.cores.descricao }}">
+    style="--hero-altura: {{ hero.altura }}; --foto-topo: {{ hero.fotoTopo }}; --hero-fundo: {{ hero.fundo }};{% if hero.enquadramento %} --foto-enquadramento: {{ hero.enquadramento }};{% endif %}{% if hero.enquadramentoMovel %} --foto-movel: {{ hero.enquadramentoMovel }};{% endif %} --cor-migalha: {{ hero.cores.migalha }}; --cor-titulo: {{ hero.cores.titulo }}; --cor-descricao: {{ hero.cores.descricao }}">
     <img class="sd-hero__foto" src="/assets/img/servicos/{{ hero.foto }}" width="{{ hero.fotoLargura }}" height="{{ hero.fotoAltura }}" alt="{{ hero.alt }}"{% if hero.foco %} data-foco="{{ hero.foco | join(' ') }}"{% endif %}>
     <div class="sd-hero__texto">
       <nav class="sd-migalha" aria-label="Você está em">
@@ -49,13 +56,16 @@ aberturaAnimada: true
       <p class="sd-hero__descricao">{{ hero.descricao }}</p>
     </div>
   </section>
+  </div>
 
   {# Seção 2 — A Técnica #}
   <section class="sd-tecnica" data-nav-tema="claro" style="--fundo: {{ tecnica.fundo }}">
     <div class="sd-tecnica__texto">
       <p class="sd-rotulo">A TÉCNICA</p>
       <span class="sd-traco" aria-hidden="true"></span>
-      <h2 class="sd-tecnica__titulo">{{ linhas(tecnica.titulo) }}</h2>
+      {#- tituloMovel: no celular as quebras fixas saem e o título quebra na
+          largura dada (em em) #}
+      <h2 class="sd-tecnica__titulo{% if tecnica.tituloMovel %} sd-tecnica__titulo--fluido" style="--largura-movel: {{ tecnica.tituloMovel }}{% endif %}">{{ linhas(tecnica.titulo) }}</h2>
       <p class="sd-tecnica__paragrafo">{{ tecnica.texto }}</p>
     </div>
     {# a ilustração ocupa, dentro do quadro branco, a posição e o tamanho do Figma #}

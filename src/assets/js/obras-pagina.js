@@ -21,13 +21,17 @@
 //              Parado, a foto responde ao cursor alguns pixels, por dentro
 //              do quadro (object-position): o quadro não se mexe.
 //
-//   mobile     os projetos são mais altos que a tela: sem pin. A mesma ideia
-//              vertical: ao rolar, cada foto é coberta de baixo para cima com
-//              a linha de corte na fronteira (reversível), e o texto de cada
-//              projeto se abre ao chegar à tela.
+//   mobile     a mesma janela pinada (mesma classe, mesmo ScrollTrigger com
+//              pin e scrub), presa logo abaixo da navbar e na altura útil da
+//              tela. Cada obra é um painel branco (foto em cima, dados
+//              embaixo); o scroll faz o painel seguinte SUBIR de baixo e
+//              cobrir o atual, com uma pausa de leitura entre as trocas. Para
+//              cima, a troca se desfaz. No fim o pin solta e vem o rodapé.
+//              As setas do painel levam ao ponto de leitura da obra vizinha.
 //
 // Com prefers-reduced-motion nada disso roda: os quatro projetos ficam
-// empilhados, como no HTML. A navbar não é tocada.
+// empilhados, como no HTML (no mobile as setas rolam até a obra vizinha).
+// A navbar não é tocada.
 
 (function () {
   "use strict";
@@ -92,6 +96,24 @@
     return caixa.firstChild;
   }
 
+  // Setas do painel (mobile): com a janela pinada, irPara leva ao ponto de
+  // leitura da obra; sem ela (reduced-motion), a página rola até a obra.
+  var irPara = null;
+  pagina.addEventListener("click", function (e) {
+    var botao = e.target.closest(".ob-progresso__botao");
+    if (!botao || botao.disabled) return;
+    var n = parseInt(botao.getAttribute("data-ir"), 10);
+    if (!(n >= 0 && n < projetos.length)) return;
+    if (irPara) {
+      irPara(n);
+    } else {
+      var reduzir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var nav = document.querySelector(".navbar").offsetHeight;
+      var y = projetos[n].getBoundingClientRect().top + window.scrollY - nav;
+      window.scrollTo({ top: Math.round(y), behavior: reduzir ? "auto" : "smooth" });
+    }
+  });
+
   var mm = gsap.matchMedia();
 
   mm.add(
@@ -130,10 +152,9 @@
         });
       }
 
-      // o Projeto 01 nasce fechado (o CSS da abertura já o recorta). No
-      // mobile a foto dele é revelada pelo scroll, como as outras.
+      // o Projeto 01 nasce fechado (o CSS da abertura já o recorta)
       var p1 = grupos[0];
-      if (desktop) gsap.set(fotos[0], { clipPath: FECHADA });
+      gsap.set(fotos[0], { clipPath: FECHADA });
       gsap.set(p1, { clipPath: FECHADA, y: 14 });
 
       var extras = []; // indicador e dica, que aparecem depois do Projeto 01
@@ -143,10 +164,10 @@
         var tl = gsap.timeline({
           delay: atraso,
           onComplete: function () {
-            limpar(desktop ? [fotos[0]].concat(p1) : p1);
+            limpar([fotos[0]].concat(p1));
           },
         });
-        if (desktop) tl.to(fotos[0], { clipPath: ABERTA, duration: 1.5, ease: "power3.inOut" }, 0);
+        tl.to(fotos[0], { clipPath: ABERTA, duration: desktop ? 1.5 : 1.2, ease: "power3.inOut" }, 0);
         p1.forEach(function (grupo, i) {
           tl.to(grupo, { clipPath: ABERTA_TEXTO, y: 0, duration: 1.1, ease: "power3.out" }, 0.25 + i * 0.16);
         });
@@ -361,61 +382,60 @@
       }
 
       // ======================================================================
-      // Mobile: cada projeto ao chegar à tela
+      // Mobile: a mesma janela pinada, com os painéis subindo um sobre o outro
       // ======================================================================
       if (!desktop) {
-        projetos.forEach(function (projeto, i) {
-          var foto = fotos[i];
-          var linhaCorte = criar('<div class="ob-corte ob-corte--movel" aria-hidden="true"></div>');
-          projeto.appendChild(linhaCorte);
-          criados.push(linhaCorte);
+        pagina.classList.add("ob-pagina--animada");
 
-          // a linha mede a foto (topo e altura) a cada refresh
-          function posicionar() {
-            linhaCorte.style.top = foto.offsetTop + "px";
-          }
-          posicionar();
-          ScrollTrigger.addEventListener("refreshInit", posicionar);
-          desfazer.push(function () {
-            ScrollTrigger.removeEventListener("refreshInit", posicionar);
-          });
+        // presa logo abaixo da navbar
+        function topoDoPin() {
+          return "top " + document.querySelector(".navbar").offsetHeight + "px";
+        }
 
-          // foto coberta de baixo para cima, ligada ao scroll (reversível)
-          var revelar = gsap.timeline({
-            defaults: { ease: "none" },
-            scrollTrigger: {
-              trigger: foto,
-              start: "top 92%",
-              end: "top 45%",
-              scrub: 0.6,
-              invalidateOnRefresh: true,
+        // Ritmo, em alturas de tela de scroll: leitura da obra 01 depois que
+        // a janela para, 3 trocas, leituras entre elas e uma final, curta
+        var L0 = 0.4;
+        var T = 0.6;
+        var L = 0.5;
+        var LF = 0.3;
+        var totalMovel = L0 + 3 * T + 2 * L + LF;
+
+        // painéis 02–04 uma janela abaixo (fora da vista: a janela corta)
+        gsap.set(projetos.slice(1), { yPercent: 100 });
+
+        var pilha = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: janela,
+            pin: true,
+            start: topoDoPin,
+            end: function () {
+              return "+=" + Math.round(totalMovel * window.innerHeight);
             },
-          });
-          revelar.fromTo(foto, { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1 }, 0);
-          revelar.fromTo(linhaCorte, { y: function () { return foto.offsetHeight; } }, { y: 0, duration: 1 }, 0);
-          revelar.fromTo(linhaCorte, { opacity: 0 }, { opacity: 1, duration: 0.06 }, 0);
-          revelar.to(linhaCorte, { opacity: 0, duration: 0.08 }, 0.92);
+            scrub: 0.6,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
 
-          // texto: os três grupos se abrem de cima para baixo, uma vez
-          if (i === 0) return; // o Projeto 01 já tem a sua entrada
-          gsap.set(grupos[i], { clipPath: FECHADA, y: 10 });
-          ScrollTrigger.create({
-            trigger: projeto,
-            start: "top 85%",
-            once: true,
-            onEnter: function () {
-              gsap.to(grupos[i], {
-                clipPath: ABERTA_TEXTO,
-                y: 0,
-                duration: 1,
-                ease: "power3.out",
-                stagger: 0.14,
-                onComplete: function () {
-                  limpar(grupos[i]);
-                },
-              });
-            },
-          });
+        var leitura = [L0 / 2]; // o instante de leitura de cada obra
+        pilha.to({}, { duration: L0 });
+        projetos.slice(1).forEach(function (projeto, indice) {
+          var t0 = pilha.duration();
+          pilha.to(projeto, { yPercent: 0, duration: T, ease: "power2.inOut" }, t0);
+          var pausa = indice === projetos.length - 2 ? LF : L;
+          leitura.push(t0 + T + pausa / 2);
+          pilha.to({}, { duration: pausa }, t0 + T);
+        });
+
+        // as setas: rolam até o instante de leitura da obra pedida
+        irPara = function (n) {
+          var st = pilha.scrollTrigger;
+          var alvo = st.start + (leitura[n] / pilha.duration()) * (st.end - st.start);
+          window.scrollTo({ top: Math.round(alvo), behavior: "smooth" });
+        };
+        desfazer.push(function () {
+          irPara = null;
         });
       }
 

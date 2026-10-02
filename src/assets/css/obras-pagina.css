@@ -322,104 +322,318 @@ html.abertura-animada .ob-projeto:first-child .ob-projeto__dados {
   }
 }
 
-/* linha de corte do mobile: sobre a foto de cada projeto (o topo vem do
-   script, que mede a foto) */
-.ob-corte--movel {
-  top: 0;
-  left: 0;
-  width: 100%;
+/* --------------------------------------------------------------------------
+   Peças só do mobile (ver abaixo): no desktop não existem; a moldura da
+   foto não forma caixa (a foto continua posicionada pelo projeto)
+   -------------------------------------------------------------------------- */
+
+.ob-dica-inicio,
+.ob-projeto__numero,
+.ob-progresso {
+  display: none;
+}
+
+.ob-projeto__midia {
+  display: contents;
 }
 
 /* ==========================================================================
-   Mobile e tablet (até 1023px)
-   Não há frame mobile desta página no Figma: adaptação estrutural, na
-   linguagem dos frames mobile da Home — coluna de 342 (--coluna, --m). Cada
-   projeto fica com o texto em cima e a foto embaixo, na proporção do Figma;
-   os quatro dados viram uma grade de duas colunas.
+   Mobile e tablet (até 1023px) — mockup mobile aprovado da página Obras
+
+   Coluna no frame de 390 (--m). O título no branco, centrado, com o convite
+   para rolar; depois cada obra vira um PAINEL: foto em cima (com o número
+   01 / 04 sobre ela) e, embaixo, título, descrição, os quatro dados em
+   grade de duas colunas e o progresso entre as obras.
+
+   Com a animação (.ob-pagina--animada, posta pelo script, como no
+   desktop), .ob-projetos é a janela pinada sob a navbar, na altura útil da
+   tela, e os quatro painéis ficam sobrepostos nela: a foto cede a altura
+   que o texto não usa. Sem animação (reduced-motion), os painéis ficam um
+   embaixo do outro.
    ========================================================================== */
 
 @media (max-width: 1023px) {
   .ob-pagina {
     --p: var(--m);
     --q: var(--m);
-    padding: calc(var(--nav-altura) + 48 * var(--m)) var(--margem-mobile) calc(64 * var(--m));
+    /* --u: a unidade dos painéis — a do mobile, mas limitada pela altura
+       útil da tela, para o texto (≈ 410 unidades no painel mais alto) e
+       uma foto de pelo menos 150px caberem na janela pinada em telas
+       baixas (tablet deitado). Nos celulares é a própria --m. */
+    --u: min(var(--m), calc((100svh - var(--nav-altura) - 150px) / 410));
+    padding: var(--nav-altura) 0 0;
   }
+
+  /* --- início: o título no branco ---------------------------------------- */
 
   .ob-titulo {
     left: auto;
     width: auto;
-    font-size: calc(30 * var(--m));
-    line-height: calc(38 * var(--m));
-    white-space: normal;
+    margin: 0;
+    padding: calc(112 * var(--m)) var(--margem-mobile) 0;
+    font-size: calc(33 * var(--m));
+    line-height: calc(43 * var(--m));
   }
 
-  /* as quebras do desktop saem: na coluna estreita o título quebra sozinho */
-  .ob-titulo br {
-    display: none;
-  }
-
-  .ob-projetos {
+  .ob-dica-inicio {
     display: flex;
     flex-direction: column;
-    gap: calc(56 * var(--m));
-    margin-top: calc(48 * var(--m));
+    align-items: center;
+    gap: calc(10 * var(--m));
+    padding: calc(104 * var(--m)) 0 calc(44 * var(--m));
+    font-family: var(--fonte-corpo);
+    font-weight: 300;
+    font-size: calc(12 * var(--m));
+    line-height: calc(16 * var(--m));
+    letter-spacing: 0.06em;
+    color: var(--texto-sec);
   }
 
-  .ob-projeto {
-    height: auto;
+  .ob-dica-inicio__linha {
+    width: 1px;
+    height: calc(30 * var(--m));
+    background: currentColor;
+    opacity: 0.6;
   }
 
-  .ob-projeto + .ob-projeto {
+  .ob-dica-inicio__seta {
+    width: calc(14 * var(--m));
+    height: calc(18 * var(--m));
+    animation: ob-dica-seta 2.4s ease-in-out infinite;
+  }
+
+  /* --- os painéis ---------------------------------------------------------- */
+
+  .ob-projetos {
     margin-top: 0;
   }
 
-  .ob-projeto__texto,
+  /* cada painel é uma camada própria (isolation): o de cima cobre tudo o
+     que está no de baixo, inclusive o número sobre a foto */
+  .ob-projeto {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    background: var(--branco);
+    isolation: isolate;
+  }
+
+  .ob-projeto + .ob-projeto {
+    margin-top: calc(40 * var(--m));
+  }
+
+  /* foto em cima: a moldura cobre a largura toda */
+  .ob-projeto__midia {
+    position: relative;
+    display: block;
+    order: -1;
+    flex: 0 0 auto;
+    height: calc(300 * var(--m));
+    overflow: hidden;
+  }
+
+  /* o enquadramento horizontal de cada obra (o mesmo do desktop) */
   .ob-projeto__foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-position: var(--enquadramento, 50%) 50%;
+  }
+
+  /* um véu na base da foto, para o número ficar legível em qualquer foto */
+  .ob-projeto__midia::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: calc(80 * var(--m));
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.38));
+    pointer-events: none;
+  }
+
+  /* 01 / 04 sobre a foto, embaixo à esquerda */
+  .ob-projeto__numero {
+    position: absolute;
+    z-index: 1;
+    left: var(--margem-mobile);
+    bottom: calc(12 * var(--u));
+    display: block;
+    margin: 0;
+    font-family: var(--fonte-corpo);
+    font-weight: 600;
+    font-size: calc(22 * var(--u));
+    line-height: 1;
+    color: var(--branco);
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+  }
+
+  .ob-projeto__numero span {
+    font-weight: 800;
+    color: var(--amarelo-destaque);
+  }
+
+  .ob-projeto__texto {
     position: static;
+    flex: 0 0 auto;
     width: auto;
+    padding: calc(22 * var(--u)) var(--margem-mobile) calc(14 * var(--u));
   }
 
   .ob-projeto__titulo {
     width: auto;
-    margin-bottom: calc(16 * var(--m));
-    font-size: calc(26 * var(--m));
-    line-height: calc(30 * var(--m));
+    margin-bottom: calc(10 * var(--u));
+    font-family: var(--fonte-corpo);
+    font-weight: 800;
+    font-size: calc(22 * var(--u));
+    line-height: calc(27 * var(--u));
   }
 
   .ob-projeto__descricao {
-    margin-bottom: calc(28 * var(--m));
-    font-size: calc(15 * var(--m));
-    line-height: calc(23 * var(--m));
+    margin-bottom: calc(18 * var(--u));
+    font-size: calc(15 * var(--u));
+    line-height: calc(21 * var(--u));
+    color: #555;
   }
 
+  /* dados: duas colunas; o ícone à esquerda do rótulo e do valor */
   .ob-projeto__dados {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
-    gap: calc(24 * var(--m)) calc(16 * var(--m));
+    gap: calc(16 * var(--u)) calc(12 * var(--u));
     width: auto;
   }
 
+  .ob-dado,
   .ob-dado--servico,
   .ob-dado--local {
+    position: relative;
     width: auto;
     margin-left: 0;
+    padding-left: calc(32 * var(--u));
+  }
+
+  .ob-dado__rotulo,
+  .ob-dado__valor {
+    font-size: calc(14 * var(--u));
+    line-height: calc(19 * var(--u));
   }
 
   .ob-dado__rotulo {
+    font-size: calc(11 * var(--u));
+    line-height: calc(15 * var(--u));
+    letter-spacing: 0.02em;
     white-space: normal;
+  }
+
+  .ob-dado__valor,
+  .ob-dado--servico .ob-dado__valor {
+    margin-top: calc(3 * var(--u));
+    font-weight: 500;
   }
 
   .ob-dado--local .ob-dado__valor,
   .ob-dado--tempo .ob-dado__valor,
   .ob-dado--resultado .ob-dado__valor {
+    display: block;
     white-space: normal;
   }
 
-  .ob-projeto__foto {
+  .ob-dado .ob-dado__icone {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  .ob-dado--local .ob-dado__icone     { width: calc(17 * var(--u)); height: calc(21.3 * var(--u)); }
+  .ob-dado--tempo .ob-dado__icone     { width: calc(19 * var(--u)); height: calc(21 * var(--u)); }
+  .ob-dado--resultado .ob-dado__icone { width: calc(21 * var(--u)); height: calc(20 * var(--u)); }
+
+  /* progresso: anterior · trilho com a parte já vista · próxima */
+  .ob-progresso {
+    display: flex;
+    align-items: center;
+    gap: calc(12 * var(--u));
+    margin-top: calc(16 * var(--u));
+  }
+
+  .ob-progresso__botao {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: calc(36 * var(--u));
+    height: calc(36 * var(--u));
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--amarelo-destaque);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ob-progresso__botao--anterior {
+    margin-left: calc(-6 * var(--u));
+    color: var(--texto-sec);
+  }
+
+  .ob-progresso__botao--proxima {
+    margin-right: calc(-6 * var(--u));
+  }
+
+  .ob-progresso__botao:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .ob-progresso__botao:focus-visible {
+    outline: 2px solid var(--titulo);
+    outline-offset: -2px;
+    border-radius: 8px;
+  }
+
+  .ob-progresso__botao svg {
+    width: calc(26 * var(--u));
+    height: calc(26 * var(--u));
+  }
+
+  .ob-progresso__trilho {
+    flex: 1;
+    height: 2px;
+    background: #dcdcda;
+  }
+
+  .ob-progresso__barra {
     display: block;
-    width: 100%;
+    width: calc(var(--progresso) * 100%);
+    height: 100%;
+    background: var(--amarelo-destaque);
+  }
+
+  /* --- com a animação: a janela pinada e os painéis sobrepostos ---------- */
+
+  .ob-pagina--animada .ob-projetos {
+    height: calc(100svh - var(--nav-altura));
+  }
+
+  .ob-pagina--animada .ob-projeto {
+    bottom: 0;
+    box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .ob-pagina--animada .ob-projeto:first-child {
+    box-shadow: none;
+  }
+
+  /* a foto fica com a altura que sobra ao texto (nunca menos de 140px) */
+  .ob-pagina--animada .ob-projeto__midia {
+    flex: 1 1 auto;
     height: auto;
-    aspect-ratio: 628 / 729;
-    margin-top: calc(32 * var(--m));
+    min-height: 140px;
+  }
+}
+
+@media (max-width: 1023px) and (prefers-reduced-motion: reduce) {
+  .ob-dica-inicio__seta {
+    animation: none;
   }
 }

@@ -39,6 +39,8 @@ mapaEndereco: "Rua Ernesto Sena, 232 - São Paulo - SP"
         <p class="ct-cartao__valor">(11) 9 1234-5678</p>
       </div>
       <a class="ct-cartao__link ct-cartao__acao" href="https://wa.me/5511912345678" target="_blank" rel="noopener" aria-label="Falar agora pelo WhatsApp: (11) 9 1234-5678">Falar agora</a>
+      {# só no mobile: a seta de ação (o link continua cobrindo o cartão) #}
+      <svg class="ct-cartao__seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
     </article>
 
     <article class="ct-cartao ct-cartao--email">
@@ -48,6 +50,7 @@ mapaEndereco: "Rua Ernesto Sena, 232 - São Paulo - SP"
         <p class="ct-cartao__rotulo">Contato geral:</p>
         <p class="ct-cartao__valor"><a class="ct-cartao__link" href="mailto:contato@gvt.com.br">contato@gvt.com.br</a></p>
       </div>
+      <svg class="ct-cartao__seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>{# só no mobile #}
     </article>
 
     <article class="ct-cartao ct-cartao--atendimento">
@@ -65,6 +68,10 @@ mapaEndereco: "Rua Ernesto Sena, 232 - São Paulo - SP"
 
   {# Figma 83:353 — 1280 x 310. Embed público do Google Maps (sem chave de
      API): navegável, com o link "Ver mapa ampliado" do próprio Google. #}
+  {# só no mobile: o título da seção do mapa #}
+  <h2 class="ct-mapa-titulo">ONDE ESTAMOS.</h2>
+  <span class="ct-mapa-traco" aria-hidden="true"></span>
+
   <div class="ct-mapa">
     <iframe class="ct-mapa__quadro"
       src="https://maps.google.com/maps?q={{ mapaEndereco | urlencode }}&z=16&hl=pt-BR&output=embed"
@@ -73,4 +80,10 @@ mapaEndereco: "Rua Ernesto Sena, 232 - São Paulo - SP"
       referrerpolicy="no-referrer-when-downgrade"
       allowfullscreen></iframe>
   </div>
+
+  {# só no mobile: abrir a mesma localização no app/site do Google Maps #}
+  <a class="ct-mapa-link" href="https://www.google.com/maps/search/?api=1&amp;query={{ mapaEndereco | urlencode }}" target="_blank" rel="noopener">
+    <span>Abrir no Google Maps</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+  </a>
 </section>

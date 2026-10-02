@@ -67,7 +67,14 @@
   var divisoes = [];
 
   function dividir(titulo) {
+    // a versão do título da outra faixa (.sv-versao-desktop/-mobile, oculta)
+    // sairia como linhas a mais: sai durante a divisão e volta ao juntar
+    var original = titulo.innerHTML;
+    qa(".sv-versao-desktop, .sv-versao-mobile", titulo).forEach(function (versao) {
+      if (getComputedStyle(versao).display === "none") versao.remove();
+    });
     var divisao = SplitText.create(titulo, { type: "lines", mask: "lines", linesClass: "sv-linha" });
+    divisao.htmlOriginal = original;
     titulo.classList.add("sv-mascarado");
     gsap.set(divisao.lines, { yPercent: 125 }); // a altura da linha + a folga da máscara
     gsap.set(titulo, { opacity: 1 });
@@ -79,6 +86,7 @@
     divisoes = divisoes.filter(function (item) {
       if (item.titulo !== titulo) return true;
       item.divisao.revert();
+      titulo.innerHTML = item.divisao.htmlOriginal;
       titulo.classList.remove("sv-mascarado");
       return false;
     });
@@ -141,7 +149,7 @@
       var heroCta = q(".sv-hero__cta", hero);
 
       function abrir() {
-        gsap.set(heroFoto, { clipPath: "inset(0% 0% 0% 100%)", scale: 1.04, transformOrigin: "100% 50%" });
+        if (desktop) gsap.set(heroFoto, { clipPath: "inset(0% 0% 0% 100%)", scale: 1.04, transformOrigin: "100% 50%" });
         gsap.set(heroRisco, { scaleX: 0, opacity: 1, transformOrigin: "0% 50%" });
         gsap.set([heroTexto, heroCta], { y: 16 * k, opacity: 0 });
         liberarAbertura();
@@ -153,12 +161,15 @@
           },
         });
 
-        // a foto se abre da direita; por dentro, assenta devagar
-        tl.to(heroFoto, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.7, ease: "power3.inOut" }, 0);
-        tl.to(heroFoto, { scale: 1, duration: 2.6, ease: "power2.out" }, 0);
+        // a foto se abre da direita; por dentro, assenta devagar (no
+        // celular ela já está à vista e o texto começa antes)
+        if (desktop) {
+          tl.to(heroFoto, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.7, ease: "power3.inOut" }, 0);
+          tl.to(heroFoto, { scale: 1, duration: 2.6, ease: "power2.out" }, 0);
+        }
 
-        traco(tl, heroRisco, 0.35);
-        var fim = linhas(tl, heroTitulo, 0.5, {
+        traco(tl, heroRisco, desktop ? 0.35 : 0.1);
+        var fim = linhas(tl, heroTitulo, desktop ? 0.5 : 0.2, {
           destaque: ".sv-destaque",
           atrasoDestaque: 0.2,
           duracao: 1.2,
@@ -214,13 +225,20 @@
         var foto = q(".sv-servico__foto", bloco);
         var partes = [q(".sv-servico__titulo", bloco), q(".sv-servico__texto", bloco), q(".sv-servico__link", bloco)];
         var esquerda = bloco.classList.contains("sv-servico--foto-esquerda");
-        // a foto se abre a partir do seu lado; o conteúdo chega do mesmo lado
-        var fechada = esquerda ? "inset(0% 100% 0% 0%)" : "inset(0% 0% 0% 100%)";
+        // a foto se abre a partir do seu lado; o conteúdo chega do mesmo lado.
+        // No celular (foto em cima, texto embaixo): a foto se abre de cima
+        // para baixo e o texto sobe alguns pixels
+        var fechada = !desktop ? "inset(0% 0% 100% 0%)" : esquerda ? "inset(0% 100% 0% 0%)" : "inset(0% 0% 0% 100%)";
         var lado = esquerda ? -1 : 1;
 
         gsap.set(bloco, { opacity: 0 });
-        gsap.set(foto, { clipPath: fechada, scale: 1.08, transformOrigin: esquerda ? "0% 50%" : "100% 50%" });
-        gsap.set(partes, { x: 16 * k * lado, opacity: 0 });
+        gsap.set(foto, {
+          clipPath: fechada,
+          scale: desktop ? 1.08 : 1.05,
+          transformOrigin: !desktop ? "50% 0%" : esquerda ? "0% 50%" : "100% 50%",
+        });
+        if (desktop) gsap.set(partes, { x: 16 * k * lado, opacity: 0 });
+        else gsap.set(partes, { y: 12, opacity: 0 });
 
         aoEntrar(bloco, desktop ? "top 82%" : "top 85%", function () {
           var tl = gsap.timeline({
@@ -228,10 +246,10 @@
               limpar([bloco, foto].concat(partes));
             },
           });
-          tl.to(bloco, { opacity: 1, duration: 0.6, ease: "power1.out" }, 0);
-          tl.to(foto, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "power3.inOut" }, 0.1);
-          tl.to(foto, { scale: 1, duration: 1.6, ease: "power2.out" }, 0.1);
-          tl.to(partes, { x: 0, opacity: 1, duration: 0.9, ease: "power3.out", stagger: 0.1 }, 0.6);
+          tl.to(bloco, { opacity: 1, duration: desktop ? 0.6 : 0.4, ease: "power1.out" }, 0);
+          tl.to(foto, { clipPath: "inset(0% 0% 0% 0%)", duration: desktop ? 1.2 : 0.8, ease: "power3.inOut" }, 0.1);
+          tl.to(foto, { scale: 1, duration: desktop ? 1.6 : 1.1, ease: "power2.out" }, 0.1);
+          tl.to(partes, { x: 0, y: 0, opacity: 1, duration: desktop ? 0.9 : 0.7, ease: "power3.out", stagger: desktop ? 0.1 : 0.07 }, desktop ? 0.6 : 0.35);
         });
       });
 
@@ -264,7 +282,7 @@
 
       // Estado inicial: etapas apagadas (legíveis) e traços por desenhar. O
       // traço i liga a etapa i-1 à i, e é o ::before da etapa i (--traco).
-      gsap.set(etapas, { "--ativa": 0, "--traco": 0 });
+      gsap.set(etapas, { "--ativa": 0, "--traco": 0, "--linha": 0 });
 
       var progresso = gsap.timeline({
         defaults: { ease: "none" },
@@ -319,7 +337,10 @@
       progresso.to(etapas[0], { "--ativa": 1, duration: 0.5 }, 0);
       progresso.call(alcancar, [0], 0.2);
       for (var i = 1; i < etapas.length; i++) {
-        progresso.to(etapas[i], { "--traco": 1, duration: 1 }, ">");
+        // desktop: o traço que chega na etapa (::before dela); celular: a
+        // linha vertical que desce da anterior (::after dela)
+        if (desktop) progresso.to(etapas[i], { "--traco": 1, duration: 1 }, ">");
+        else progresso.to(etapas[i - 1], { "--linha": 1, duration: 1 }, ">");
         progresso.to(etapas[i], { "--ativa": 1, duration: 0.5 }, ">-0.05");
         progresso.call(alcancar, [i], "<0.15");
       }
@@ -395,6 +416,7 @@
         etapas.forEach(function (etapa) {
           etapa.style.removeProperty("--ativa");
           etapa.style.removeProperty("--traco");
+          etapa.style.removeProperty("--linha");
           if (!etapa.getAttribute("style")) etapa.removeAttribute("style");
         });
       };

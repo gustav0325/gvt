@@ -8,6 +8,9 @@ estilosPagina: [servicos-pagina]
 fontesPagina: "family=Oswald:wght@700&family=Manrope:wght@800"
 animacoesPagina: servicos-pagina
 aberturaAnimada: true
+# no celular a navbar abre clara, sobre a faixa branca antes do hero (.sv-topo)
+navTemaMobile: claro
+tomTopoMobile: "#ffffff"
 ---
 {#- Página Serviços — Figma node 77:428 (frame 1440 x 2160)
     Navbar e rodapé são os componentes do site (base.njk). Estilos em
@@ -15,13 +18,18 @@ aberturaAnimada: true
     seção Serviços da Home); animações em assets/js/servicos-pagina.js. #}
 
 {# 1. Hero — Figma 78:625 (1440 x 538) #}
+{# só no mobile: a faixa branca sob a navbar (que ali abre clara) #}
+<div class="sv-topo" data-nav-tema="claro" aria-hidden="true"></div>
+
 <section class="sv-hero" id="inicio-servicos">
   <img class="sv-hero__foto" src="/assets/img/servicos/hero.webp" width="2051" height="767" alt="Operador da GVT fazendo corte com disco diamantado em parede de concreto" fetchpriority="high">
 
   <span class="sv-risco sv-hero__risco" aria-hidden="true"></span>
 
   <div class="sv-hero__conteudo">
-    <h1 class="sv-hero__titulo">SOLUÇÕES TÉCNICAS <br>PARA CADA ETAPA DA <br><span class="sv-destaque">SUA OBRA</span>.</h1>
+    {#- as quebras do título mudam no celular: uma versão para cada faixa (só
+        uma aparece; o texto do desktop fica intacto) #}
+    <h1 class="sv-hero__titulo"><span class="sv-versao-desktop">SOLUÇÕES TÉCNICAS <br>PARA CADA ETAPA DA <br><span class="sv-destaque">SUA OBRA</span>.</span><span class="sv-versao-mobile">SOLUÇÕES TÉCNICAS <br>PARA CADA ETAPA <br>DA <span class="sv-destaque">SUA OBRA.</span></span></h1>
     <p class="sv-hero__texto">Cortes, furos e demolição controlada com tecnologia de ponta, equipe especializada e foco em segurança, precisão e resultado.</p>
     <a class="sv-hero__cta" href="/contato/">
       <span class="sv-hero__cta-texto">SOLICITAR ORÇAMENTO</span>
@@ -33,6 +41,7 @@ aberturaAnimada: true
 {# 2. Soluções completas — Figma 78:670 (1440 x 730) #}
 <section class="sv-solucoes" id="solucoes" data-nav-tema="claro">
   <span class="sv-risco sv-solucoes__risco" aria-hidden="true"></span>
+  <p class="sv-solucoes__rotulo">NOSSAS SOLUÇÕES</p>{# só no mobile #}
 
   <h2 class="sv-solucoes__titulo">SOLUÇÕES COMPLETAS <br>EM CORTES, FUROS E <br>DEMOLIÇÃO CONTROLADA.</h2>
   <p class="sv-solucoes__texto">Atuamos com tecnologia, planejamento e uma equipe experiente para entregar resultados precisos, seguros e eficientes em diferentes tipos de obras.</p>
@@ -93,7 +102,8 @@ aberturaAnimada: true
 
 {# 3. Processo — Figma 78:671 (1440 x 354) #}
 <section class="sv-processo" id="processo" data-nav-tema="escuro">
-  <h2 class="sv-processo__titulo">COMO FUNCIONA O <br>NOSSO PROCESSO.</h2>
+  <span class="sv-risco sv-processo__risco" aria-hidden="true"></span>{# só no mobile #}
+  <h2 class="sv-processo__titulo"><span class="sv-versao-desktop">COMO FUNCIONA O <br>NOSSO PROCESSO.</span><span class="sv-versao-mobile">COMO FUNCIONA <br>O NOSSO PROCESSO.</span></h2>
   <p class="sv-processo__texto">Cada projeto exige uma solução específica. Conheça as etapas do nosso atendimento.</p>
 
   <ol class="sv-etapas">
@@ -127,6 +137,7 @@ aberturaAnimada: true
 {# 4. Orçamento — Figma 78:672 + textura 92:635 (1440 x 208) #}
 <section class="sv-orcamento" id="orcamento" data-nav-tema="claro">
   <img class="sv-orcamento__textura" src="/assets/img/servicos/textura-orcamento.webp" width="1993" height="789" alt="" aria-hidden="true" loading="lazy">
+  <span class="sv-risco sv-orcamento__risco" aria-hidden="true"></span>{# só no mobile #}
 
   <div class="sv-orcamento__conteudo">
     <h2 class="sv-orcamento__titulo">PRECISA DE UM ORÇAMENTO PARA SEU PROJETO?</h2>

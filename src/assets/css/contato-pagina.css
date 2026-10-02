@@ -365,19 +365,35 @@ html.abertura-animada .ct-mapa::after,
   pointer-events: none;
 }
 
+/* --------------------------------------------------------------------------
+   Peças só do mobile (ver abaixo): no desktop não existem
+   -------------------------------------------------------------------------- */
+
+.ct-cartao__seta,
+.ct-mapa-titulo,
+.ct-mapa-traco,
+.ct-mapa-link {
+  display: none;
+}
+
 /* ==========================================================================
-   Mobile e tablet (até 1023px)
-   Não há frame mobile desta página no Figma (o "Contato Mobile" 181:2 é da
-   Home): adaptação estrutural na coluna dos frames mobile (342, --m). O selo
-   desce para baixo do subtítulo; os cartões ficam um embaixo do outro, com
-   as mesmas medidas internas; o mapa ocupa a largura da coluna.
+   Mobile e tablet (até 1023px) — mockup mobile aprovado da página Contato
+
+   Coluna no frame de 390 (--m), tudo em fluxo e com a altura do conteúdo:
+     abertura (título em duas linhas, subtítulo, selo numa linha) → os três
+     cartões empilhados, cada um HORIZONTAL e compacto (ícone preto à
+     esquerda, textos no meio, seta amarela de ação à direita no WhatsApp
+     e no E-mail) → ONDE ESTAMOS. com o traço amarelo, o mapa e a faixa
+     "Abrir no Google Maps" → rodapé.
    ========================================================================== */
 
 @media (max-width: 1023px) {
   .ct-pagina {
     --p: var(--m);
-    padding: calc(var(--nav-altura) + 48 * var(--m)) var(--margem-mobile) calc(64 * var(--m));
+    padding: calc(var(--nav-altura) + 56 * var(--m)) var(--margem-mobile) calc(40 * var(--m));
   }
+
+  /* --- abertura --------------------------------------------------------- */
 
   .ct-abertura {
     grid-template-columns: 1fr;
@@ -387,13 +403,15 @@ html.abertura-animada .ct-mapa::after,
     grid-row: auto;
   }
 
+  /* Fale com a / GVT. — a quebra vem da própria largura */
   .ct-titulo {
-    font-size: calc(40 * var(--m));
-    line-height: calc(54 * var(--m));
+    font-size: calc(56 * var(--m));
+    line-height: calc(60 * var(--m));
+    white-space: normal;
   }
 
   .ct-subtitulo {
-    margin-top: calc(4 * var(--m));
+    margin-top: calc(12 * var(--m));
     font-size: calc(17 * var(--m));
     line-height: calc(23 * var(--m));
     white-space: normal;
@@ -401,29 +419,181 @@ html.abertura-animada .ct-mapa::after,
 
   .ct-selo {
     grid-column: 1;
-    margin-top: calc(24 * var(--m));
+    margin-top: calc(22 * var(--m));
     font-size: calc(12 * var(--m));
     line-height: calc(16 * var(--m));
+    letter-spacing: calc(3 * var(--m));
   }
 
   .ct-selo span {
     display: inline;
   }
 
-  /* os três com a mesma altura, como no desktop (a do mais alto) */
+  .ct-selo span + span {
+    margin-top: 0;
+  }
+
+  /* --- cartões: horizontais e compactos ---------------------------------- */
+
   .ct-cartoes {
     grid-template-columns: 1fr;
-    grid-auto-rows: 1fr;
-    gap: calc(16 * var(--m));
-    margin-top: calc(40 * var(--m));
+    gap: 12px;
+    margin-top: calc(32 * var(--m));
   }
 
   .ct-cartao {
+    display: grid;
+    grid-template-columns: calc(36 * var(--m)) minmax(0, 1fr) auto;
+    grid-template-areas:
+      "icone titulo seta"
+      "icone info   seta";
+    align-items: center;
+    column-gap: calc(18 * var(--m));
     height: auto;
-    padding: calc(25 * var(--m) - 1px) calc(24 * var(--m)) calc(30 * var(--m)) calc(28 * var(--m) - 1px);
+    padding: calc(18 * var(--m)) calc(18 * var(--m)) calc(18 * var(--m)) calc(20 * var(--m));
+    border-color: color-mix(in srgb, var(--amarelo-destaque) calc(var(--ct-ativo, 0) * 100%), #d6d6d4);
+    border-radius: calc(12 * var(--m));
+  }
+
+  /* ícones pretos (os SVGs originais), na coluna da esquerda */
+  .ct-cartao__icone,
+  .ct-cartao--whatsapp .ct-cartao__icone,
+  .ct-cartao--email .ct-cartao__icone {
+    grid-area: icone;
+    justify-self: center;
+    width: calc(34 * var(--m));
+    height: auto;
+    margin: 0;
+  }
+
+  /* o marcador é mais alto que largo: a mesma altura, não a mesma largura */
+  .ct-cartao--atendimento .ct-cartao__icone {
+    width: auto;
+    height: calc(34 * var(--m));
+  }
+
+  .ct-cartao__titulo {
+    grid-area: titulo;
+    align-self: end;
+    margin: 0;
+    font-size: calc(21 * var(--m));
+    line-height: calc(27 * var(--m));
+  }
+
+  .ct-cartao__info {
+    grid-area: info;
+    align-self: start;
+    min-width: 0;
+    margin: calc(2 * var(--m)) 0 0;
+  }
+
+  .ct-cartao__rotulo {
+    margin-left: 0;
+    font-size: calc(15 * var(--m));
+    line-height: calc(21 * var(--m));
+  }
+
+  .ct-cartao__valor {
+    margin-top: calc(2 * var(--m));
+    font-size: calc(17 * var(--m));
+    line-height: calc(23 * var(--m));
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  /* Atendimento: só os dois valores (região e horário), sem os rótulos */
+  .ct-cartao--atendimento .ct-cartao__rotulo {
+    display: none;
+  }
+
+  .ct-cartao--atendimento .ct-cartao__valor,
+  .ct-cartao--atendimento dt + dd + dt + dd {
+    margin: calc(2 * var(--m)) 0 0;
+    font-weight: 400;
+    font-size: calc(16 * var(--m));
+    line-height: calc(22 * var(--m));
+  }
+
+  /* "Falar agora" vira o cartão inteiro (o ::after dele já o cobre): sem
+     texto visível, fora da grade; a seta amarela indica a ação */
+  .ct-cartao__acao {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    background: none;
+  }
+
+  .ct-cartao__seta {
+    grid-area: seta;
+    display: block;
+    width: calc(24 * var(--m));
+    height: calc(24 * var(--m));
+    color: var(--amarelo-destaque);
+  }
+
+  /* --- ONDE ESTAMOS. ------------------------------------------------------ */
+
+  .ct-mapa-titulo {
+    display: block;
+    margin: calc(48 * var(--m)) 0 0;
+    font-family: var(--fonte-corpo);
+    font-weight: 800;
+    font-size: calc(38 * var(--m));
+    line-height: calc(46 * var(--m));
+    color: #000;
+  }
+
+  .ct-mapa-traco {
+    display: block;
+    width: calc(52 * var(--m));
+    height: 3px;
+    margin-top: calc(14 * var(--m));
+    border-radius: 2px;
+    background: var(--amarelo-destaque);
   }
 
   .ct-mapa {
-    margin-top: calc(40 * var(--m));
+    height: clamp(280px, calc(300 * var(--m)), 320px);
+    margin-top: calc(24 * var(--m));
+    overflow: hidden;
+    border-radius: calc(12 * var(--m));
+  }
+
+  /* faixa "Abrir no Google Maps ↗" */
+  .ct-mapa-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(12 * var(--m));
+    margin-top: calc(12 * var(--m));
+    padding: calc(14 * var(--m)) calc(20 * var(--m));
+    border-radius: calc(10 * var(--m));
+    background: #f4f4f2;
+    font-family: var(--fonte-corpo);
+    font-weight: 700;
+    font-size: calc(16 * var(--m));
+    line-height: calc(22 * var(--m));
+    color: var(--titulo);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ct-mapa-link svg {
+    flex-shrink: 0;
+    width: calc(22 * var(--m));
+    height: calc(22 * var(--m));
+  }
+
+  .ct-mapa-link:focus-visible {
+    outline: 2px solid var(--titulo);
+    outline-offset: 2px;
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    .ct-mapa-link:active,
+    .ct-cartao:active {
+      background-color: #f4f4f2;
+    }
   }
 }

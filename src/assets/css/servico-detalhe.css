@@ -742,165 +742,272 @@ html.abertura-animada [data-servico="demolicao"] .sd-hero__foto {
   }
 }
 
+/* invólucro do Hero: sem caixa fora do celular */
+.sd-abertura {
+  display: contents;
+}
+
 /* ==========================================================================
-   Mobile e tablet (até 1023px)
-   Não há frames mobile destas páginas no Figma: adaptação estrutural na
-   coluna dos frames mobile do site (342, --m). Mesma ordem e mesma
-   linguagem; o que era lado a lado vira coluna.
+   Mobile e tablet (até 1023px) — mockups mobile aprovados das quatro
+   páginas (390 de largura)
+
+   Coluna de 342 no frame de 390 (--m, --margem-mobile). Ordem do desktop,
+   com a composição própria do celular:
+     faixa branca sob a navbar → Hero claro (foto em cima, clareando para o
+     branco sob o texto) → A Técnica (texto e, abaixo, a ilustração inteira
+     na largura da tela) → Aplicações em 2 x 2 → os três Diferenciais lado a
+     lado → CTA com o botão ao lado do texto → Outros serviços em cartões
+     horizontais.
+   Os ícones recortados são os do desktop em meia escala (--p local).
    ========================================================================== */
 
 @media (max-width: 1023px) {
   .sd-pagina {
     --p: var(--m);
     --margem: var(--margem-mobile);
+    /* textos pequenos: nunca abaixo de 11,5px */
+    --sd-miudo: max(11.5px, calc(12 * var(--m)));
   }
 
-  /* Hero: a foto em cima (sob a navbar), enquadrada no equipamento, e o
-     texto embaixo, no fundo do próprio Hero — sobre a foto inteira, na
-     coluna estreita, o texto cairia na parte carregada da imagem */
-  .sd-hero {
-    display: flex;
-    flex-direction: column;
-    height: auto;
+  .sd-rotulo {
+    font-size: calc(13 * var(--m));
+    line-height: calc(16 * var(--m));
+    letter-spacing: calc(0.52 * var(--m));
   }
 
-  .sd-hero__foto {
-    position: relative;
-    top: auto;
-    height: calc(var(--nav-altura) + 240 * var(--m));
-    object-position: 68% 50%;
-  }
-
-  .sd-hero__texto {
-    width: auto;
-    margin-right: var(--margem);
-    padding: calc(32 * var(--m)) 0 calc(48 * var(--m));
-  }
-
-  .sd-migalha {
-    white-space: normal;
-  }
-
-  .sd-hero__titulo {
-    font-size: calc(46 * var(--m));
-    line-height: calc(44 * var(--m));
-  }
-
-  .sd-hero__descricao {
-    width: auto;
-    max-width: calc(300 * var(--m));
-    font-size: calc(17 * var(--m));
-    line-height: calc(25 * var(--m));
-  }
-
-  /* A Técnica: texto e, abaixo, a ilustração na largura da coluna */
-  .sd-tecnica {
-    flex-direction: column;
-    align-items: stretch;
-    gap: calc(32 * var(--m));
-    height: auto;
-    padding: calc(56 * var(--m)) var(--margem);
-  }
-
-  .sd-tecnica__texto,
-  .sd-tecnica__paragrafo {
-    width: auto;
-  }
-
-  .sd-tecnica__titulo {
-    font-size: calc(36 * var(--m));
-    line-height: calc(36 * var(--m));
-  }
-
-  /* as quebras fixas do desktop deixariam palavras soltas na coluna */
-  .sd-tecnica__titulo br {
-    display: none;
-  }
-
-  .sd-tecnica__paragrafo {
-    font-size: calc(16 * var(--m));
-    line-height: calc(25 * var(--m));
-  }
-
-  .sd-tecnica__quadro {
-    width: 100%;
+  .sd-traco {
+    width: calc(30 * var(--m));
+    height: calc(3 * var(--m));
   }
 
   .sd-titulo-secao,
   .sd-aplicacoes .sd-titulo-secao,
   .sd-diferenciais__cabecalho .sd-titulo-secao {
-    font-size: calc(32 * var(--m));
-    line-height: calc(34 * var(--m));
+    font-size: calc(26 * var(--m));
+    line-height: calc(30 * var(--m));
     white-space: normal;
   }
 
-  /* Aplicações: um cartão por linha, altura do conteúdo */
+  /* --- 1. Hero ------------------------------------------------------------ */
+
+  /* faixa branca da navbar (a barra abre clara: navTemaMobile) */
+  .sd-abertura {
+    display: block;
+    padding-top: var(--nav-altura);
+    background: #fff;
+  }
+
+  /* claro nos quatro serviços: a foto cobre o Hero, enquadrada no
+     equipamento (hero.enquadramentoMovel), e clareia para o branco na
+     parte de baixo e à esquerda, onde fica o texto */
+  .sd-hero {
+    height: auto;
+    padding: calc(150 * var(--m)) 0 calc(26 * var(--m));
+    background: #fff;
+  }
+
+  .sd-hero__foto {
+    object-position: var(--foto-movel, 75% 50%);
+  }
+
+  .sd-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to bottom, rgba(255, 255, 255, 0) 22%, rgba(255, 255, 255, 0.6) 44%, rgba(255, 255, 255, 0.9) 66%, #fff 92%),
+      radial-gradient(130% 70% at 0% 100%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
+  }
+
+  /* as faixas da abertura da Demolição são do fundo do Hero, aqui branco */
+  .sd-faixa {
+    background: #fff;
+  }
+
+  .sd-hero__texto {
+    gap: calc(10 * var(--m));
+    width: auto;
+    margin: 0 var(--margem);
+    padding-top: 0;
+  }
+
+  .sd-migalha {
+    font-size: calc(13 * var(--m));
+    line-height: calc(16 * var(--m));
+    color: #555856;
+    white-space: normal;
+  }
+
+  /* duas linhas: as do desktop, ou a quebra natural na largura de 7.3em
+     (FUROS EM / CONCRETO; DISCO DIAMANTADO, a mais longa, cabe) */
+  .sd-hero__titulo {
+    max-width: 7.3em;
+    margin-top: calc(2 * var(--m));
+    font-size: calc(36 * var(--m));
+    line-height: calc(34 * var(--m));
+    letter-spacing: calc(-0.36 * var(--m));
+    color: var(--sd-titulo);
+  }
+
+  .sd-hero__descricao {
+    width: auto;
+    font-size: calc(16 * var(--m));
+    line-height: calc(21 * var(--m));
+    color: #3b3b3b;
+  }
+
+  /* --- 2. A Técnica ------------------------------------------------------- */
+
+  /* o texto na coluna; a ilustração na largura inteira da tela, sem
+     recorte (proporção da imagem), para as legendas ficarem o maior possível */
+  .sd-tecnica {
+    flex-direction: column;
+    align-items: stretch;
+    gap: calc(18 * var(--m));
+    height: auto;
+    padding: calc(22 * var(--m)) 0 calc(6 * var(--m));
+  }
+
+  .sd-tecnica__texto {
+    gap: calc(10 * var(--m));
+    width: auto;
+    margin: 0 var(--margem);
+  }
+
+  .sd-tecnica__titulo {
+    font-size: calc(30 * var(--m));
+    line-height: calc(30 * var(--m));
+  }
+
+  .sd-tecnica__titulo--fluido {
+    max-width: var(--largura-movel);
+  }
+
+  .sd-tecnica__titulo--fluido br {
+    display: none;
+  }
+
+  .sd-tecnica__paragrafo {
+    width: auto;
+    margin-top: calc(2 * var(--m));
+    font-size: calc(15 * var(--m));
+    line-height: calc(22 * var(--m));
+  }
+
+  .sd-tecnica__quadro {
+    width: 100%;
+    aspect-ratio: auto;
+  }
+
+  .sd-tecnica__quadro img {
+    position: static;
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* --- 3. Aplicações: 2 x 2, ícone à esquerda do texto ------------------- */
+
   .sd-aplicacoes {
-    padding: calc(56 * var(--m)) var(--margem);
+    padding: calc(26 * var(--m)) var(--margem) calc(30 * var(--m));
+  }
+
+  .sd-aplicacoes .sd-traco,
+  .sd-aplicacoes .sd-titulo-secao {
+    margin-top: calc(10 * var(--m));
   }
 
   .sd-aplicacoes__lista {
-    flex-direction: column;
-    gap: calc(16 * var(--m));
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(10 * var(--m));
     width: 100%;
+    margin-top: calc(18 * var(--m));
   }
 
   .sd-aplicacao {
-    width: 100%;
+    display: grid;
+    grid-template-columns: calc(32 * var(--m)) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    column-gap: calc(8 * var(--m));
+    row-gap: calc(5 * var(--m));
+    width: auto;
     height: auto;
+    padding: calc(13 * var(--m)) calc(9 * var(--m)) calc(14 * var(--m)) calc(10 * var(--m));
+    border-radius: calc(10 * var(--m));
+  }
+
+  .sd-aplicacao .sd-icone {
+    --p: calc(var(--m) * 0.5);
+    grid-row: 1 / 3;
+    justify-self: center;
+    margin-top: calc(2 * var(--m));
   }
 
   .sd-aplicacao__titulo {
+    font-size: calc(14 * var(--m));
+    line-height: calc(16 * var(--m));
     white-space: normal;
-  }
-
-  .sd-aplicacao__titulo br {
-    display: none;
   }
 
   .sd-aplicacao__texto {
     width: auto;
+    font-size: var(--sd-miudo);
+    line-height: 1.25;
   }
 
-  /* Diferenciais: os três um embaixo do outro, divisores na horizontal */
+  /* --- 4. Diferenciais: os três lado a lado, com os divisores ------------ */
+
+  /* a grade do desktop (subgrid: ícones, títulos e descrições alinhados
+     entre as colunas), em escala do celular */
   .sd-diferenciais {
+    align-items: stretch;
     height: auto;
-    padding: calc(56 * var(--m)) var(--margem);
+    padding: calc(28 * var(--m)) var(--margem) calc(30 * var(--m));
+  }
+
+  .sd-diferenciais__cabecalho {
+    gap: calc(10 * var(--m));
   }
 
   .sd-diferenciais__fila {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: calc(32 * var(--m));
-    width: 100%;
+    row-gap: calc(8 * var(--m));
     height: auto;
-    margin-top: calc(40 * var(--m));
+    margin-top: calc(22 * var(--m));
   }
 
   .sd-diferencial {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: calc(20 * var(--m));
+    padding: 0 calc(4 * var(--m));
   }
 
-  .sd-diferenciais__divisor {
-    width: calc(120 * var(--m));
-    height: 1px;
-    background: rgba(0, 0, 0, 0.5);
-  }
-
-  .sd-diferenciais__divisor::before {
-    display: none;
+  .sd-diferencial .sd-icone {
+    --p: calc(var(--m) * 0.5);
+    align-self: end;
   }
 
   .sd-diferencial__valor {
-    font-size: calc(44 * var(--m));
-    line-height: calc(52 * var(--m));
+    margin-top: calc(4 * var(--m));
+    font-size: calc(22 * var(--m));
+    line-height: calc(26 * var(--m));
   }
 
-  /* CTA: texto e botão em coluna sobre a textura */
+  .sd-diferencial__texto {
+    font-size: var(--sd-miudo);
+    line-height: 1.3;
+    white-space: normal;
+  }
+
+  /* o traço na altura do bloco */
+  .sd-diferenciais__divisor::before {
+    top: 0;
+    height: 100%;
+  }
+
+  /* --- 5. CTA: texto à esquerda, botão à direita ------------------------- */
+
   .sd-cta {
     height: auto;
   }
@@ -911,51 +1018,103 @@ html.abertura-animada [data-servico="demolicao"] .sd-hero__foto {
   }
 
   .sd-cta__conteudo {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: calc(24 * var(--m));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: calc(12 * var(--m));
     height: auto;
-    padding: calc(40 * var(--m)) var(--margem);
+    padding: calc(22 * var(--m)) var(--margem) calc(24 * var(--m));
   }
 
-  .sd-cta__titulo,
-  .sd-cta__descricao {
-    width: auto;
+  .sd-cta__texto {
+    gap: calc(6 * var(--m));
+  }
+
+  .sd-cta__rotulo {
+    font-size: calc(11 * var(--m));
+    line-height: calc(13 * var(--m));
+    letter-spacing: calc(0.33 * var(--m));
   }
 
   .sd-cta__titulo {
-    font-size: calc(30 * var(--m));
-    line-height: calc(32 * var(--m));
+    width: auto;
+    font-size: calc(19.5 * var(--m));
+    line-height: calc(20 * var(--m));
+  }
+
+  .sd-cta__descricao {
+    width: auto;
+    font-size: var(--sd-miudo);
+    line-height: 1.3;
   }
 
   .sd-cta__botao {
-    width: 100%;
+    gap: calc(7 * var(--m));
+    width: auto;
+    height: max(44px, calc(44 * var(--m)));
+    padding: 0 calc(12 * var(--m));
+    border-radius: calc(6 * var(--m));
+    font-size: calc(11.5 * var(--m));
+    line-height: calc(14 * var(--m));
+    letter-spacing: calc(0.5 * var(--m));
   }
 
-  /* Outros serviços: um cartão por linha, na largura da coluna */
+  .sd-cta__botao .sd-seta {
+    width: calc(13 * var(--m));
+    height: calc(13 * var(--m));
+  }
+
+  /* --- 6. Outros serviços: foto, nome e a seta, um cartão por linha ------ */
+
   .sd-outros {
-    padding: calc(48 * var(--m)) var(--margem);
+    padding: calc(26 * var(--m)) var(--margem) calc(32 * var(--m));
+  }
+
+  /* o traço sob o rótulo, como nos rótulos das seções */
+  .sd-outros__rotulo {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: calc(8 * var(--m));
+    font-size: calc(13 * var(--m));
+    line-height: calc(16 * var(--m));
+    letter-spacing: calc(0.39 * var(--m));
   }
 
   .sd-outros__lista {
     flex-direction: column;
-    gap: calc(16 * var(--m));
+    gap: calc(10 * var(--m));
+    margin-top: calc(16 * var(--m));
   }
 
   .sd-outro {
     width: 100%;
-    height: calc(120 * var(--m));
+    height: calc(64 * var(--m));
+    border-radius: calc(8 * var(--m));
   }
 
   .sd-outro__foto {
-    width: calc(130 * var(--m));
+    width: calc(126 * var(--m));
   }
 
-  /* o nome pode quebrar: na coluna estreita "Corte com Disco Diamantado"
-     não cabe numa linha ao lado da foto */
   .sd-outro__texto {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    gap: calc(10 * var(--m));
     width: auto;
     min-width: 0;
+    padding: 0 calc(16 * var(--m)) 0 calc(18 * var(--m));
     white-space: normal;
+  }
+
+  .sd-outro__nome {
+    font-size: calc(15 * var(--m));
+    line-height: calc(17 * var(--m));
+  }
+
+  .sd-outro__seta {
+    width: calc(20 * var(--m));
+    height: calc(20 * var(--m));
   }
 }

@@ -226,6 +226,13 @@
         };
       }
 
+      // No celular, numa rolagem rápida, o que já passou para cima da tela
+      // não entra na fila: vai direto ao estado final (montar devolve a
+      // animação), e o que está à vista não espera por ele
+      function jaPassou(el) {
+        return el.getBoundingClientRect().bottom < 0;
+      }
+
       function aoEntrar(chave, gatilho, inicio, montar, intervalo) {
         if (revelados.has(chave) || !gatilho) return;
         ScrollTrigger.create({
@@ -236,7 +243,14 @@
             revelados.add(chave);
             fontesProntas.then(
               noContexto(function () {
-                montar(proxima(intervalo == null ? 0.25 : intervalo));
+                if (!desktop && jaPassou(gatilho)) {
+                  var animacao = montar(0);
+                  if (animacao) animacao.progress(1);
+                  return;
+                }
+                var passo = intervalo == null ? 0.25 : intervalo;
+                // no celular as seções chegam uma a uma: a fila é mais curta
+                montar(proxima(desktop ? passo : Math.min(passo, 0.1)));
               })
             );
           },
@@ -626,6 +640,7 @@
         rotulo(tl, tecRotulo, tecTraco, 0);
         var fim = linhas(tl, tecTitulo, 0.2, 0.12, 0.8);
         texto(tl, tecParagrafo, fim - 0.35, id.paragrafoDe);
+        return tl;
       });
       id.ilustracao();
 
@@ -657,6 +672,7 @@
         });
         rotulo(tl, apRotulo, apTraco, 0);
         linhas(tl, apTitulo, 0.2, 0.12, 0.8);
+        return tl;
       });
 
       if (id.cartoesNoScroll) {
@@ -690,6 +706,7 @@
                 },
               });
               id.cartao(tl, cartao, 0);
+              return tl;
             },
             id.passoCartoes
           );
@@ -728,11 +745,11 @@
       itensDif.forEach(function (item, i) {
         if (!revelados.has(desktop ? "diferenciais" : "dif" + i)) estadoDif(item);
       });
-      // divisores: verticais no desktop (crescem do centro), horizontais no
-      // mobile (se traçam do centro para os lados)
+      // divisores: verticais (no celular também, entre os três lado a
+      // lado), crescem do centro
       divisores.forEach(function (divisor, i) {
         if (revelados.has(desktop ? "diferenciais" : "divisor" + i)) return;
-        gsap.set(divisor, desktop ? { scaleY: 0, transformOrigin: "50% 50%" } : { scaleX: 0, transformOrigin: "50% 50%" });
+        gsap.set(divisor, { scaleY: 0, transformOrigin: "50% 50%" });
       });
 
       aoEntrar("diferenciais", diferenciais, desktop ? "top 70%" : "top 82%", function (atraso) {
@@ -746,7 +763,7 @@
         });
         rotulo(tl, difRotulo, difTraco, 0);
         linhas(tl, difTitulo, 0.2, 0.12, 0.8);
-        if (!desktop) return; // no mobile os itens entram um a um, abaixo
+        if (!desktop) return tl; // no mobile os itens entram um a um, abaixo
         tl.to(divisores, { scaleY: 1, duration: 0.8, ease: "power2.inOut", stagger: 0.15 }, 0.5);
         if (id.diferenciais) {
           id.diferenciais(tl, 0.6);
@@ -768,12 +785,13 @@
               },
             });
             difItem(tl, partesDif(item), 0);
+            return tl;
           });
         });
         divisores.forEach(function (divisor, i) {
           aoEntrar("divisor" + i, divisor, "top 90%", function (atraso) {
-            gsap.to(divisor, {
-              scaleX: 1,
+            return gsap.to(divisor, {
+              scaleY: 1,
               duration: 0.7,
               delay: atraso,
               ease: "power2.inOut",
@@ -807,10 +825,12 @@
           },
         });
         tl.to(ctaTextura, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.1, ease: "power2.inOut" }, 0);
-        rotulo(tl, ctaRotulo, null, 0.4);
-        var fim = linhas(tl, ctaTitulo, 0.5, 0.12, 0.8);
+        // no celular o texto não espera tanto a textura
+        rotulo(tl, ctaRotulo, null, desktop ? 0.4 : 0.15);
+        var fim = linhas(tl, ctaTitulo, desktop ? 0.5 : 0.25, 0.12, 0.8);
         texto(tl, ctaDescricao, fim - 0.4);
         texto(tl, ctaBotao, fim - 0.15, { y: 10 * k });
+        return tl;
       });
 
       // ======================================================================
@@ -832,6 +852,7 @@
         });
         rotulo(tl, outrosRotulo, null, 0);
         tl.to(outrosCartoes, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", stagger: 0.12 }, 0.15);
+        return tl;
       });
 
       // ======================================================================
@@ -866,6 +887,7 @@
         tl.to(contatos, { y: 0, opacity: 1, duration: 0.9, stagger: 0.1 }, 0.55);
         tl.to(copyright, { y: 0, opacity: 1, duration: 0.8 }, 0.8);
         tl.fromTo(rodapeRisco, { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power2.inOut" }, 0.9);
+        return tl;
       });
 
       // ======================================================================
