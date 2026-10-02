@@ -1,10 +1,10 @@
 {# ==========================================================================
    Seção Obras — Figma node 35:446 (frame 1440x1024)
 
-   O mapa é, por ora, uma imagem estática exportada do Figma (lá ele também é
-   raster, não vetor). Para a interação por estado numa etapa futura, basta
-   trocar .obras__mapa-img por um <svg> com um <path> por UF: o wrapper
-   .obras__mapa já isola posição e dimensão, então nada em volta muda.
+   O mapa é a imagem exportada do Figma (lá ele também é raster). Sobre ela,
+   um marcador por estado com obras (dados em src/_data/estadosComObras.json,
+   x/y em % da imagem), e um único popup para todos; a interação está em
+   assets/js/obras-mapa.js.
    ========================================================================== #}
 <section class="obras" id="obras" data-nav-tema="claro">
 
@@ -15,6 +15,29 @@
       <source media="(max-width: 1023px)" srcset="/assets/img/home/obras/mapa-brasil-mobile.webp">
       <img class="obras__mapa-img" src="/assets/img/home/obras/mapa-brasil.webp" width="772" height="869" alt="Mapa do Brasil com os estados onde a GVT atua" loading="lazy">
     </picture>
+
+    {# Marcadores: a camada tem exatamente a caixa da imagem desenhada, então
+       as porcentagens valem nas duas versões do mapa. AC e AM não entram. #}
+    <div class="obras__pontos">
+      {%- for estado in estadosComObras %}
+      <button class="obras__ponto" type="button" style="--x: {{ estado.x }}%; --y: {{ estado.y }}%"
+        data-nome="{{ estado.nome }}" data-sigla="{{ estado.sigla }}" data-obras="{{ estado.obras }}"
+        aria-label="{{ estado.nome }} ({{ estado.sigla }}): {{ estado.obras }} obras realizadas no estado"></button>
+      {%- endfor %}
+    </div>
+  </div>
+
+  {# Popup dos marcadores — um só, preenchido pelo marcador ativo. Fica fora
+     do mapa e é position: fixed, para nenhum overflow da seção o cortar. O
+     conteúdo já está no nome de cada marcador, por isso aria-hidden. #}
+  <div class="obras__popup" aria-hidden="true">
+    <div class="obras__popup-conteudo">
+      <span class="obras__popup-risco"></span>
+      <p class="obras__popup-estado"></p>
+      <p class="obras__popup-numero"></p>
+      <p class="obras__popup-texto">Obras realizadas no estado</p>
+    </div>
+    <span class="obras__popup-seta"></span>
   </div>
 
   {# Legenda à esquerda — Figma 38:543 (x 80, y 728) #}

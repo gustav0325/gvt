@@ -452,3 +452,237 @@
   }
 }
 
+/* ==========================================================================
+   Marcadores do mapa (assets/js/obras-mapa.js)
+
+   Uma bolinha amarela por estado com obras, em % da imagem do mapa. A
+   camada tem a caixa exata da imagem desenhada: no desktop é a própria
+   .obras__mapa (772 x 869); no mobile a imagem é 800 x 902, um fio mais
+   alta que a caixa, e o object-fit: contain a centra — a camada faz o mesmo.
+
+   Os pontos ficam parados; só o ativo (mouse, toque ou foco) cresce, ganha
+   brilho e um halo translúcido que se abre em volta. A escolha é por
+   proximidade na camada inteira (o ponto mais perto do cursor/dedo), então
+   um marcador nunca encobre o vizinho.
+   ========================================================================== */
+
+.obras__pontos {
+  --curva-mapa: cubic-bezier(0.215, 0.61, 0.355, 1); /* power2.out */
+  position: absolute;
+  inset: 0;
+}
+
+.obras__ponto {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--amarelo-destaque);
+  box-shadow: 0 0 4px rgba(245, 184, 0, 0.45);
+  translate: -50% -50%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    scale 0.3s var(--curva-mapa),
+    box-shadow 0.3s var(--curva-mapa);
+}
+
+/* halo: um disco de luz que esmaece para fora, sem borda */
+.obras__ponto::before {
+  content: "";
+  position: absolute;
+  inset: -11px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(245, 184, 0, 0.34) 0%,
+    rgba(245, 184, 0, 0.16) 42%,
+    rgba(245, 184, 0, 0) 70%
+  );
+  opacity: 0;
+  scale: 0.4;
+  pointer-events: none;
+  transition:
+    opacity 0.3s var(--curva-mapa),
+    scale 0.3s var(--curva-mapa);
+}
+
+.obras__ponto.is-ativo {
+  z-index: 1; /* o brilho do ativo passa por cima dos vizinhos */
+  scale: 1.3;
+  box-shadow:
+    0 0 6px 1px rgba(245, 184, 0, 0.7),
+    0 0 16px 4px rgba(245, 184, 0, 0.28);
+}
+
+.obras__ponto.is-ativo::before {
+  opacity: 1;
+  scale: 1;
+}
+
+.obras__ponto:focus-visible {
+  outline: 2px solid var(--titulo);
+  outline-offset: 3px;
+}
+
+/* Popup — um só, preso à tela (fixed): nenhum overflow o corta. O script
+   o põe acima do ponto (ou abaixo, sem espaço), dentro das laterais, e
+   aponta a seta para o ponto (--seta-x). Abre a partir da ponta da seta:
+   fade, 10px de subida e 0.96 → 1, em 300ms; fecha só no fade, mais
+   rápido. A sombra é um drop-shadow para contornar a seta também. */
+.obras__popup {
+  --desloc: 10px;
+  --seta-x: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90; /* abaixo da navbar (100) */
+  padding: 14px 18px 15px;
+  border-radius: 8px;
+  background: var(--branco);
+  filter:
+    drop-shadow(0 10px 16px rgba(0, 0, 0, 0.1))
+    drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
+  pointer-events: none;
+  transform-origin: var(--seta-x) calc(100% + 7px);
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 var(--desloc);
+  scale: 0.96;
+  transition:
+    opacity 0.16s ease-out,
+    visibility 0s linear 0.16s,
+    translate 0s linear 0.16s,
+    scale 0s linear 0.16s;
+}
+
+.obras__popup--abaixo {
+  transform-origin: var(--seta-x) -7px;
+}
+
+.obras__popup.is-aberto {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  scale: 1;
+  transition:
+    opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1),
+    translate 0.3s cubic-bezier(0.215, 0.61, 0.355, 1),
+    scale 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* indicador: triângulo de 14 x 7 apontando para o ponto */
+.obras__popup-seta {
+  position: absolute;
+  top: calc(100% - 1px);
+  left: var(--seta-x);
+  width: 14px;
+  height: 8px;
+  translate: -50% 0;
+  background: var(--branco);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.obras__popup--abaixo .obras__popup-seta {
+  top: auto;
+  bottom: calc(100% - 1px);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+/* o conteúdo corta o que sobrar enquanto a caixa se ajusta numa troca */
+.obras__popup-conteudo {
+  overflow: hidden;
+}
+
+/* o detalhe amarelo: o mesmo risco curto das etiquetas da seção */
+.obras__popup-risco {
+  display: block;
+  width: 24px;
+  height: 3px;
+  margin-bottom: 10px;
+  border-radius: 2px;
+  background: var(--amarelo-destaque);
+}
+
+.obras__popup-estado {
+  margin: 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--titulo);
+}
+
+/* a quantidade em destaque, como o 250+ do card */
+.obras__popup-numero {
+  margin: 8px 0 0;
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 30px;
+  color: var(--amarelo-destaque);
+}
+
+.obras__popup-texto {
+  margin: 4px 0 0;
+  font-family: var(--fonte-corpo);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  color: var(--texto-sec);
+}
+
+@media (max-width: 1023px) {
+  /* a imagem do celular (800 x 902) desenhada pelo contain: altura toda,
+     centrada na horizontal */
+  .obras__pontos {
+    inset: 0 auto 0 50%;
+    aspect-ratio: 800 / 902;
+    translate: -50% 0;
+  }
+
+  .obras__ponto {
+    width: 7px;
+    height: 7px;
+  }
+
+  .obras__ponto::before {
+    inset: -9px;
+  }
+}
+
+/* movimento reduzido: o ponto só ganha o brilho (sem crescer nem abrir o
+   halo) e o popup só aparece e some no fade */
+@media (prefers-reduced-motion: reduce) {
+  .obras__ponto,
+  .obras__ponto::before {
+    transition: none;
+  }
+
+  .obras__ponto.is-ativo {
+    scale: none;
+  }
+
+  .obras__ponto.is-ativo::before {
+    scale: none;
+  }
+
+  .obras__popup,
+  .obras__popup.is-aberto {
+    translate: none;
+    scale: none;
+    transition: opacity 0.12s linear, visibility 0s linear 0.12s;
+  }
+
+  .obras__popup.is-aberto {
+    transition: opacity 0.12s linear;
+  }
+}
