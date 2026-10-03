@@ -70,6 +70,17 @@
   var raiz = document.documentElement;
   var links = menu.querySelectorAll("a");
 
+  // o cartão da página atual, pela URL (o HTML já vem com o de activeNav):
+  // "/" só na Home; os outros também nas subpáginas (/servicos/... → Serviços)
+  var caminho = location.pathname.replace(/index\.html$/, "");
+  Array.prototype.forEach.call(menu.querySelectorAll(".menu-mobile__link"), function (link) {
+    var alvo = link.pathname;
+    var atual = alvo === "/" ? caminho === "/" : caminho.indexOf(alvo) === 0;
+    link.classList.toggle("menu-mobile__link--ativo", atual);
+    if (atual) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+
   function definir(aberto) {
     raiz.classList.toggle("menu-aberto", aberto);
     botao.setAttribute("aria-expanded", aberto ? "true" : "false");

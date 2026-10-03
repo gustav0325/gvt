@@ -56,13 +56,52 @@
 
 {#- Menu mobile. Fica FORA do <header>: o backdrop-filter da navbar faria dela
     o bloco de contenção de um elemento fixed, e o menu ficaria preso aos 88px
-    da barra. Os itens levam às páginas, como a navbar do desktop. #}
+    da barra. Os itens levam às páginas, como a navbar do desktop; o da página
+    atual vem marcado do HTML (activeNav) e o main.js confirma pela URL.
+    Ícones: Lucide (ISC) — house, users, hard-hat, building-2, phone. -#}
+{%- set itensMenu = [
+  { chave: "inicio", nome: "Início", url: "/", icone: '<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>' },
+  { chave: "sobre-nos", nome: "Sobre nós", url: "/sobre-nos/", icone: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
+  { chave: "servicos", nome: "Serviços", url: "/servicos/", icone: '<path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5"/><path d="M14 6a6 6 0 0 1 6 6v3"/><path d="M4 15v-3a6 6 0 0 1 6-6"/><rect x="2" y="15" width="20" height="4" rx="1"/>' },
+  { chave: "obras", nome: "Obras", url: "/obras/", icone: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>' },
+  { chave: "contato", nome: "Contato", url: "/contato/", icone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>' }
+] %}
 <nav class="menu-mobile" id="menu-mobile" aria-label="Menu" inert>
-  <ul class="menu-mobile__lista">
-    <li><a class="menu-mobile__link" href="/">Início</a></li>
-    <li><a class="menu-mobile__link" href="/sobre-nos/">Sobre nós</a></li>
-    <li><a class="menu-mobile__link" href="/servicos/">Serviços</a></li>
-    <li><a class="menu-mobile__link" href="/obras/">Obras</a></li>
-    <li><a class="menu-mobile__link" href="/contato/">Contato</a></li>
-  </ul>
+  <div class="menu-mobile__conteudo">
+    <ul class="menu-mobile__lista">
+      {%- for item in itensMenu %}
+      <li>
+        <a class="menu-mobile__link{% if activeNav == item.chave %} menu-mobile__link--ativo{% endif %}" href="{{ item.url }}"{% if activeNav == item.chave %} aria-current="page"{% endif %}>
+          <svg class="menu-mobile__icone" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">{{ item.icone | safe }}</svg>
+          <span>{{ item.nome }}</span>
+        </a>
+      </li>
+      {%- endfor %}
+    </ul>
+
+    {#- o número é o do Figma, o mesmo da página Contato #}
+    <a class="menu-mobile__wpp" href="https://wa.me/5511912345678" target="_blank" rel="noopener">
+      <span class="menu-mobile__wpp-icone" aria-hidden="true"></span>
+      <span class="menu-mobile__wpp-texto">
+        <span class="menu-mobile__wpp-rotulo">VAMOS CONVERSAR?</span>
+        <span class="menu-mobile__wpp-titulo">Solicite um orçamento</span>
+        <span class="menu-mobile__wpp-descricao">Atendimento rápido e especializado.</span>
+      </span>
+    </a>
+
+    <div class="menu-mobile__rodape">
+      <div class="menu-mobile__sociais">
+        <a class="menu-mobile__social" href="https://instagram.com/" rel="noopener" aria-label="Instagram da GVT">
+          <img src="/assets/img/global/icons/icon_instagram.svg" width="25" height="25" alt="" aria-hidden="true">
+        </a>
+        <a class="menu-mobile__social" href="https://wa.me/5511912345678" target="_blank" rel="noopener" aria-label="WhatsApp da GVT">
+          <img src="/assets/img/global/icons/icon_whatsapp_social.svg" width="25" height="25" alt="" aria-hidden="true">
+        </a>
+      </div>
+      <p class="menu-mobile__assinatura">
+        <span class="menu-mobile__assinatura-nome">GVT Cortes e Furos</span>
+        <span class="menu-mobile__assinatura-frase">Precisão em cada projeto.</span>
+      </p>
+    </div>
+  </div>
 </nav>
