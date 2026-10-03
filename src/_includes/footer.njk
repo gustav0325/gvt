@@ -14,7 +14,7 @@
         <a class="rodape__social" href="https://instagram.com/" rel="noopener" aria-label="Instagram da GVT">
           <img src="/assets/img/global/icons/icon_instagram.svg" width="25" height="25" alt="" aria-hidden="true">
         </a>
-        <a class="rodape__social" href="https://wa.me/" rel="noopener" aria-label="WhatsApp da GVT">
+        <a class="rodape__social" href="{{ contatos.whatsapp }}" rel="noopener" aria-label="WhatsApp da GVT">
           <img src="/assets/img/global/icons/icon_whatsapp_social.svg" width="25" height="25" alt="" aria-hidden="true">
         </a>
       </div>
@@ -49,11 +49,11 @@
         <ul class="rodape__contatos">
           <li>
             <img src="/assets/img/global/icons/icon_telefone.svg" width="11" height="11" alt="" aria-hidden="true">
-            <a href="tel:+5511912345678">(11) 9 1234-5678</a>
+            <a href="{{ contatos.telefoneLink }}">{{ contatos.telefone }}</a>
           </li>
           <li>
             <img src="/assets/img/global/icons/icon_email.svg" width="14" height="11" alt="" aria-hidden="true">
-            <a href="mailto:contato@gvt.com.br">contato@gvt.com.br</a>
+            <a href="{{ contatos.emailLink }}">{{ contatos.emailQuebravel | safe }}</a>
           </li>
           <li class="rodape__contato--local">
             <img src="/assets/img/global/icons/icon_local.svg" width="8" height="11" alt="" aria-hidden="true">

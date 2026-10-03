@@ -36,9 +36,9 @@ mapaEndereco: "Rua Ernesto Sena, 232 - São Paulo - SP"
       <h2 class="ct-cartao__titulo">Whatsapp</h2>
       <div class="ct-cartao__info">
         <p class="ct-cartao__rotulo">Atendimento rápido:</p>
-        <p class="ct-cartao__valor">(11) 9 1234-5678</p>
+        <p class="ct-cartao__valor">{{ contatos.telefone }}</p>
       </div>
-      <a class="ct-cartao__link ct-cartao__acao" href="https://wa.me/5511912345678" target="_blank" rel="noopener" aria-label="Falar agora pelo WhatsApp: (11) 9 1234-5678">Falar agora</a>
+      <a class="ct-cartao__link ct-cartao__acao" href="{{ contatos.whatsapp }}" target="_blank" rel="noopener" aria-label="Falar agora pelo WhatsApp: {{ contatos.telefone }}">Falar agora</a>
       {# só no mobile: a seta de ação (o link continua cobrindo o cartão) #}
       <svg class="ct-cartao__seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
     </article>
@@ -48,7 +48,7 @@ mapaEndereco: "Rua Ernesto Sena, 232 - São Paulo - SP"
       <h2 class="ct-cartao__titulo">E-mail</h2>
       <div class="ct-cartao__info">
         <p class="ct-cartao__rotulo">Contato geral:</p>
-        <p class="ct-cartao__valor"><a class="ct-cartao__link" href="mailto:contato@gvt.com.br">contato@gvt.com.br</a></p>
+        <p class="ct-cartao__valor"><a class="ct-cartao__link" href="{{ contatos.emailLink }}">{{ contatos.emailQuebravel | safe }}</a></p>
       </div>
       <svg class="ct-cartao__seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>{# só no mobile #}
     </article>

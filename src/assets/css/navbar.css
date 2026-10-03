@@ -297,9 +297,11 @@
 
   /* --- Menu ------------------------------------------------------------- */
 
-  /* Vidro grafite quase uniforme, com um brilho muito sutil (sem foto). O
-     painel cobre a tela sob a barra; o conteúdo rola por dentro, abaixo
-     dela, se a tela for baixa. Medidas do layout aprovado (390 de largura). */
+  /* Vidro fumê sobre a página aberta: ela continua aparecendo atrás, bem
+     desfocada e escurecida (só a tinta translúcida e o blur, sem camada
+     opaca no meio). O painel cobre a tela sob a barra; o conteúdo rola por
+     dentro, abaixo dela, se a tela for baixa. Medidas do layout aprovado
+     (390 de largura). */
   .menu-mobile {
     display: flex;
     flex-direction: column;
@@ -307,12 +309,9 @@
     inset: 0;
     z-index: 99; /* sob a barra, que continua visível com o X */
     padding-top: var(--nav-altura);
-    background:
-      radial-gradient(110% 55% at 88% 38%, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0) 70%),
-      radial-gradient(90% 45% at 8% 92%, rgba(245, 184, 0, 0.025), rgba(245, 184, 0, 0) 70%),
-      rgba(19, 20, 20, 0.96);
-    -webkit-backdrop-filter: blur(24px);
-            backdrop-filter: blur(24px);
+    background: rgba(15, 16, 16, 0.68);
+    -webkit-backdrop-filter: blur(22px) saturate(75%);
+            backdrop-filter: blur(22px) saturate(75%);
     opacity: 0;
     visibility: hidden;
     clip-path: inset(0 0 100% 0);

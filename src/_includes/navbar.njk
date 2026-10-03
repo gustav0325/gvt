@@ -79,8 +79,8 @@
       {%- endfor %}
     </ul>
 
-    {#- o número é o do Figma, o mesmo da página Contato #}
-    <a class="menu-mobile__wpp" href="https://wa.me/5511912345678" target="_blank" rel="noopener">
+    {#- contatos oficiais: src/_data/contatos.json #}
+    <a class="menu-mobile__wpp" href="{{ contatos.whatsapp }}" target="_blank" rel="noopener">
       <span class="menu-mobile__wpp-icone" aria-hidden="true"></span>
       <span class="menu-mobile__wpp-texto">
         <span class="menu-mobile__wpp-rotulo">VAMOS CONVERSAR?</span>
@@ -94,7 +94,7 @@
         <a class="menu-mobile__social" href="https://instagram.com/" rel="noopener" aria-label="Instagram da GVT">
           <img src="/assets/img/global/icons/icon_instagram.svg" width="25" height="25" alt="" aria-hidden="true">
         </a>
-        <a class="menu-mobile__social" href="https://wa.me/5511912345678" target="_blank" rel="noopener" aria-label="WhatsApp da GVT">
+        <a class="menu-mobile__social" href="{{ contatos.whatsapp }}" target="_blank" rel="noopener" aria-label="WhatsApp da GVT">
           <img src="/assets/img/global/icons/icon_whatsapp_social.svg" width="25" height="25" alt="" aria-hidden="true">
         </a>
       </div>

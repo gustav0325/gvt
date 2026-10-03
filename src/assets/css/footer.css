@@ -130,6 +130,12 @@
   gap: calc(12 * var(--f));
 }
 
+/* no desktop o texto do contato fica na largura natural, numa linha (os
+   pontos <wbr> do e-mail são só para a coluna estreita do celular) */
+.rodape__contatos a {
+  flex-shrink: 0;
+}
+
 .rodape__contatos img {
   display: block;
   flex-shrink: 0;
@@ -247,8 +253,11 @@
     display: none;
   }
 
-  .rodape__coluna--servicos { width: calc(157 * var(--m)); }
-  .rodape__coluna--contato  { width: calc(159 * var(--m)); }
+  /* 7 da coluna de serviços passaram à de contato (a linha mais longa de
+     serviços, "Demolição controlada", tem 141): o e-mail quebra em
+     gvt@gvtcortesefuros / .com.br, nos pontos <wbr> de contatos.json */
+  .rodape__coluna--servicos { width: calc(150 * var(--m)); }
+  .rodape__coluna--contato  { width: calc(166 * var(--m)); }
 
   .rodape__titulo {
     margin-bottom: calc(10 * var(--m));
@@ -259,9 +268,16 @@
     gap: calc(10 * var(--m));
   }
 
-  /* os serviços quebram em duas linhas na coluna de 157 */
-  .rodape__lista a {
+  /* os serviços quebram em duas linhas na coluna de 150; o e-mail, nos
+     seus pontos de quebra */
+  .rodape__lista a,
+  .rodape__contatos a {
     white-space: normal;
+  }
+
+  .rodape__contatos a {
+    flex-shrink: 1;
+    min-width: 0;
   }
 
   .rodape__contatos li {
