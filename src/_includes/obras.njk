@@ -2,8 +2,9 @@
    Seção Obras — Figma node 35:446 (frame 1440x1024)
 
    O mapa é a imagem exportada do Figma (lá ele também é raster). Sobre ela,
-   um marcador por estado com obras (dados em src/_data/estadosComObras.json,
-   x/y em % da imagem), e um único popup para todos; a interação está em
+   um marcador por estado com obras (dados em src/_data/estadosComObras.json:
+   x/y em % da imagem e a quantidade de obras), e um único popup para todos;
+   a interação está em
    assets/js/obras-mapa.js.
    ========================================================================== #}
 <section class="obras" id="obras" data-nav-tema="claro">
@@ -22,7 +23,7 @@
       {%- for estado in estadosComObras %}
       <button class="obras__ponto" type="button" style="--x: {{ estado.x }}%; --y: {{ estado.y }}%"
         data-nome="{{ estado.nome }}" data-sigla="{{ estado.sigla }}" data-obras="{{ estado.obras }}"
-        aria-label="{{ estado.nome }} ({{ estado.sigla }}): {{ estado.obras }} obras realizadas no estado"></button>
+        aria-label="{{ estado.nome }} ({{ estado.sigla }}): {{ estado.obras }} {{ 'obra realizada' if estado.obras == 1 else 'obras realizadas' }} no estado"></button>
       {%- endfor %}
     </div>
   </div>

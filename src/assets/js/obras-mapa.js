@@ -33,6 +33,7 @@
   var seta = popup.querySelector(".obras__popup-seta");
   var campoEstado = popup.querySelector(".obras__popup-estado");
   var campoNumero = popup.querySelector(".obras__popup-numero");
+  var campoTexto = popup.querySelector(".obras__popup-texto");
   var navbar = document.querySelector(".navbar");
   var reduzido = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -120,6 +121,8 @@
   function preencher(ponto) {
     campoEstado.textContent = ponto.dataset.nome + " (" + ponto.dataset.sigla + ")";
     campoNumero.textContent = ponto.dataset.obras;
+    // singular só para uma obra
+    campoTexto.textContent = Number(ponto.dataset.obras) === 1 ? "Obra realizada no estado" : "Obras realizadas no estado";
   }
 
   function abrir(ponto, de) {
