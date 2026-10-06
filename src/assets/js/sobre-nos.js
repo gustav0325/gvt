@@ -13,13 +13,13 @@
 //               card com a sombra surgindo e o ícone logo depois) → a linha
 //               é traçada → diferenciais 1 → 4, ícone e depois texto
 //   Números     impacto: os cards 20+ e 250+ entram, contam e o brilho acende
-//   depoimento  prova social: card → nome → estrelas uma a uma
+//   depoimento  prova social: card → mensagem e nome → estrelas uma a uma
 //   chamada     conclusão: a textura assenta, título, texto e o botão
 //   rodapé      eco da abertura, mais discreto: logo por máscara → texto →
 //               colunas → contatos e redes → copyright e o traço dourado
 //
-// Os placeholders das fotos não são animados no desktop (as fotos terão a
-// sua própria animação quando chegarem). A navbar não é tocada.
+// As três fotos do topo não são animadas no desktop (uma animação própria
+// para elas ainda pode vir). A navbar não é tocada.
 //
 // Mobile (até 1023px): um ramo próprio (montarMobile), elemento a elemento
 // — a página vira uma coluna bem mais alta que a tela, então cada peça entra
@@ -27,49 +27,113 @@
 // curto, os cards de Missão/Visão/Valores um a um, os diferenciais na ordem
 // da grade 2 x 2. O ramo do desktop continua o mesmo.
 
-// --- Carrossel de depoimentos (só aparece no mobile) ------------------------
-// Deslizar é rolagem nativa com scroll-snap (toque); os indicadores levam ao
-// card e acompanham o card visível. Independente do GSAP e do reduced-motion.
+// --- Depoimentos: um por vez -----------------------------------------------
+// Os três ficam sobrepostos no card (altura fixa, nada em volta se mexe).
+// Troca pelos indicadores, pelas setas ← → (com o foco no componente) e, no
+// toque, deslizando para o lado. Sem troca automática. A entrada do novo:
+// opacity 0 → 1 e 8px → 0 (GSAP, já carregado na página); com
+// prefers-reduced-motion, a troca é direta.
 (function () {
   "use strict";
 
-  var trilho = document.querySelector(".sn-depoimento__trilho");
-  var indicadores = Array.prototype.slice.call(document.querySelectorAll(".sn-depoimento__indicador"));
-  if (!trilho || !indicadores.length) return;
+  var raiz = document.querySelector(".sn-depoimento");
+  if (!raiz) return;
 
-  var cards = Array.prototype.slice.call(trilho.querySelectorAll(".sn-depoimento__card"));
+  var card = raiz.querySelector(".sn-depoimento__card");
+  var slides = Array.prototype.slice.call(raiz.querySelectorAll(".sn-depoimento__slide"));
+  var botoes = Array.prototype.slice.call(raiz.querySelectorAll(".sn-depoimento__indicador"));
   var reduzido = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var total = slides.length;
+  var atual = 0;
+  if (total < 2) return;
 
-  function deslocamento(card) {
-    return trilho.scrollLeft + card.getBoundingClientRect().left - trilho.getBoundingClientRect().left;
-  }
+  var LIMIAR = 48; // px na horizontal para valer como deslize
 
   function marcar(indice) {
-    indicadores.forEach(function (botao, i) {
+    botoes.forEach(function (botao, i) {
       if (i === indice) botao.setAttribute("aria-current", "true");
       else botao.removeAttribute("aria-current");
     });
   }
 
-  var quadro = 0;
-  trilho.addEventListener(
-    "scroll",
-    function () {
-      cancelAnimationFrame(quadro);
-      quadro = requestAnimationFrame(function () {
-        var passo = cards.length > 1 ? deslocamento(cards[1]) - deslocamento(cards[0]) : 1;
-        marcar(Math.max(0, Math.min(cards.length - 1, Math.round(trilho.scrollLeft / passo))));
-      });
-    },
-    { passive: true }
-  );
+  function limpar(el) {
+    if (window.gsap) window.gsap.set(el, { clearProps: "opacity,transform" });
+  }
 
-  indicadores.forEach(function (botao, i) {
-    botao.addEventListener("click", function () {
-      if (!cards[i]) return;
-      trilho.scrollTo({ left: deslocamento(cards[i]), behavior: reduzido.matches ? "auto" : "smooth" });
-      marcar(i);
+  function ir(indice, focarBotao) {
+    indice = (indice + total) % total;
+    if (indice === atual) return;
+    var de = slides[atual];
+    var para = slides[indice];
+    var gsap = window.gsap;
+    atual = indice;
+    marcar(indice);
+    if (focarBotao && botoes[indice]) botoes[indice].focus();
+
+    // trocas seguidas: o que não é nem o que sai nem o que entra some já
+    slides.forEach(function (slide) {
+      if (gsap) gsap.killTweensOf(slide);
+      if (slide !== de && slide !== para) {
+        slide.hidden = true;
+        limpar(slide);
+      }
     });
+    para.hidden = false;
+
+    if (!gsap || reduzido.matches) {
+      de.hidden = true;
+      limpar(de);
+      limpar(para);
+      return;
+    }
+
+    // o que sai apaga rápido; o novo entra subindo 8px, por cima dele —
+    // o card branco fica sempre lá, sem piscar
+    gsap.to(de, {
+      opacity: 0,
+      duration: 0.2,
+      ease: "power1.out",
+      onComplete: function () {
+        if (slides[atual] !== de) de.hidden = true;
+        limpar(de);
+      },
+    });
+    gsap.fromTo(
+      para,
+      { opacity: 0, y: 8 },
+      { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", clearProps: "opacity,transform" }
+    );
+  }
+
+  botoes.forEach(function (botao, i) {
+    botao.addEventListener("click", function () {
+      ir(i, false);
+    });
+  });
+
+  // ← → com o foco no componente (nos indicadores): o foco acompanha
+  raiz.addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    e.preventDefault();
+    ir(atual + (e.key === "ArrowRight" ? 1 : -1), raiz.contains(document.activeElement));
+  });
+
+  // deslize no toque: só conta um gesto claramente horizontal e longo o
+  // bastante; o vertical continua rolando a página (touch-action: pan-y)
+  var inicio = null;
+  card.addEventListener("pointerdown", function (e) {
+    if (e.pointerType === "mouse") return;
+    inicio = { x: e.clientX, y: e.clientY };
+  });
+  card.addEventListener("pointerup", function (e) {
+    if (!inicio) return;
+    var dx = e.clientX - inicio.x;
+    var dy = e.clientY - inicio.y;
+    inicio = null;
+    if (Math.abs(dx) >= LIMIAR && Math.abs(dx) > Math.abs(dy) * 1.5) ir(atual + (dx < 0 ? 1 : -1), false);
+  });
+  card.addEventListener("pointercancel", function () {
+    inicio = null;
   });
 })();
 
@@ -646,11 +710,12 @@
         return el.textContent.trim();
       });
 
+      // (o primeiro depoimento, o que está à vista na chegada)
       var depoimento = q(".sn-depoimento", numeros);
       var depCard = q(".sn-depoimento__card", depoimento);
-      var depTextos = [q(".sn-depoimento__nome", depoimento), q(".sn-depoimento__descricao", depoimento)];
+      var depTextos = [q(".sn-depoimento__mensagem", depoimento), q(".sn-depoimento__nome", depoimento)];
       var estrelas = q(".sn-depoimento__estrelas", depoimento);
-      var pontos = qa(".sn-depoimento__pontos img", depoimento);
+      var pontos = qa(".sn-depoimento__indicador", depoimento);
 
       var filaNumeros = fila();
 
@@ -725,7 +790,7 @@
         tl.to(brilho, { opacity: 1, duration: 1.2, ease: "power1.inOut" }, 0.7);
       });
 
-      // depoimento: card → nome e descrição → estrelas, uma a uma → pontos
+      // depoimento: card → mensagem e nome → estrelas, uma a uma → pontos
       aoEntrar(depoimento, "top 88%", function () {
         var tl = gsap.timeline({
           delay: filaNumeros(0.3),

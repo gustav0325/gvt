@@ -10,6 +10,22 @@ navSobreposta: true
 estilosPagina: [sobre-nos]
 animacoesPagina: sobre-nos
 aberturaAnimada: true
+# Depoimentos (placeholders de layout): para trocar pelos reais, basta editar
+# nome, iniciais (do avatar), estrelas (1 a 5, lido pelo leitor de tela) e
+# mensagem. A ordem é a dos indicadores.
+depoimentos:
+  - nome: Carlos Mendes
+    iniciais: CM
+    estrelas: 5
+    mensagem: "Serviço executado com muita precisão e organização. Equipe profissional e dentro do prazo."
+  - nome: Roberto Almeida
+    iniciais: RA
+    estrelas: 5
+    mensagem: "Excelente atendimento e qualidade na execução. Ficamos muito satisfeitos com o resultado."
+  - nome: Marcos Oliveira
+    iniciais: MO
+    estrelas: 5
+    mensagem: "Equipe preparada, serviço seguro e muito bem executado. Recomendo a GVT."
 ---
 {#- Página Sobre Nós — Figma node 66:2 (frame 1440 x 2281)
     Navbar e rodapé são os componentes do site (base.njk). Estilos em
@@ -19,12 +35,9 @@ aberturaAnimada: true
     elementos marcados "só no mobile" ficam ocultos no desktop (display:
     none), que continua exatamente como antes.
 
-    FOTOS: as áreas cinzas (.sn-foto) são placeholders das fotografias que
-    ainda serão enviadas. Para cada uma, basta pôr um <img> dentro da figure —
-    o CSS já recorta a imagem no formato, tamanho e raio do Figma:
-      <figure class="sn-foto sn-foto--principal">
-        <img src="/assets/img/sobre-nos/....webp" width="…" height="…" alt="…">
-      </figure> #}
+    FOTOS: as três do topo são as do Figma (70:127–129); o CSS recorta cada
+    uma no formato, tamanho e raio do Figma (object-fit: cover, com o
+    enquadramento de cada foto). #}
 
 {# só no mobile: a faixa branca sob a navbar (que ali abre clara) #}
 <div class="sn-topo" data-nav-tema="claro" aria-hidden="true"></div>
@@ -40,11 +53,17 @@ aberturaAnimada: true
     <p class="sn-intro__paragrafo sn-intro__paragrafo--2">Nossa trajetória é conduzida por Valmir Sabino, que acumula mais de 20 anos de experiência no setor e participação em grandes projetos da construção civil, indústrias e usinas.</p>
   </div>
 
-  {# Figma 70:127 / 70:128 / 70:129 — placeholders das três fotos #}
+  {# Figma 70:127 / 70:128 / 70:129 — as três fotos da GVT #}
   <div class="sn-intro__fotos">
-    <figure class="sn-foto sn-foto--principal"></figure>
-    <figure class="sn-foto sn-foto--topo"></figure>
-    <figure class="sn-foto sn-foto--base"></figure>
+    <figure class="sn-foto sn-foto--principal">
+      <img src="/assets/img/sobre-nos/foto-tunel.webp" width="1448" height="1086" alt="Obra da GVT em túnel, com profissionais trabalhando sobre uma plataforma elevatória">
+    </figure>
+    <figure class="sn-foto sn-foto--topo">
+      <img src="/assets/img/sobre-nos/foto-equipe-parede.webp" width="1447" height="1087" alt="Dois profissionais da GVT executando serviço em parede de concreto">
+    </figure>
+    <figure class="sn-foto sn-foto--base">
+      <img src="/assets/img/sobre-nos/foto-furo-circular.webp" width="1087" height="1447" alt="Grande furo circular aberto pela GVT em parede de concreto">
+    </figure>
   </div>
 </section>
 
@@ -141,32 +160,30 @@ aberturaAnimada: true
     <img class="sn-marcas__brilho" src="/assets/img/sobre-nos/brilho-anos.svg" width="501" height="610" alt="" aria-hidden="true">
   </div>
 
-  {# Figma 70:252 — depoimento. A foto do cliente é um placeholder: basta pôr
-     o <img> dentro de .sn-foto--cliente.
-     No mobile os três pontos viram um carrossel de verdade (deslize ou toque
-     nos indicadores): os dois cards extras repetem o MESMO placeholder, até
-     chegarem os depoimentos reais. No desktop só o primeiro aparece. #}
-  <article class="sn-depoimento" aria-label="Depoimentos de clientes">
-    <div class="sn-depoimento__trilho">
-      {%- for n in [1, 2, 3] %}
-      <div class="sn-depoimento__card{% if n > 1 %} sn-depoimento__card--extra{% endif %}" role="group" aria-label="Depoimento {{ n }} de 3">
-        <figure class="sn-foto sn-foto--cliente"></figure>
-        <img class="sn-depoimento__estrelas" src="/assets/img/sobre-nos/estrelas.svg" width="100" height="20" alt="Avaliação: 5 de 5 estrelas">
-        <p class="sn-depoimento__nome">Nome do cliente</p>
-        <p class="sn-depoimento__descricao">Descrição</p>
+  {# Figma 70:252 — depoimento: um por vez, no card do Figma (366 x 153). Os
+     dados vêm do front matter (depoimentos). Os slides ficam sobrepostos no
+     card, que tem altura fixa: a troca não muda nada em volta. Troca pelos
+     indicadores, pelas setas ← → (com o foco no componente) e, no toque,
+     deslizando para o lado (assets/js/sobre-nos.js). Sem troca automática.
+     No lugar da foto do cliente, um avatar com as iniciais. #}
+  <article class="sn-depoimento" aria-roledescription="carrossel" aria-label="Depoimentos de clientes">
+    <div class="sn-depoimento__card" aria-live="polite">
+      {%- for d in depoimentos %}
+      <div class="sn-depoimento__slide" id="depoimento-{{ loop.index }}" role="group" aria-roledescription="depoimento" aria-label="{{ loop.index }} de {{ loop.length }}"{% if not loop.first %} hidden{% endif %}>
+        <div class="sn-depoimento__avatar" aria-hidden="true">
+          <span class="sn-depoimento__iniciais">{{ d.iniciais }}</span>
+        </div>
+        <img class="sn-depoimento__estrelas" src="/assets/img/sobre-nos/estrelas.svg" width="100" height="20" alt="Avaliação: {{ d.estrelas }} de 5 estrelas">
+        <blockquote class="sn-depoimento__mensagem"><p>“{{ d.mensagem }}”</p></blockquote>
+        <p class="sn-depoimento__nome">{{ d.nome }}</p>
       </div>
       {%- endfor %}
     </div>
-    {# só no mobile: indicadores do carrossel #}
+    {# Figma 70:259–261 — os três pontos, agora botões #}
     <div class="sn-depoimento__indicadores">
-      {%- for n in [1, 2, 3] %}
-      <button class="sn-depoimento__indicador" type="button" aria-label="Ver depoimento {{ n }}"{% if n == 1 %} aria-current="true"{% endif %}></button>
+      {%- for d in depoimentos %}
+      <button class="sn-depoimento__indicador" type="button" aria-label="Ver depoimento de {{ d.nome }}" aria-controls="depoimento-{{ loop.index }}"{% if loop.first %} aria-current="true"{% endif %}></button>
       {%- endfor %}
-    </div>
-    <div class="sn-depoimento__pontos" aria-hidden="true">
-      <img src="/assets/img/sobre-nos/ponto.svg" width="12" height="12" alt="">
-      <img src="/assets/img/sobre-nos/ponto.svg" width="12" height="12" alt="">
-      <img src="/assets/img/sobre-nos/ponto.svg" width="12" height="12" alt="">
     </div>
   </article>
 </section>

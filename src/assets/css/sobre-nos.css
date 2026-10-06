@@ -31,9 +31,9 @@
 }
 
 /* --------------------------------------------------------------------------
-   Placeholders de fotos
-   Cinza do Figma (#d9d9d9) até as fotos chegarem. Um <img> posto dentro da
-   figure ocupa a área toda e é recortado pela forma/raio da própria figure.
+   Fotos
+   O <img> ocupa a figure toda (cover) e é recortado pela forma/raio da
+   própria figure; o cinza do Figma (#d9d9d9) só aparece enquanto carrega.
    -------------------------------------------------------------------------- */
 
 .sn-foto {
@@ -138,6 +138,12 @@
 .sn-foto--base {
   bottom: 0;
   height: calc(267 * var(--c));
+}
+
+/* enquadramento do Figma: túnel e equipe centrados; o furo, com a imagem
+   10% acima do centro (a abertura inteira à vista) */
+.sn-foto--base img {
+  object-position: 50% 10%;
 }
 
 /* ==========================================================================
@@ -595,13 +601,57 @@
   background: var(--branco);
 }
 
-/* Figma 70:262 — foto do cliente, 126 x 137 em (8, 8), raio 10 */
-.sn-foto--cliente {
+/* os três depoimentos ocupam o mesmo card (altura fixa): só um aparece */
+.sn-depoimento__slide {
+  position: absolute;
+  inset: 0;
+}
+
+.sn-depoimento__slide[hidden] {
+  display: none;
+}
+
+/* Figma 70:262 — no lugar da foto do cliente (126 x 137 em (8, 8), raio
+   10), um painel claro com o avatar das iniciais: círculo grafite, letras
+   brancas e um ponto amarelo — discreto, sem disputar com o texto */
+.sn-depoimento__avatar {
+  position: absolute;
   left: calc(8 * var(--k));
   top: calc(8 * var(--k));
+  display: grid;
+  place-items: center;
   width: calc(126 * var(--k));
   height: calc(137 * var(--k));
   border-radius: calc(10 * var(--k));
+  background: var(--cards); /* #f1f2f0 */
+}
+
+.sn-depoimento__iniciais {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(72 * var(--k));
+  height: calc(72 * var(--k));
+  border-radius: 50%;
+  background: var(--cards-escuro); /* #272a29 */
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: calc(22 * var(--k));
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--branco);
+}
+
+.sn-depoimento__iniciais::after {
+  content: "";
+  position: absolute;
+  right: calc(3 * var(--k));
+  bottom: calc(3 * var(--k));
+  width: calc(12 * var(--k));
+  height: calc(12 * var(--k));
+  border-radius: 50%;
+  background: var(--amarelo-destaque);
+  box-shadow: 0 0 0 calc(2.5 * var(--k)) var(--cards);
 }
 
 .sn-depoimento__estrelas {
@@ -612,42 +662,95 @@
   height: calc(20 * var(--k));
 }
 
-.sn-depoimento__nome,
-.sn-depoimento__descricao {
+/* a mensagem no vão entre as estrelas e o nome (até 4 linhas) */
+.sn-depoimento__mensagem {
   position: absolute;
   left: calc(171 * var(--k));
+  top: calc(43 * var(--k));
+  width: calc(183 * var(--k));
   margin: 0;
   font-family: var(--fonte-corpo);
-  white-space: nowrap;
+  font-weight: 400;
+  font-size: calc(12 * var(--k));
+  line-height: calc(15.5 * var(--k));
+  color: #3b3b3b;
+}
+
+.sn-depoimento__mensagem p {
+  margin: 0;
 }
 
 .sn-depoimento__nome {
-  top: calc(109 * var(--k));
+  position: absolute;
+  left: calc(171 * var(--k));
+  top: calc(116 * var(--k));
+  margin: 0;
+  font-family: var(--fonte-corpo);
   font-weight: 700;
   font-size: calc(14 * var(--k));
   line-height: calc(19 * var(--k));
   color: #000;
+  white-space: nowrap;
 }
 
-.sn-depoimento__descricao {
-  top: calc(128 * var(--k));
-  font-weight: 400;
-  font-size: calc(10 * var(--k));
-  line-height: calc(14 * var(--k));
-  color: #726d6d;
-}
-
-/* Figma 70:259–261 — três pontos de 12, a cada 22, em (155, 163) */
-.sn-depoimento__pontos {
+/* Figma 70:259–261 — três pontos de 12, a cada 22, em (155, 163): cada
+   ponto é o ::before de um botão de 22 (área de clique), centrado nele */
+.sn-depoimento__indicadores {
   display: flex;
-  gap: calc(10 * var(--k));
-  margin: calc(10 * var(--k)) 0 0 calc(155 * var(--k));
+  margin: calc(5 * var(--k)) 0 0 calc(150 * var(--k));
 }
 
-.sn-depoimento__pontos img {
-  display: block;
+.sn-depoimento__indicador {
+  display: grid;
+  place-items: center;
+  width: calc(22 * var(--k));
+  height: calc(22 * var(--k));
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sn-depoimento__indicador::before {
+  content: "";
   width: calc(12 * var(--k));
   height: calc(12 * var(--k));
+  border-radius: 50%;
+  background: #c9cac8;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.sn-depoimento__indicador[aria-current="true"]::before {
+  background: var(--amarelo-destaque);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sn-depoimento__indicador:hover::before {
+    transform: scale(1.2);
+  }
+
+  .sn-depoimento__indicador:not([aria-current="true"]):hover::before {
+    background: #a9aaa8;
+  }
+}
+
+.sn-depoimento__indicador:focus-visible {
+  outline: 2px solid var(--titulo);
+  outline-offset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sn-depoimento__indicador::before {
+    transition: none;
+  }
+
+  .sn-depoimento__indicador:hover::before {
+    transform: none;
+  }
 }
 
 /* ==========================================================================
@@ -761,15 +864,8 @@ html.abertura-animada .sn-intro__paragrafo {
 .sn-numeros__risco,
 .sn-chamada__risco,
 .sn-marcas__card--obras-mobile,
-.sn-depoimento__card--extra,
-.sn-depoimento__indicadores,
 .sn-quebra-mobile {
   display: none;
-}
-
-/* no desktop o trilho do carrossel não forma caixa: o card fica onde estava */
-.sn-depoimento__trilho {
-  display: contents;
 }
 
 /* ==========================================================================
@@ -942,6 +1038,15 @@ html.abertura-animada .sn-intro__paragrafo {
   .sn-intro__fotos .sn-foto--topo,
   .sn-intro__fotos .sn-foto--base {
     height: calc(121 * var(--m));
+  }
+
+  /* enquadramento no celular: a plataforma no túnel e a abertura do furo */
+  .sn-intro__fotos .sn-foto--principal img {
+    object-position: 50% 30%;
+  }
+
+  .sn-intro__fotos .sn-foto--base img {
+    object-position: 50% 30%;
   }
 
   /* --- 2. Solidez ------------------------------------------------------- */
@@ -1149,10 +1254,11 @@ html.abertura-animada .sn-intro__paragrafo {
     line-height: calc(15 * var(--m));
   }
 
-  /* depoimento: caixa cinza-claro, card branco em carrossel (deslizar) e
-     os indicadores embaixo */
+  /* depoimento: caixa cinza-claro, o card branco (um depoimento por vez,
+     troca deslizando o dedo ou nos indicadores) e os indicadores embaixo.
+     Card de altura fixa, com medidas próprias do celular para a mensagem
+     ficar legível; pan-y: o dedo na vertical continua rolando a página */
   .sn-depoimento {
-    --k: calc(var(--m) * 318 / 366);
     width: auto;
     height: auto;
     margin-top: calc(28 * var(--m));
@@ -1161,69 +1267,76 @@ html.abertura-animada .sn-intro__paragrafo {
     background: var(--cards);
   }
 
-  .sn-depoimento__trilho {
-    display: flex;
-    gap: calc(12 * var(--m));
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
+  .sn-depoimento__card {
+    height: calc(156 * var(--m));
+    border-radius: calc(8 * var(--m));
+    touch-action: pan-y;
+  }
+
+  .sn-depoimento__avatar {
+    left: calc(8 * var(--m));
+    top: calc(8 * var(--m));
+    width: calc(104 * var(--m));
+    height: calc(140 * var(--m));
     border-radius: calc(8 * var(--m));
   }
 
-  .sn-depoimento__trilho::-webkit-scrollbar {
-    display: none;
+  .sn-depoimento__iniciais {
+    width: calc(64 * var(--m));
+    height: calc(64 * var(--m));
+    font-size: calc(20 * var(--m));
   }
 
-  .sn-depoimento__card,
-  .sn-depoimento__card--extra {
-    display: block;
-    flex: 0 0 100%;
-    border-radius: calc(8 * var(--m));
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
+  .sn-depoimento__iniciais::after {
+    right: calc(2 * var(--m));
+    bottom: calc(2 * var(--m));
+    width: calc(11 * var(--m));
+    height: calc(11 * var(--m));
+    box-shadow: 0 0 0 calc(2.5 * var(--m)) var(--cards);
   }
 
-  .sn-depoimento__pontos {
-    display: none;
+  .sn-depoimento__estrelas {
+    left: calc(126 * var(--m));
+    top: calc(16 * var(--m));
+    width: calc(90 * var(--m));
+    height: calc(18 * var(--m));
+  }
+
+  .sn-depoimento__mensagem {
+    left: calc(126 * var(--m));
+    top: calc(43 * var(--m));
+    width: calc(180 * var(--m));
+    font-size: calc(13 * var(--m));
+    line-height: calc(17.5 * var(--m));
+  }
+
+  .sn-depoimento__nome {
+    left: calc(126 * var(--m));
+    top: calc(125 * var(--m));
+    font-size: calc(14 * var(--m));
+    line-height: calc(19 * var(--m));
   }
 
   .sn-depoimento__indicadores {
-    display: flex;
     justify-content: center;
-    margin-top: calc(8 * var(--m));
+    margin: calc(8 * var(--m)) 0 0;
   }
 
   /* área de toque de 28; o ponto visível tem 11 */
   .sn-depoimento__indicador {
-    display: grid;
-    place-items: center;
     width: calc(23 * var(--m));
     height: 28px;
-    padding: 0;
-    border: 0;
-    background: none;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
+    border-radius: 6px;
   }
 
   .sn-depoimento__indicador::before {
-    content: "";
     width: calc(11 * var(--m));
     height: calc(11 * var(--m));
-    border-radius: 50%;
     background: #d9dad8;
-    transition: background-color 0.3s ease;
-  }
-
-  .sn-depoimento__indicador[aria-current="true"]::before {
-    background: var(--amarelo-destaque);
   }
 
   .sn-depoimento__indicador:focus-visible {
-    outline: 2px solid var(--titulo);
     outline-offset: -2px;
-    border-radius: 6px;
   }
 
   /* --- 4. Chamada ------------------------------------------------------- */
