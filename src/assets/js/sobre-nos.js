@@ -18,21 +18,27 @@
 //   rodapé      eco da abertura, mais discreto: logo por máscara → texto →
 //               colunas → contatos e redes → copyright e o traço dourado
 //
-// As três fotos do topo não são animadas no desktop (uma animação própria
-// para elas ainda pode vir). A navbar não é tocada.
+// As três fotos do topo entram em sequência quando o mosaico chega à tela
+// (entradaFotos, nos dois ramos). A navbar não é tocada.
 //
 // Mobile (até 1023px): um ramo próprio (montarMobile), elemento a elemento
 // — a página vira uma coluna bem mais alta que a tela, então cada peça entra
-// quando ela própria chega à vista: os placeholders surgem com um fade
+// quando ela própria chega à vista: as fotos entram em sequência, com um fade
 // curto, os cards de Missão/Visão/Valores um a um, os diferenciais na ordem
 // da grade 2 x 2. O ramo do desktop continua o mesmo.
 
-// --- Depoimentos: um por vez -----------------------------------------------
+// --- Depoimentos: carrossel, um por vez -------------------------------------
 // Os três ficam sobrepostos no card (altura fixa, nada em volta se mexe).
-// Troca pelos indicadores, pelas setas ← → (com o foco no componente) e, no
-// toque, deslizando para o lado. Sem troca automática. A entrada do novo:
-// opacity 0 → 1 e 8px → 0 (GSAP, já carregado na página); com
-// prefers-reduced-motion, a troca é direta.
+//   automático  passa ao próximo a cada 5s, em loop (3 → 1), só com o
+//               carrossel à vista; pausa com o mouse sobre ele (card, setas,
+//               indicadores) ou com o foco dentro, e qualquer troca manual
+//               recomeça a contagem — um único setTimeout, nunca dois
+//   manual      setas, indicadores, teclas ← → (foco no componente) e, no
+//               toque, deslizar para o lado (o vertical segue rolando)
+//   transição   o atual sai para o lado (opacity 1 → 0, 0 → -20px) e o
+//               próximo entra do outro (opacity 0 → 1, 20px → 0) em 400ms;
+//               voltando, o contrário. Web Animations, nativo; com
+//               prefers-reduced-motion, só a opacidade, sem deslocamento
 (function () {
   "use strict";
 
@@ -42,12 +48,21 @@
   var card = raiz.querySelector(".sn-depoimento__card");
   var slides = Array.prototype.slice.call(raiz.querySelectorAll(".sn-depoimento__slide"));
   var botoes = Array.prototype.slice.call(raiz.querySelectorAll(".sn-depoimento__indicador"));
+  var setas = Array.prototype.slice.call(raiz.querySelectorAll(".sn-depoimento__seta"));
   var reduzido = window.matchMedia("(prefers-reduced-motion: reduce)");
   var total = slides.length;
-  var atual = 0;
   if (total < 2) return;
 
+  var INTERVALO = 5000;
+  var DURACAO = 400;
+  var CURVA = "cubic-bezier(0.22, 1, 0.36, 1)";
   var LIMIAR = 48; // px na horizontal para valer como deslize
+
+  var atual = 0;
+  var relogio = 0;
+  var visivel = false;
+  var sobMouse = false;
+  var comFoco = false;
 
   function marcar(indice) {
     botoes.forEach(function (botao, i) {
@@ -56,70 +71,121 @@
     });
   }
 
-  function limpar(el) {
-    if (window.gsap) window.gsap.set(el, { clearProps: "opacity,transform" });
+  function parado() {
+    return !visivel || sobMouse || comFoco || document.hidden;
   }
 
-  function ir(indice, focarBotao) {
+  // (re)agenda a próxima troca automática; parado, não agenda nada.
+  // Enquanto passa sozinho, o leitor de tela não anuncia cada troca.
+  function agendar() {
+    clearTimeout(relogio);
+    card.setAttribute("aria-live", parado() ? "polite" : "off");
+    if (parado()) return;
+    relogio = setTimeout(function () {
+      ir(atual + 1, 1);
+    }, INTERVALO);
+  }
+
+  // deslocamento e opacidade em animações separadas: o que sai apaga antes
+  // (220ms) e o novo aparece logo atrás (300ms, 100ms depois), enquanto os
+  // dois deslizam os 400ms — sem os dois textos legíveis ao mesmo tempo
+  function animar(el, opacidades, deslocamentos, tempo) {
+    var reduz = reduzido.matches;
+    var lista = [
+      el.animate(
+        opacidades.map(function (o) {
+          return { opacity: o };
+        }),
+        { duration: reduz ? 200 : tempo.duracao, delay: reduz ? 0 : tempo.atraso, easing: "ease-out", fill: "both" }
+      ),
+    ];
+    if (!reduz) {
+      lista.push(
+        el.animate(
+          deslocamentos.map(function (x) {
+            return { transform: "translateX(" + x + "px)" };
+          }),
+          { duration: DURACAO, easing: CURVA, fill: "both" }
+        )
+      );
+    }
+    return lista;
+  }
+
+  function ir(indice, sentido) {
     indice = (indice + total) % total;
-    if (indice === atual) return;
-    var de = slides[atual];
-    var para = slides[indice];
-    var gsap = window.gsap;
+    if (indice !== atual) trocar(indice, sentido || (indice > atual ? 1 : -1));
+    agendar();
+  }
+
+  function trocar(indice, sentido) {
+    var sai = slides[atual];
+    var entra = slides[indice];
+    // de onde o que sai está agora (pode estar no meio de uma troca)
+    var opacidade = parseFloat(getComputedStyle(sai).opacity);
     atual = indice;
     marcar(indice);
-    if (focarBotao && botoes[indice]) botoes[indice].focus();
 
     // trocas seguidas: o que não é nem o que sai nem o que entra some já
     slides.forEach(function (slide) {
-      if (gsap) gsap.killTweensOf(slide);
-      if (slide !== de && slide !== para) {
-        slide.hidden = true;
-        limpar(slide);
-      }
+      slide.getAnimations().forEach(function (a) {
+        a.cancel();
+      });
+      if (slide !== sai && slide !== entra) slide.hidden = true;
     });
-    para.hidden = false;
-
-    if (!gsap || reduzido.matches) {
-      de.hidden = true;
-      limpar(de);
-      limpar(para);
+    entra.hidden = false;
+    if (!sai.animate) {
+      sai.hidden = true;
       return;
     }
 
-    // o que sai apaga rápido; o novo entra subindo 8px, por cima dele —
-    // o card branco fica sempre lá, sem piscar
-    gsap.to(de, {
-      opacity: 0,
-      duration: 0.2,
-      ease: "power1.out",
-      onComplete: function () {
-        if (slides[atual] !== de) de.hidden = true;
-        limpar(de);
+    var dx = 20 * sentido;
+    var saida = animar(sai, [opacidade, 0], [0, -dx], { duracao: 220, atraso: 0 });
+    var entrada = animar(entra, [0, 1], [dx, 0], { duracao: 300, atraso: 100 });
+
+    // terminado o mais longo, o que saiu se esconde e nada fica no estilo
+    var fim = Promise.all(saida.concat(entrada).map(function (a) {
+      return a.finished;
+    }));
+    fim.then(
+      function () {
+        if (slides[atual] !== sai) sai.hidden = true;
+        saida.concat(entrada).forEach(function (a) {
+          a.cancel();
+        });
       },
-    });
-    gsap.fromTo(
-      para,
-      { opacity: 0, y: 8 },
-      { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", clearProps: "opacity,transform" }
+      function () {
+        // cancelada por outra troca: ela mesma arruma os slides
+      }
     );
   }
 
-  botoes.forEach(function (botao, i) {
-    botao.addEventListener("click", function () {
-      ir(i, false);
+  // --- controles ------------------------------------------------------------
+  setas.forEach(function (seta) {
+    seta.addEventListener("click", function () {
+      var passo = parseInt(seta.getAttribute("data-passo"), 10) || 1;
+      ir(atual + passo, passo);
     });
   });
 
-  // ← → com o foco no componente (nos indicadores): o foco acompanha
+  botoes.forEach(function (botao, i) {
+    botao.addEventListener("click", function () {
+      ir(i);
+    });
+  });
+
+  // ← → com o foco no componente; nos indicadores, o foco acompanha
   raiz.addEventListener("keydown", function (e) {
     if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
     e.preventDefault();
-    ir(atual + (e.key === "ArrowRight" ? 1 : -1), raiz.contains(document.activeElement));
+    var passo = e.key === "ArrowRight" ? 1 : -1;
+    var noIndicador = botoes.indexOf(document.activeElement) !== -1;
+    ir(atual + passo, passo);
+    if (noIndicador) botoes[atual].focus();
   });
 
-  // deslize no toque: só conta um gesto claramente horizontal e longo o
-  // bastante; o vertical continua rolando a página (touch-action: pan-y)
+  // deslize no toque: só um gesto claramente horizontal e longo o bastante
+  // (o vertical continua rolando a página: touch-action: pan-y no card)
   var inicio = null;
   card.addEventListener("pointerdown", function (e) {
     if (e.pointerType === "mouse") return;
@@ -130,11 +196,59 @@
     var dx = e.clientX - inicio.x;
     var dy = e.clientY - inicio.y;
     inicio = null;
-    if (Math.abs(dx) >= LIMIAR && Math.abs(dx) > Math.abs(dy) * 1.5) ir(atual + (dx < 0 ? 1 : -1), false);
+    if (Math.abs(dx) >= LIMIAR && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      var passo = dx < 0 ? 1 : -1;
+      ir(atual + passo, passo);
+    }
   });
   card.addEventListener("pointercancel", function () {
     inicio = null;
   });
+
+  // --- pausa ----------------------------------------------------------------
+  // mouse sobre o carrossel (card, setas e indicadores ficam dentro dele)
+  raiz.addEventListener("pointerenter", function (e) {
+    if (e.pointerType !== "mouse") return;
+    sobMouse = true;
+    agendar();
+  });
+  raiz.addEventListener("pointerleave", function (e) {
+    if (e.pointerType !== "mouse") return;
+    sobMouse = false;
+    agendar();
+  });
+  // foco do teclado dentro dele (o clique também foca o botão, mas aí só
+  // recomeça a contagem: pausa é para quem navega pelo teclado)
+  raiz.addEventListener("focusin", function (e) {
+    var teclado = true;
+    try {
+      teclado = e.target.matches(":focus-visible");
+    } catch (erro) {
+      // navegador sem :focus-visible: pausa com qualquer foco
+    }
+    comFoco = teclado;
+    agendar();
+  });
+  raiz.addEventListener("focusout", function (e) {
+    if (raiz.contains(e.relatedTarget)) return;
+    comFoco = false;
+    agendar();
+  });
+  // aba em segundo plano
+  document.addEventListener("visibilitychange", agendar);
+  // só passa sozinho com o carrossel à vista
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(
+      function (entradas) {
+        visivel = entradas[0].isIntersecting;
+        agendar();
+      },
+      { threshold: 0.5 }
+    ).observe(raiz);
+  } else {
+    visivel = true;
+    agendar();
+  }
 })();
 
 (function () {
@@ -260,6 +374,32 @@
     ScrollTrigger.create({ trigger: gatilho, start: inicio, once: true, onEnter: montar });
   }
 
+  // As três fotos do topo, em sequência — a grande, a de cima, a de baixo —
+  // quando o mosaico chega à tela (85% da altura): sobem 32px, de 97% a
+  // 100%, sem bounce. Se isso acontece já na abertura da página, esperam
+  // `atraso` (o título começar). Chamada antes de liberar a abertura.
+  function entradaFotos(atraso) {
+    var caixa = q(".sn-intro__fotos");
+    var fotos = qa(".sn-foto", caixa);
+    if (!fotos.length) return;
+    gsap.set(fotos, { opacity: 0, y: 32, scale: 0.97, transformOrigin: "50% 60%" });
+    var criado = gsap.ticker.time;
+    aoEntrar(caixa, "top 85%", function () {
+      gsap.to(fotos, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.7,
+        ease: "power3.out",
+        stagger: 0.12,
+        delay: Math.max(0, atraso - (gsap.ticker.time - criado)),
+        onComplete: function () {
+          limpar(fotos);
+        },
+      });
+    });
+  }
+
   // espera as fontes (quebras de linha finais; teto de 1,5s) e, chegando de
   // outra página, o conteúdo terminar de assentar (transicao.js)
   function quandoPronto(abrir) {
@@ -310,14 +450,13 @@
     var introRotulo = q(".sn-intro__rotulo", intro);
     var introTitulo = q(".sn-intro__titulo", intro);
     var introTextos = qa(".sn-intro__paragrafo", intro);
-    var fotos = qa(".sn-intro__fotos .sn-foto", intro);
-
-    gsap.set(fotos, { y: 14, opacity: 0 });
 
     function abrir() {
       gsap.set(introRisco, { scaleX: 0, opacity: 1, transformOrigin: "0% 50%" });
       gsap.set(introRotulo, { x: -8, opacity: 0 });
       gsap.set(introTextos, { y: 14, opacity: 0 });
+      // as fotos ficam abaixo dos textos: à vista na chegada, entram depois deles
+      entradaFotos(1.1);
       liberarAbertura();
 
       var tl = gsap.timeline({
@@ -336,18 +475,6 @@
         passo: 0.1,
       });
       tl.to(introTextos, { y: 0, opacity: 1, duration: 0.9, ease: "power2.out", stagger: 0.14 }, fim);
-
-      // fotos: as que já estão à vista entram logo depois dos textos; as de
-      // baixo, quando chegarem
-      fotos.forEach(function (foto, i) {
-        if (foto.getBoundingClientRect().top < window.innerHeight) {
-          tl.to(foto, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", onComplete: function () { limpar([foto]); } }, fim + 0.3 + i * 0.1);
-        } else {
-          aoEntrar(foto, "top 94%", function () {
-            gsap.to(foto, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", onComplete: function () { limpar([foto]); } });
-          });
-        }
-      });
     }
 
     quandoPronto(abrir);
@@ -578,6 +705,8 @@
         // estados iniciais explícitos; a classe do <html> sai na mesma passada
         gsap.set(introRisco, { scaleX: 0, opacity: 1, transformOrigin: "0% 50%" });
         gsap.set(introTextos, { y: 22 * k, opacity: 0 });
+        // o mosaico, ao lado do título, entra quando o título começa
+        entradaFotos(0.45);
         liberarAbertura();
 
         var tl = gsap.timeline({
@@ -715,7 +844,7 @@
       var depCard = q(".sn-depoimento__card", depoimento);
       var depTextos = [q(".sn-depoimento__mensagem", depoimento), q(".sn-depoimento__nome", depoimento)];
       var estrelas = q(".sn-depoimento__estrelas", depoimento);
-      var pontos = qa(".sn-depoimento__indicador", depoimento);
+      var pontos = qa(".sn-depoimento__seta, .sn-depoimento__indicador", depoimento);
 
       var filaNumeros = fila();
 

@@ -146,6 +146,18 @@
   object-position: 50% 10%;
 }
 
+/* hover (só com mouse): a foto cresce o mínimo dentro do próprio recorte —
+   a moldura, o raio e a forma não mudam */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .sn-intro__fotos .sn-foto img {
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .sn-intro__fotos .sn-foto:hover img {
+    transform: scale(1.035);
+  }
+}
+
 /* ==========================================================================
    2. Solidez — Figma 70:130 (fundo #fafaf8, 650)
    ========================================================================== */
@@ -613,17 +625,26 @@
 
 /* Figma 70:262 — no lugar da foto do cliente (126 x 137 em (8, 8), raio
    10), um painel claro com o avatar das iniciais: círculo grafite, letras
-   brancas e um ponto amarelo — discreto, sem disputar com o texto */
+   brancas e um ponto amarelo — discreto, sem disputar com o texto. O painel
+   é do card (fixo, não pisca na troca); o avatar é de cada depoimento. */
+.sn-depoimento__card::before,
 .sn-depoimento__avatar {
   position: absolute;
   left: calc(8 * var(--k));
   top: calc(8 * var(--k));
-  display: grid;
-  place-items: center;
   width: calc(126 * var(--k));
   height: calc(137 * var(--k));
   border-radius: calc(10 * var(--k));
+}
+
+.sn-depoimento__card::before {
+  content: "";
   background: var(--cards); /* #f1f2f0 */
+}
+
+.sn-depoimento__avatar {
+  display: grid;
+  place-items: center;
 }
 
 .sn-depoimento__iniciais {
@@ -694,10 +715,51 @@
 }
 
 /* Figma 70:259–261 — três pontos de 12, a cada 22, em (155, 163): cada
-   ponto é o ::before de um botão de 22 (área de clique), centrado nele */
+   ponto é o ::before de um botão de 22 (área de clique), centrado nele. As
+   setas (22, a 4 dos pontos) ficam dos dois lados sem tirar os pontos do
+   lugar: a fila começa 26 antes deles */
+.sn-depoimento__controles {
+  display: flex;
+  align-items: center;
+  gap: calc(4 * var(--k));
+  margin: calc(5 * var(--k)) 0 0 calc(124 * var(--k));
+}
+
 .sn-depoimento__indicadores {
   display: flex;
-  margin: calc(5 * var(--k)) 0 0 calc(150 * var(--k));
+}
+
+/* setas: chevrons finos em cinza, amarelos no hover */
+.sn-depoimento__seta {
+  display: grid;
+  place-items: center;
+  width: calc(22 * var(--k));
+  height: calc(22 * var(--k));
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: #8b8e8c;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.25s ease;
+}
+
+.sn-depoimento__seta svg {
+  display: block;
+  width: calc(14 * var(--k));
+  height: calc(14 * var(--k));
+}
+
+.sn-depoimento__seta:focus-visible {
+  outline: 2px solid var(--titulo);
+  outline-offset: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sn-depoimento__seta:hover {
+    color: var(--amarelo-destaque);
+  }
 }
 
 .sn-depoimento__indicador {
@@ -744,7 +806,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sn-depoimento__indicador::before {
+  .sn-depoimento__indicador::before,
+  .sn-depoimento__seta {
     transition: none;
   }
 
@@ -830,13 +893,14 @@
 
    Estados temporários. .abertura-animada é posta no <html> antes do primeiro
    paint (base.njk): o que entra na abertura nasce oculto, sem piscar na
-   posição final. Os placeholders das fotos não entram aqui — ficam parados.
+   posição final (as três fotos também: entram em sequência).
    ========================================================================== */
 
 html.abertura-animada .sn-intro__risco,
 html.abertura-animada .sn-intro__rotulo,
 html.abertura-animada .sn-intro__titulo,
-html.abertura-animada .sn-intro__paragrafo {
+html.abertura-animada .sn-intro__paragrafo,
+html.abertura-animada .sn-intro__fotos .sn-foto {
   opacity: 0;
 }
 
@@ -1273,6 +1337,7 @@ html.abertura-animada .sn-intro__paragrafo {
     touch-action: pan-y;
   }
 
+  .sn-depoimento__card::before,
   .sn-depoimento__avatar {
     left: calc(8 * var(--m));
     top: calc(8 * var(--m));
@@ -1317,9 +1382,25 @@ html.abertura-animada .sn-intro__paragrafo {
     line-height: calc(19 * var(--m));
   }
 
-  .sn-depoimento__indicadores {
+  .sn-depoimento__controles {
     justify-content: center;
+    gap: calc(2 * var(--m));
     margin: calc(8 * var(--m)) 0 0;
+  }
+
+  .sn-depoimento__seta {
+    width: 32px;
+    height: 28px;
+    border-radius: 6px;
+  }
+
+  .sn-depoimento__seta svg {
+    width: calc(14 * var(--m));
+    height: calc(14 * var(--m));
+  }
+
+  .sn-depoimento__seta:focus-visible {
+    outline-offset: -2px;
   }
 
   /* área de toque de 28; o ponto visível tem 11 */
