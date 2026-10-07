@@ -25,74 +25,20 @@ jobs:
       - name: Gerar site
         run: npm run build
 
-      - name: Configurar SSH
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.HOSTGATOR_SSH_KEY }}
-          SSH_PASSPHRASE: ${{ secrets.HOSTGATOR_SSH_PASSPHRASE }}
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
+      - name: Publicar via SFTP na HostGator
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
+        with:
+          username: ${{ secrets.HOSTGATOR_USER }}
+          server: ${{ secrets.HOSTGATOR_HOST }}
+          port: ${{ secrets.HOSTGATOR_PORT }}
 
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/hostgator_key
-          chmod 600 ~/.ssh/hostgator_key
+          ssh_private_key: ${{ secrets.HOSTGATOR_SSH_KEY }}
+          ssh_passphrase: ${{ secrets.HOSTGATOR_SSH_PASSPHRASE }}
 
-          eval "$(ssh-agent -s)"
+          local_path: './_site/*'
+          remote_path: '/home2/gvtcor30/public_html'
 
-          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> "$GITHUB_ENV"
-          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> "$GITHUB_ENV"
+          sftp_only: true
+          delete_remote_files: false
 
-          cat > ~/.ssh/askpass.sh <<'EOF'
-          #!/bin/sh
-          printf '%s\n' "$SSH_PASSPHRASE"
-          EOF
-
-          chmod 700 ~/.ssh/askpass.sh
-
-          export SSH_ASKPASS="$HOME/.ssh/askpass.sh"
-          export SSH_ASKPASS_REQUIRE=force
-          export DISPLAY=:0
-
-          setsid ssh-add ~/.ssh/hostgator_key </dev/null
-
-      - name: Registrar servidor HostGator
-        env:
-          HOST: ${{ secrets.HOSTGATOR_HOST }}
-          PORT: ${{ secrets.HOSTGATOR_PORT }}
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -p "$PORT" -H "$HOST" >> ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-
-      - name: Testar conexao SSH
-        env:
-          HOST: ${{ secrets.HOSTGATOR_HOST }}
-          PORT: ${{ secrets.HOSTGATOR_PORT }}
-          USER: ${{ secrets.HOSTGATOR_USER }}
-        run: |
-          echo "Chave carregada:"
-          ssh-add -l
-
-          ssh \
-            -i ~/.ssh/hostgator_key \
-            -o IdentitiesOnly=yes \
-            -o PreferredAuthentications=publickey \
-            -o PasswordAuthentication=no \
-            -o KbdInteractiveAuthentication=no \
-            -p "$PORT" \
-            "$USER@$HOST" \
-            "echo SSH_OK"
-
-      - name: Publicar na HostGator
-        env:
-          HOST: ${{ secrets.HOSTGATOR_HOST }}
-          PORT: ${{ secrets.HOSTGATOR_PORT }}
-          USER: ${{ secrets.HOSTGATOR_USER }}
-        run: |
-          rsync -avz --delete \
-            --exclude=".well-known/" \
-            --exclude="_backup_site_antigo/" \
-            --exclude="cgi-bin/" \
-            --exclude="gvt-site.zip" \
-            -e "ssh -i ~/.ssh/hostgator_key -o IdentitiesOnly=yes -p $PORT" \
-            _site/ \
-            "$USER@$HOST:/home2/gvtcor30/public_html/"
+          sftpArgs: '-o ConnectTimeout=15'
