@@ -69,6 +69,6 @@ jobs:
             --exclude="_backup_site_antigo/" \
             --exclude="cgi-bin/" \
             --exclude="gvt-site.zip" \
-            -e "ssh -p $PORT" \
+            -e "ssh -o IdentitiesOnly=yes -p $PORT" \
             _site/ \
             "$USER@$HOST:/home2/gvtcor30/public_html/"
