@@ -31,11 +31,15 @@ jobs:
           SSH_PASSPHRASE: ${{ secrets.HOSTGATOR_SSH_PASSPHRASE }}
         run: |
           mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
 
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/hostgator_key
           chmod 600 ~/.ssh/hostgator_key
 
           eval "$(ssh-agent -s)"
+
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> "$GITHUB_ENV"
+          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> "$GITHUB_ENV"
 
           cat > ~/.ssh/askpass.sh <<'EOF'
           #!/bin/sh
@@ -57,6 +61,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -p "$PORT" -H "$HOST" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
 
       - name: Testar conexao SSH
         env:
@@ -64,12 +69,10 @@ jobs:
           PORT: ${{ secrets.HOSTGATOR_PORT }}
           USER: ${{ secrets.HOSTGATOR_USER }}
         run: |
-          echo "Chaves carregadas no ssh-agent:"
+          echo "Chave carregada:"
           ssh-add -l
 
-          echo "Testando conexao com a HostGator..."
-
-          ssh -vv \
+          ssh \
             -i ~/.ssh/hostgator_key \
             -o IdentitiesOnly=yes \
             -o PreferredAuthentications=publickey \
