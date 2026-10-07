@@ -58,6 +58,27 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -p "$PORT" -H "$HOST" >> ~/.ssh/known_hosts
 
+      - name: Testar conexao SSH
+        env:
+          HOST: ${{ secrets.HOSTGATOR_HOST }}
+          PORT: ${{ secrets.HOSTGATOR_PORT }}
+          USER: ${{ secrets.HOSTGATOR_USER }}
+        run: |
+          echo "Chaves carregadas no ssh-agent:"
+          ssh-add -l
+
+          echo "Testando conexao com a HostGator..."
+
+          ssh -vv \
+            -i ~/.ssh/hostgator_key \
+            -o IdentitiesOnly=yes \
+            -o PreferredAuthentications=publickey \
+            -o PasswordAuthentication=no \
+            -o KbdInteractiveAuthentication=no \
+            -p "$PORT" \
+            "$USER@$HOST" \
+            "echo SSH_OK"
+
       - name: Publicar na HostGator
         env:
           HOST: ${{ secrets.HOSTGATOR_HOST }}
